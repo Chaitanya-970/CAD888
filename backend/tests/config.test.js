@@ -30,8 +30,11 @@ describe('validateConfig (RFC-001 criterion 3)', () => {
       supabaseUrl: 'https://example.supabase.co',
       supabaseServiceKey: 'test-service-key',
       reportHashSalt: 'test-salt',
-      port: 3000, // PORT omitted -> default
+      port: 3000,
       corsOrigin: '*',
+      osrmBaseUrl: 'https://router.project-osrm.org',
+      osrmProfile: 'foot',
+      osrmTimeoutMs: 4000
     });
     expect(Object.isFrozen(cfg)).toBe(true);
   });
