@@ -12,7 +12,8 @@
     "start": "node src/server.js",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand",
     "seed": "node scripts/loadSeed.js",
-    "smoke": "node scripts/smoke.js"
+    "smoke": "node scripts/smoke.js",
+    "keep-alive": "node scripts/keepAlive.js"
   },
   "dependencies": {
     "@mapbox/polyline": "^1.2.1",
