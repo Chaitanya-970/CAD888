@@ -9,7 +9,7 @@ const REQUIRED = ['SUPABASE_URL', 'SUPABASE_SERVICE_KEY', 'REPORT_HASH_SALT'];
  * (RULES.md R-07 purity at the module boundary).
  *
  * @param {Record<string, string|undefined>} env
- * @returns {Readonly<{supabaseUrl:string, supabaseServiceKey:string, reportHashSalt:string, port:number, corsOrigin:string}>}
+ * @returns {Readonly<{supabaseUrl:string, supabaseServiceKey:string, reportHashSalt:string, port:number, corsOrigin:string, osrmBaseUrl:string, osrmProfile:string, osrmTimeoutMs:number}>}
  */
 export function validateConfig(env) {
   const missing = REQUIRED.filter((key) => !env[key] || String(env[key]).trim() === '');
@@ -22,6 +22,12 @@ export function validateConfig(env) {
     reportHashSalt: env.REPORT_HASH_SALT,
     port: Number(env.PORT || 3000),
     corsOrigin: env.CORS_ORIGIN || '*',
+    // OSRM routing engine (RFC-002). Defaults target the public demo server;
+    // for the live demo run local Docker OSRM with the foot profile instead
+    // (runbook in RFC-007) and override via env.
+    osrmBaseUrl: env.OSRM_BASE_URL || 'https://router.project-osrm.org',
+    osrmProfile: env.OSRM_PROFILE || 'foot',
+    osrmTimeoutMs: Number(env.OSRM_TIMEOUT_MS || 4000),
   });
 }
 
