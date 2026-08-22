@@ -34,7 +34,8 @@ describe('validateConfig (RFC-001 criterion 3)', () => {
       corsOrigin: '*',
       osrmBaseUrl: 'https://router.project-osrm.org',
       osrmProfile: 'foot',
-      osrmTimeoutMs: 4000
+      osrmTimeoutMs: 4000,
+      staticFallbackEnabled: false
     });
     expect(Object.isFrozen(cfg)).toBe(true);
   });

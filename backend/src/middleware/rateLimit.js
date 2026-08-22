@@ -68,3 +68,12 @@ export function createRateLimiter({ keyFn, maxRequests = 3, windowMs = 3_600_000
 export function _createFreshLimiter(opts) {
   return createRateLimiter(opts);
 }
+
+/** Global IP-based rate limiter (RFC-007). Default 120 req / 15 mins. */
+export function createGlobalLimiter() {
+  return createRateLimiter({
+    keyFn: (req) => req.ip || req.socket?.remoteAddress || 'unknown',
+    maxRequests: 120,
+    windowMs: 15 * 60_000, // 15 mins
+  });
+}

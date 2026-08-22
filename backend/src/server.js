@@ -4,6 +4,9 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import getConfig from './config.js';
 import healthRouter from './routes/health.js';
+import routeRouter from './routes/route.js';
+import reportRouter from './routes/report.js';
+import explainRouter from './routes/explain.js';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
 
 export const logger = pino({ level: process.env.LOG_LEVEL || 'info' });
@@ -12,9 +15,24 @@ export const logger = pino({ level: process.env.LOG_LEVEL || 'info' });
  * App factory - exported so supertest can drive the HTTP layer without
  * binding a port (TEST_PLAN I-003 / U-005 style tests).
  */
+import helmet from 'helmet';
+import cors from 'cors';
+import { createGlobalLimiter } from './middleware/rateLimit.js';
+
 export function createApp() {
   const app = express();
   app.disable('x-powered-by');
+
+  // Hardening (RFC-007)
+  app.use(helmet());
+  
+  // Safe default: only load config if we are booting up (tests may not have env set)
+  let origin = '*';
+  try { origin = getConfig().corsOrigin; } catch (e) {}
+  app.use(cors({ origin }));
+  
+  app.use(express.json({ limit: '16kb' }));
+  app.use(createGlobalLimiter());
 
   // Minimal structured request log (pino only - RULES R-02/R-18).
   app.use((req, _res, next) => {
@@ -24,6 +42,9 @@ export function createApp() {
   });
 
   app.use(healthRouter);
+  app.use(routeRouter);
+  app.use(reportRouter);
+  app.use(explainRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);

@@ -28,6 +28,7 @@ export function validateConfig(env) {
     osrmBaseUrl: env.OSRM_BASE_URL || 'https://router.project-osrm.org',
     osrmProfile: env.OSRM_PROFILE || 'foot',
     osrmTimeoutMs: Number(env.OSRM_TIMEOUT_MS || 4000),
+    staticFallbackEnabled: env.STATIC_FALLBACK_ENABLED === 'true',
   });
 }
 

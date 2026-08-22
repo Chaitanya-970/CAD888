@@ -13,6 +13,7 @@ import { z } from 'zod';
 import { validateBody } from '../middleware/validate.js';
 import { getRoutes, routeToCells } from '../services/osrmClient.js';
 import { getCellScores, routeScore, bandOf, bucketOf } from '../services/scoringEngine.js';
+import { getFallbackRoutes } from '../fallback/staticRoutes.js';
 import getSupabase from '../db/supabase.js';
 
 const router = Router();
@@ -107,12 +108,24 @@ router.post(
       // Fetch routes from OSRM (with timing)
       const osrmStart = Date.now();
       let osrmRoutes;
-      if (req._testDeps?.fetchRoutes) {
-        osrmRoutes = await req._testDeps.fetchRoutes(origin, destination);
-      } else {
-        osrmRoutes = await getRoutes(origin, destination);
+      let osrmMs = 0;
+      try {
+        if (req._testDeps?.fetchRoutes) {
+          osrmRoutes = await req._testDeps.fetchRoutes(origin, destination);
+        } else {
+          osrmRoutes = await getRoutes(origin, destination);
+        }
+        osrmMs = Date.now() - osrmStart;
+      } catch (err) {
+        if (err.code === 'UPSTREAM_OSRM') {
+          const fallback = getFallbackRoutes(origin, bucket, req._testDeps);
+          if (fallback) {
+            res.setHeader('X-Data-Source', 'static-fallback');
+            return res.json(fallback);
+          }
+        }
+        throw err;
       }
-      const osrmMs = Date.now() - osrmStart;
 
       // Deps for DB calls (test injection)
       const deps = req._testDeps || {};
