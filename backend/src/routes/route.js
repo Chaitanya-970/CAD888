@@ -155,6 +155,7 @@ router.post(
               distanceM: route.distanceM,
               durationS: route.durationS,
             },
+            geometry: route.coords, // [[lat,lng],...] for map polylines
             score,
             band,
             cells,
