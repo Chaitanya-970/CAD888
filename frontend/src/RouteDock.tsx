@@ -1,9 +1,9 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { Flag, Footprints, Info, Star, Sun } from 'lucide-react'
+import { Flag, Footprints, Info, Lightbulb, Star, Sun } from 'lucide-react'
 import type { CSSProperties } from 'react'
-import type { Route, RouteId, SafetyLevel } from '../types'
-import { routes } from '../data'
-import { score, tone } from '../utils'
+import type { Route, RouteId, SafetyLevel } from './types'
+import { routes } from './data'
+import { score, tone, routeExplanation, safetyTip } from './utils'
 
 export default function RouteDock({
   selected, onSelect, hour, safetyLevel, activeRoute, activeScore,
@@ -56,11 +56,15 @@ export default function RouteDock({
               {activeScore >= 84 ? 'Excellent choice' : activeScore >= 70 ? 'Strong choice' : 'Use awareness'}
             </span>
           </div>
-          <p>{activeRoute.note} As it gets later, we adjust for changing foot traffic and lighting.</p>
+          <p className="route-explanation">{routeExplanation(activeRoute.id, activeScore, hour)}</p>
           <div className="breakdown">
             <span><Sun size={15} /> Lighting <b>{Math.min(96, 76 + (activeRoute.id === 'safest' ? 12 : activeRoute.id === 'balanced' ? 6 : 0) - hour * 2)}%</b></span>
             <span><Footprints size={15} /> Foot traffic <b>{Math.max(42, 88 - hour * 6)}%</b></span>
             <span><Flag size={15} /> Reports <b>{activeRoute.id === 'fastest' ? '2 nearby' : '0 nearby'}</b></span>
+          </div>
+          <div className="ai-tip">
+            <Lightbulb size={14} />
+            <span>{safetyTip(activeRoute.id, hour)}</span>
           </div>
         </motion.div>
       </AnimatePresence>
