@@ -1,272 +1,166 @@
-import json
-import os
+"""
+Role 3 - Seed dataset v2, matching Role 2's REAL backend schema
+PS-17 Safe Route Mapping
 
-os.makedirs("data", exist_ok=True)
+WHY THIS FILE EXISTS (read this first):
+  generate_seed_data.py (v1) was built against the project plan document,
+  before Role 2's backend existed. Now that Role 2 has pushed real code
+  (backend/scripts/loadSeed.js + backend/src/db/migrations/001_init.sql),
+  it turns out their actual loader expects a different shape than the plan
+  implied:
+    - reports are grouped under "segments" (by index), not flat with their
+      own lat/lng each
+    - severity is 1-3, not 1-5
+    - light_condition is "lit" | "unlit" | "unknown", not "dark"/"dim"/"well_lit"
+    - each report needs an anonymized "reporter_hash", not a "report_id"
+    - there is NO "incident_type" field anywhere in their schema - the DB
+      only stores severity + light_condition + a free-text note
 
-data = [
+  This script regenerates seed data in the EXACT shape Role 2's loadSeed.js
+  expects, so it can be dropped straight into
+  backend/src/db/seeds/incidents.json and run through their real loader
+  with zero changes needed on their side.
+
+  Their own file comment already anticipated this handoff:
+  "Role 3's final 15-20 report dataset replaces this file later; same
+  schema, same loader."
+
+OUTPUT SHAPE (verified against backend/scripts/loadSeed.js):
   {
-    "report_id": "seed-001",
-    "area_label": "Rajmahal Square",
-    "latitude": 20.268341,
-    "longitude": 85.833255,
-    "timestamp": "2026-08-15T01:17:00",
-    "time_bucket": "night",
-    "incident_type": "harassment",
-    "severity": 4,
-    "light_condition": "dark",
-    "note": "Felt unsafe walking alone.",
-    "is_seed_demo_data": True
-  },
-  {
-    "report_id": "seed-002",
-    "area_label": "Nayapalli",
-    "latitude": 20.294008,
-    "longitude": 85.817318,
-    "timestamp": "2026-05-05T07:01:00",
-    "time_bucket": "morning",
-    "incident_type": "poor_lighting",
-    "severity": 2,
-    "light_condition": "well_lit",
-    "note": "No shops open, very quiet stretch.",
-    "is_seed_demo_data": True
-  },
-  {
-    "report_id": "seed-003",
-    "area_label": "Chandrasekharpur",
-    "latitude": 20.335373,
-    "longitude": 85.817509,
-    "timestamp": "2026-05-06T15:28:00",
-    "time_bucket": "day",
-    "incident_type": "catcalling",
-    "severity": 2,
-    "light_condition": "well_lit",
-    "note": "",
-    "is_seed_demo_data": True
-  },
-  {
-    "report_id": "seed-004",
-    "area_label": "Saheed Nagar",
-    "latitude": 20.292413,
-    "longitude": 85.841419,
-    "timestamp": "2026-06-11T13:13:00",
-    "time_bucket": "day",
-    "incident_type": "theft",
-    "severity": 2,
-    "light_condition": "well_lit",
-    "note": "Bag snatching reported nearby.",
-    "is_seed_demo_data": True
-  },
-  {
-    "report_id": "seed-005",
-    "area_label": "Nayapalli",
-    "latitude": 20.293393,
-    "longitude": 85.817702,
-    "timestamp": "2026-06-15T07:46:00",
-    "time_bucket": "morning",
-    "incident_type": "stalking",
-    "severity": 1,
-    "light_condition": "dim",
-    "note": "Bag snatching reported nearby.",
-    "is_seed_demo_data": True
-  },
-  {
-    "report_id": "seed-006",
-    "area_label": "Nayapalli",
-    "latitude": 20.294699,
-    "longitude": 85.818512,
-    "timestamp": "2026-07-03T01:04:00",
-    "time_bucket": "night",
-    "incident_type": "poor_lighting",
-    "severity": 4,
-    "light_condition": "dim",
-    "note": "Felt unsafe walking alone.",
-    "is_seed_demo_data": True
-  },
-  {
-    "report_id": "seed-007",
-    "area_label": "Vani Vihar",
-    "latitude": 20.295813,
-    "longitude": 85.833581,
-    "timestamp": "2026-06-11T21:40:00",
-    "time_bucket": "night",
-    "incident_type": "theft",
-    "severity": 4,
-    "light_condition": "dark",
-    "note": "Someone followed me for a block.",
-    "is_seed_demo_data": True
-  },
-  {
-    "report_id": "seed-008",
-    "area_label": "Rajmahal Square",
-    "latitude": 20.267946,
-    "longitude": 85.832668,
-    "timestamp": "2026-03-19T00:10:00",
-    "time_bucket": "night",
-    "incident_type": "catcalling",
-    "severity": 4,
-    "light_condition": "dark",
-    "note": "No shops open, very quiet stretch.",
-    "is_seed_demo_data": True
-  },
-  {
-    "report_id": "seed-009",
-    "area_label": "Saheed Nagar",
-    "latitude": 20.292665,
-    "longitude": 85.841583,
-    "timestamp": "2026-08-07T15:52:00",
-    "time_bucket": "day",
-    "incident_type": "poor_lighting",
-    "severity": 2,
-    "light_condition": "dim",
-    "note": "Bag snatching reported nearby.",
-    "is_seed_demo_data": True
-  },
-  {
-    "report_id": "seed-010",
-    "area_label": "Patia",
-    "latitude": 20.355661,
-    "longitude": 85.818635,
-    "timestamp": "2026-03-07T21:25:00",
-    "time_bucket": "night",
-    "incident_type": "isolated_no_foot_traffic",
-    "severity": 5,
-    "light_condition": "dark",
-    "note": "Someone followed me for a block.",
-    "is_seed_demo_data": True
-  },
-  {
-    "report_id": "seed-011",
-    "area_label": "Nayapalli",
-    "latitude": 20.294014,
-    "longitude": 85.81741,
-    "timestamp": "2026-05-04T23:25:00",
-    "time_bucket": "night",
-    "incident_type": "unsafe_group_loitering",
-    "severity": 4,
-    "light_condition": "dark",
-    "note": "Street light not working here.",
-    "is_seed_demo_data": True
-  },
-  {
-    "report_id": "seed-012",
-    "area_label": "Rajmahal Square",
-    "latitude": 20.267371,
-    "longitude": 85.832829,
-    "timestamp": "2026-07-13T00:10:00",
-    "time_bucket": "night",
-    "incident_type": "theft",
-    "severity": 5,
-    "light_condition": "dim",
-    "note": "",
-    "is_seed_demo_data": True
-  },
-  {
-    "report_id": "seed-013",
-    "area_label": "Chandrasekharpur",
-    "latitude": 20.335555,
-    "longitude": 85.818362,
-    "timestamp": "2026-06-18T22:55:00",
-    "time_bucket": "night",
-    "incident_type": "poor_lighting",
-    "severity": 3,
-    "light_condition": "dim",
-    "note": "Bag snatching reported nearby.",
-    "is_seed_demo_data": True
-  },
-  {
-    "report_id": "seed-014",
-    "area_label": "Rajmahal Square",
-    "latitude": 20.268542,
-    "longitude": 85.832659,
-    "timestamp": "2026-06-07T20:10:00",
-    "time_bucket": "evening",
-    "incident_type": "stalking",
-    "severity": 3,
-    "light_condition": "dim",
-    "note": "Group of men loitering, made comments.",
-    "is_seed_demo_data": True
-  },
-  {
-    "report_id": "seed-015",
-    "area_label": "Chandrasekharpur",
-    "latitude": 20.334818,
-    "longitude": 85.817512,
-    "timestamp": "2026-07-25T00:19:00",
-    "time_bucket": "night",
-    "incident_type": "theft",
-    "severity": 4,
-    "light_condition": "dark",
-    "note": "Street light not working here.",
-    "is_seed_demo_data": True
-  },
-  {
-    "report_id": "seed-016",
-    "area_label": "Nayapalli",
-    "latitude": 20.293624,
-    "longitude": 85.817626,
-    "timestamp": "2026-05-31T21:01:00",
-    "time_bucket": "night",
-    "incident_type": "poor_lighting",
-    "severity": 4,
-    "light_condition": "dim",
-    "note": "Felt unsafe walking alone.",
-    "is_seed_demo_data": True
-  },
-  {
-    "report_id": "seed-017",
-    "area_label": "Rajmahal Square",
-    "latitude": 20.26823,
-    "longitude": 85.833644,
-    "timestamp": "2026-04-19T09:48:00",
-    "time_bucket": "morning",
-    "incident_type": "catcalling",
-    "severity": 2,
-    "light_condition": "well_lit",
-    "note": "Group of men loitering, made comments.",
-    "is_seed_demo_data": True
-  },
-  {
-    "report_id": "seed-018",
-    "area_label": "Jaydev Vihar",
-    "latitude": 20.297729,
-    "longitude": 85.809714,
-    "timestamp": "2026-04-08T23:27:00",
-    "time_bucket": "night",
-    "incident_type": "harassment",
-    "severity": 4,
-    "light_condition": "dim",
-    "note": "Bag snatching reported nearby.",
-    "is_seed_demo_data": True
-  },
-  {
-    "report_id": "seed-019",
-    "area_label": "Rajmahal Square",
-    "latitude": 20.268641,
-    "longitude": 85.83355499999999,
-    "timestamp": "2026-04-11T21:07:00",
-    "time_bucket": "night",
-    "incident_type": "harassment",
-    "severity": 4,
-    "light_condition": "dark",
-    "note": "No shops open, very quiet stretch.",
-    "is_seed_demo_data": True
-  },
-  {
-    "report_id": "seed-020",
-    "area_label": "Saheed Nagar",
-    "latitude": 20.292613,
-    "longitude": 85.841219,
-    "timestamp": "2026-06-26T07:04:00",
-    "time_bucket": "morning",
-    "incident_type": "isolated_no_foot_traffic",
-    "severity": 1,
-    "light_condition": "well_lit",
-    "note": "Bag snatching reported nearby.",
-    "is_seed_demo_data": True
+    "segments": [
+      {"center_lat": float, "center_lng": float, "lighting": 0-100, "foot_traffic": 0-100}
+    ],
+    "reports": [
+      {"segment": int (index into segments), "severity": 1-3,
+       "light_condition": "lit"|"unlit"|"unknown", "note": str (<=280 chars),
+       "occurred_at": ISO8601 string, "reporter_hash": str}
+    ]
   }
+"""
+
+import hashlib
+import json
+import random
+from datetime import datetime, timedelta
+
+random.seed(42)
+
+# Same 10 real Bhubaneswar landmarks as v1, now as "segments" with explicit
+# lighting/foot_traffic scores (0-100) instead of qualitative labels - these
+# feed segment_safety_scores directly via Role 2's loader.
+SEGMENTS = [
+    {"name": "Master Canteen Square",  "center_lat": 20.2700, "center_lng": 85.8410, "lighting": 70, "foot_traffic": 80},
+    {"name": "Rajmahal Square",        "center_lat": 20.2680, "center_lng": 85.8330, "lighting": 55, "foot_traffic": 65},
+    {"name": "Kalpana Square",         "center_lat": 20.2760, "center_lng": 85.8480, "lighting": 75, "foot_traffic": 85},
+    {"name": "Patia",                  "center_lat": 20.3560, "center_lng": 85.8190, "lighting": 60, "foot_traffic": 70},
+    {"name": "Jaydev Vihar",           "center_lat": 20.2980, "center_lng": 85.8090, "lighting": 45, "foot_traffic": 40},
+    {"name": "Saheed Nagar",           "center_lat": 20.2930, "center_lng": 85.8420, "lighting": 65, "foot_traffic": 60},
+    {"name": "Vani Vihar",             "center_lat": 20.2960, "center_lng": 85.8340, "lighting": 50, "foot_traffic": 55},
+    {"name": "Khandagiri",             "center_lat": 20.2590, "center_lng": 85.7780, "lighting": 30, "foot_traffic": 25},
+    {"name": "Chandrasekharpur",       "center_lat": 20.3350, "center_lng": 85.8180, "lighting": 40, "foot_traffic": 35},
+    {"name": "Nayapalli",              "center_lat": 20.2940, "center_lng": 85.8180, "lighting": 55, "foot_traffic": 50},
 ]
 
-with open("data/seed_incidents.json", "w") as f:
-    json.dump(data, f, indent=2)
+NOTES = [
+    "Street light not working here.",
+    "Felt unsafe walking alone.",
+    "Group of men loitering, made comments.",
+    "No shops open, very quiet stretch.",
+    "Someone followed me for a block.",
+    "Bag snatching reported nearby.",
+    "",
+    "",
+]
 
-print("Saved successfully to data/seed_incidents.json")
+LIGHT_CONDITIONS = ["lit", "unlit", "unknown"]
+
+
+def fake_reporter_hash(seed_value: str) -> str:
+    """Deterministic fake anonymized hash, matching the shape a real
+    salted-hash reporter id would have (hex string). Not a real user -
+    this is synthetic seed data, clearly scoped so Role 2's loader can
+    safely delete+replace only these rows on re-run (fixture-scoped
+    idempotent replace, per their loadSeed.js comment)."""
+    return hashlib.sha256(f"seed-demo-{seed_value}".encode()).hexdigest()[:16]
+
+
+def generate(n_reports: int = 20):
+    now = datetime(2026, 8, 22, 12, 0, 0)
+    reports = []
+
+    for i in range(1, n_reports + 1):
+        seg_index = random.randrange(len(SEGMENTS))
+        days_ago = random.randint(1, 180)
+        hour = random.choice([7, 9, 13, 15, 18, 19, 20, 21, 22, 23, 0, 1])
+        ts = (now - timedelta(days=days_ago)).replace(hour=hour, minute=random.randint(0, 59))
+
+        # night/evening incidents skew more severe, matching v1's logic
+        if hour >= 17 or hour <= 5:
+            severity = random.choice([2, 3, 3])
+            light = random.choice(["unlit", "unknown", "unknown"])
+        else:
+            severity = random.choice([1, 1, 2])
+            light = random.choice(["lit", "unknown"])
+
+        reports.append({
+            "segment": seg_index,
+            "severity": severity,
+            "light_condition": light,
+            "note": random.choice(NOTES),
+            "occurred_at": ts.strftime("%Y-%m-%dT%H:%M:%S"),
+            "reporter_hash": fake_reporter_hash(f"{i:03d}"),
+        })
+
+    # 2 corroboration pairs: same segment, close in time, so Role 2's
+    # scoring can be tested against a "confirmed pattern" case too.
+    for pair_i, seg_index in enumerate([0, 3]):
+        for j in range(2):
+            idx = 100 + pair_i * 2 + j
+            ts = now - timedelta(days=5 + j, hours=random.randint(0, 5))
+            reports.append({
+                "segment": seg_index,
+                "severity": 3,
+                "light_condition": "unlit",
+                "note": "Corroborating report - same issue reported again." if j == 1 else "Felt unsafe here at night.",
+                "occurred_at": ts.strftime("%Y-%m-%dT%H:%M:%S"),
+                "reporter_hash": fake_reporter_hash(f"corrob-{idx}"),
+            })
+
+    return reports
+
+
+def validate(fixture: dict):
+    """Mirrors the checks Role 2's loadSeed.js itself performs, so we catch
+    a bad fixture here instead of at their loader's runtime."""
+    segments = fixture["segments"]
+    reports = fixture["reports"]
+    assert len(segments) > 0, "segments array must be non-empty"
+    for s in segments:
+        assert isinstance(s["center_lat"], float) and isinstance(s["center_lng"], float)
+        assert 0 <= s["lighting"] <= 100
+        assert 0 <= s["foot_traffic"] <= 100
+    for r in reports:
+        assert 0 <= r["segment"] < len(segments), f"segment index {r['segment']} out of range"
+        assert 1 <= r["severity"] <= 3, f"severity {r['severity']} out of 1-3 range"
+        assert r["light_condition"] in LIGHT_CONDITIONS
+        assert len(r["note"]) <= 280
+        assert r["reporter_hash"]
+    reporter_hashes = [r["reporter_hash"] for r in reports]
+    assert len(reporter_hashes) == len(set(reporter_hashes)), "duplicate reporter_hash found"
+    print(f"Validation OK: {len(segments)} segments, {len(reports)} reports.")
+
+
+if __name__ == "__main__":
+    fixture = {
+        "segments": [
+            {"center_lat": s["center_lat"], "center_lng": s["center_lng"],
+             "lighting": s["lighting"], "foot_traffic": s["foot_traffic"]}
+            for s in SEGMENTS
+        ],
+        "reports": generate(20),
+    }
+    validate(fixture)
+
+    with open("seed_incidents_v2.json", "w") as f:
+        json.dump(fixture, f, indent=2)
+    print(f"Wrote seed_incidents_v2.json - {len(fixture['reports'])} reports across {len(fixture['segments'])} segments.")
