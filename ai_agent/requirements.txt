@@ -1,0 +1,3 @@
+
+openai>=1.0.0        # used for Grok - x.ai's API is OpenAI-SDK-compatible
+google-genai>=0.3.0  # used for Gemini
