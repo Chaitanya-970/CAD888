@@ -1,17 +1,27 @@
+<<<<<<< HEAD
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { MapContainer, TileLayer, Polyline, CircleMarker, Tooltip } from 'react-leaflet'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Flag, Shield, Loader2 } from 'lucide-react'
+=======
+import { useMemo, useState } from 'react'
+import { MapContainer, TileLayer, Polyline, CircleMarker, Tooltip, Circle } from 'react-leaflet'
+import { AnimatePresence, motion } from 'framer-motion'
+import { Eye, EyeOff, Flag, Share2, Shield } from 'lucide-react'
+>>>>>>> 747de043203ac2d80168946971df4a5cc89967e9
 
 import Topbar from './components/Topbar'
 import SearchCard from './components/SearchCard'
 import InsightCard from './components/InsightCard'
 import CompanionCard from './components/CompanionCard'
 import SafetyModeSlider from './components/SafetyModeSlider'
-import RouteDock from './components/RouteDock'
+import RouteDock from './RouteDock'
 import TimeCard from './components/TimeCard'
 import ReportModal from './components/ReportModal'
+import ShareModal from './components/ShareModal'
+import MapClickHandler from './components/MapClickHandler'
 
+<<<<<<< HEAD
 import { routes as fallbackRoutes, seedReports, hours } from './data'
 import type { Report, SafetyLevel } from './types'
 import { ROUTE_COLORS } from './types'
@@ -55,6 +65,11 @@ function labelByRank(routes: ApiRoute[]): string[] {
   })
   return labels
 }
+=======
+import { routes, seedReports, hours, heatmapPoints } from './data'
+import type { RouteId, Report, SafetyLevel } from './types'
+import { score } from './utils'
+>>>>>>> 747de043203ac2d80168946971df4a5cc89967e9
 
 function App() {
   // API state
@@ -70,6 +85,9 @@ function App() {
   const [reportOpen, setReportOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [reports, setReports] = useState<Report[]>(seedReports)
+  const [shareOpen, setShareOpen] = useState(false)
+  const [heatmapOn, setHeatmapOn] = useState(false)
+  const [reportCoords, setReportCoords] = useState<[number, number] | null>(null)
 
   // Fetch routes from backend
   const loadRoutes = useCallback(async (hourIdx: number) => {
@@ -98,6 +116,7 @@ function App() {
     loadRoutes(hour)
   }, [hour, loadRoutes])
 
+<<<<<<< HEAD
   // Derive display data — either from API or fallback
   const usingApi = apiRoutes !== null && apiRoutes.length > 0
   const activeApiRoute = usingApi ? apiRoutes[selectedIdx] || apiRoutes[0] : null
@@ -139,6 +158,27 @@ function App() {
     } catch (e) {
       console.warn('[App] Report API failed (saved locally only):', e)
     }
+=======
+  /** P1-a: Place a report at the clicked map location. */
+  const handleMapClick = (lat: number, lng: number) => {
+    setReportCoords([lat, lng])
+    setReportOpen(true)
+  }
+
+  const addReport = (kind: string) => {
+    const coords: [number, number] = reportCoords || [12.979, 77.619]
+    const isPositive = kind.startsWith('Positive')
+    setReports((prev) => [...prev, { p: coords, kind, age: 'Now', color: isPositive ? '#0f8a72' : '#d9483d' }])
+    setReportOpen(false)
+    setReportCoords(null)
+  }
+
+  /** P2-b: Heatmap intensity color based on risk value. */
+  const heatColor = (intensity: number) => {
+    if (intensity >= 0.7) return { color: '#d9483d', fillColor: '#d9483d', fillOpacity: 0.25 + intensity * 0.15 }
+    if (intensity >= 0.4) return { color: '#e0791a', fillColor: '#e0791a', fillOpacity: 0.18 + intensity * 0.12 }
+    return { color: '#0f8a72', fillColor: '#0f8a72', fillOpacity: 0.12 + intensity * 0.08 }
+>>>>>>> 747de043203ac2d80168946971df4a5cc89967e9
   }
 
   return (
@@ -146,6 +186,7 @@ function App() {
       <MapContainer center={[12.981, 77.613]} zoom={14.4} zoomControl={false} className="map" attributionControl={false}>
         <TileLayer url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" />
 
+<<<<<<< HEAD
         {/* Draw routes from API or fallback */}
         {usingApi && apiRoutes
           ? apiRoutes.map((r, i) => (
@@ -175,6 +216,29 @@ function App() {
 
         {/* Origin & destination markers */}
         <CircleMarker center={[ORIGIN.lat, ORIGIN.lng]} radius={8} pathOptions={{ color: '#ffffff', fillColor: '#0f8a72', fillOpacity: 1, weight: 3 }}>
+=======
+        {/* P1-a: Click anywhere on map to report */}
+        <MapClickHandler onMapClick={handleMapClick} />
+
+        {/* P2-b: Heatmap overlay */}
+        {heatmapOn && heatmapPoints.map(([lat, lng, intensity]: [number, number, number], i: number) => (
+          <Circle
+            key={`heat-${i}`}
+            center={[lat, lng]}
+            radius={180 + intensity * 120}
+            pathOptions={{ ...heatColor(intensity), weight: 0 }}
+          />
+        ))}
+
+        {routes.map((r) => (
+          <Polyline
+            key={r.id}
+            positions={r.path}
+            pathOptions={{ color: r.color, weight: r.id === selected ? 7 : 4, opacity: r.id === selected ? 0.95 : 0.27, lineCap: 'round' }}
+          />
+        ))}
+        <CircleMarker center={[12.974, 77.592]} radius={8} pathOptions={{ color: '#ffffff', fillColor: '#0f8a72', fillOpacity: 1, weight: 3 }}>
+>>>>>>> 747de043203ac2d80168946971df4a5cc89967e9
           <Tooltip direction="top">Your location</Tooltip>
         </CircleMarker>
         <CircleMarker center={[DEST.lat, DEST.lng]} radius={10} pathOptions={{ color: '#ffffff', fillColor: '#6b46f0', fillOpacity: 1, weight: 3 }}>
@@ -213,7 +277,23 @@ function App() {
 
       <div className="floating-actions">
         <SafetyModeSlider level={safetyLevel} onChange={setSafetyLevel} />
-        <button className="report-button" onClick={() => setReportOpen(true)}><Flag size={17} /> Report a concern</button>
+        <button className="report-button" onClick={() => { setReportCoords(null); setReportOpen(true) }}>
+          <Flag size={17} /> Report a concern
+        </button>
+        {/* P2-b: Heatmap toggle */}
+        <button
+          className={`heatmap-toggle ${heatmapOn ? 'heatmap-on' : ''}`}
+          onClick={() => setHeatmapOn((v) => !v)}
+          aria-pressed={heatmapOn}
+          title={heatmapOn ? 'Hide safety heatmap' : 'Show safety heatmap'}
+        >
+          {heatmapOn ? <EyeOff size={15} /> : <Eye size={15} />}
+          Heatmap
+        </button>
+        {/* P3-b: Share route button */}
+        <button className="share-button" onClick={() => setShareOpen(true)}>
+          <Share2 size={15} /> Share route
+        </button>
       </div>
 
       <RouteDock
@@ -231,7 +311,21 @@ function App() {
       <div className="privacy"><Shield size={13} /> Anonymous reports. No location history stored.</div>
 
       <AnimatePresence>
+<<<<<<< HEAD
         {reportOpen && <ReportModal onClose={() => setReportOpen(false)} onSubmit={handleReport} />}
+=======
+        {reportOpen && (
+          <ReportModal
+            onClose={() => { setReportOpen(false); setReportCoords(null) }}
+            onSubmit={addReport}
+            coords={reportCoords}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {shareOpen && <ShareModal onClose={() => setShareOpen(false)} />}
+>>>>>>> 747de043203ac2d80168946971df4a5cc89967e9
       </AnimatePresence>
 
       <AnimatePresence>

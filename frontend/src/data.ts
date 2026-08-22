@@ -47,3 +47,21 @@ export const seedReports: Report[] = [
 export const hours = ['6 PM', '7 PM', '8 PM', '9 PM', '10 PM', '11 PM', '12 AM', '1 AM']
 
 export const reportKinds = ['Low lighting', 'Quiet / isolated', 'Harassment concern', 'Obstruction', 'Positive: well lit']
+
+/** P2-b: Heatmap grid — synthetic safety intensity points across the Bhubaneswar area.
+ *  Each point: [lat, lng, intensity 0-1] where 0=safe, 1=high-risk. */
+export const heatmapPoints: [number, number, number][] = [
+  // lower-safety zones (near fastest route)
+  [12.976, 77.600, 0.7], [12.971, 77.608, 0.85], [12.975, 77.616, 0.6],
+  [12.973, 77.604, 0.75], [12.970, 77.612, 0.9], [12.974, 77.610, 0.5],
+  // medium zones
+  [12.980, 77.598, 0.35], [12.982, 77.608, 0.3], [12.982, 77.618, 0.25],
+  [12.978, 77.620, 0.45], [12.976, 77.625, 0.4], [12.979, 77.630, 0.35],
+  // safe zones (near safest route)
+  [12.985, 77.596, 0.1], [12.989, 77.606, 0.12], [12.987, 77.617, 0.08],
+  [12.991, 77.625, 0.15], [12.988, 77.630, 0.1],
+  // surrounding area fill
+  [12.983, 77.595, 0.2], [12.990, 77.600, 0.15], [12.975, 77.595, 0.55],
+  [12.968, 77.615, 0.7], [12.985, 77.615, 0.18], [12.992, 77.618, 0.12],
+  [12.978, 77.632, 0.3], [12.984, 77.622, 0.22], [12.972, 77.620, 0.6],
+]

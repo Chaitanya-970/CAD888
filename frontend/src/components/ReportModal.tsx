@@ -3,7 +3,15 @@ import { Flag, X } from 'lucide-react'
 import { useState } from 'react'
 import { reportKinds } from '../data'
 
-export default function ReportModal({ onClose, onSubmit }: { onClose: () => void; onSubmit: (k: string) => void }) {
+export default function ReportModal({
+  onClose,
+  onSubmit,
+  coords,
+}: {
+  onClose: () => void
+  onSubmit: (k: string) => void
+  coords?: [number, number] | null
+}) {
   const [choice, setChoice] = useState(reportKinds[0])
   return (
     <motion.div className="modal-layer" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose}>
@@ -18,6 +26,11 @@ export default function ReportModal({ onClose, onSubmit }: { onClose: () => void
         <span className="modal-icon"><Flag /></span>
         <h2>Share a safety signal</h2>
         <p>Your report is anonymous and helps others choose with more confidence.</p>
+        {coords && (
+          <p className="report-coords">
+            Pinned at {coords[0].toFixed(4)}, {coords[1].toFixed(4)}
+          </p>
+        )}
         <div className="report-choices">
           {reportKinds.map((x) => (
             <button className={choice === x ? 'picked' : ''} onClick={() => setChoice(x)} key={x}>{x}</button>

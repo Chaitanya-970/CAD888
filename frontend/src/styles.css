@@ -172,6 +172,45 @@ input[type=range]::-webkit-slider-thumb { appearance: none; width: 15px; height:
 .report-choices button.picked { border-color: var(--violet); background: var(--violet-bg); color: var(--violet); }
 .report-modal small { font-size: 10.5px; color: var(--ink-faint); display: block; margin-top: 13px; }
 
+/* ---------- P1-a: Report coords badge ---------- */
+.report-coords { display: flex; align-items: center; justify-content: center; gap: 6px; font: 500 12px 'DM Mono', monospace; color: var(--violet); background: var(--violet-bg); border: 1px solid rgba(107,70,240,.2); border-radius: 8px; padding: 7px 12px; margin-bottom: 14px; }
+.report-coords svg { flex: none; }
+
+/* ---------- P1-b: Route explanation ---------- */
+.route-explanation { font-style: italic; color: var(--ink-dim); }
+
+/* ---------- P2-b: Heatmap toggle ---------- */
+.heatmap-toggle { height: auto; padding: 0 13px; border-radius: 13px; background: rgba(36,26,51,.04); border: 1px solid var(--glass-border); font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px; color: var(--ink-dim); transition: .2s; }
+.heatmap-toggle:hover { background: rgba(107,70,240,.08); color: var(--violet); }
+.heatmap-toggle.heatmap-on { background: var(--violet-bg); border-color: rgba(107,70,240,.3); color: var(--violet); }
+
+/* ---------- P3-a: AI safety tip ---------- */
+.ai-tip { margin-top: 10px; display: flex; gap: 8px; align-items: flex-start; font-size: 11.5px; color: var(--ink-dim); background: var(--amber-bg); border: 1px solid rgba(224,121,26,.18); border-radius: 9px; padding: 9px 11px; line-height: 1.5; }
+.ai-tip svg { color: var(--amber); flex: none; margin-top: 1px; }
+
+/* ---------- P3-b: Share button & modal ---------- */
+.share-button { height: auto; padding: 0 13px; border-radius: 13px; background: var(--mint-bg); border: 1px solid rgba(15,138,114,.22); font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px; color: var(--mint); transition: .2s; }
+.share-button:hover { background: rgba(15,138,114,.15); }
+
+.share-icon { background: var(--mint-bg) !important; color: var(--mint) !important; }
+
+.share-options { display: flex; flex-direction: column; gap: 8px; text-align: left; margin-bottom: 16px; }
+.share-option { display: flex; align-items: center; gap: 12px; padding: 12px; background: rgba(36,26,51,.04); border: 1px solid transparent; border-radius: 12px; transition: .15s; width: 100%; text-align: left; }
+.share-option:hover { background: rgba(36,26,51,.07); border-color: var(--glass-border); }
+.share-opt-icon { width: 36px; height: 36px; border-radius: 10px; background: var(--amber-bg); color: var(--amber); display: grid; place-items: center; flex: none; }
+.share-opt-icon.soi-green { background: var(--mint-bg); color: var(--mint); }
+.share-opt-icon.soi-violet { background: var(--violet-bg); color: var(--violet); }
+.share-opt-text { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+.share-opt-text b { font-size: 13px; color: var(--ink); }
+.share-opt-text small { font-size: 11px; color: var(--ink-dim); }
+.share-opt-action { color: var(--ink-faint); margin-left: auto; }
+
+.share-preview { display: flex; align-items: center; gap: 8px; justify-content: center; font-size: 12px; color: var(--mint); padding: 10px; background: var(--mint-bg); border: 1px solid rgba(15,138,114,.2); border-radius: 10px; margin-bottom: 10px; }
+.share-preview-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--mint); animation: pulse-glow 2s ease-in-out infinite; flex: none; }
+.share-preview b { font-weight: 700; }
+
+.share-modal { max-width: 420px; }
+
 .mobile-menu { display: none; }
 
 /* ---------- Compact desktop layout + navigation ---------- */
@@ -201,6 +240,9 @@ input[type=range]::-webkit-slider-thumb { appearance: none; width: 15px; height:
   .sms-option { padding: 6px 5px; font-size: 10px; }
   .safety-mode-hint { display: none; }
   .report-button { padding: 0 12px; font-size: 11px; }
+  .heatmap-toggle { padding: 0 10px; font-size: 10px; }
+  .share-button { padding: 0 10px; font-size: 10px; }
+  .ai-tip { font-size: 10px; padding: 7px 9px; }
   .route-dock { width: min(660px, calc(100% - 680px)); bottom: 18px; padding: 15px; border-radius: 16px; }
   .dock-top { margin-bottom: 10px; }
   .dock-top h3 { font-size: 15px; }
@@ -227,6 +269,7 @@ input[type=range]::-webkit-slider-thumb { appearance: none; width: 15px; height:
   .floating-actions { top: auto; bottom: 232px; left: 14px; right: 14px; transform: none; }
   .safety-mode { flex: 1; min-width: 0; }
   .report-button { padding: 0 11px; }
+  .heatmap-toggle, .share-button { padding: 0 9px; font-size: 10px; }
   .route-dock { width: calc(100% - 20px); left: 10px; bottom: 12px; transform: none; padding: 15px; border-radius: 19px; }
   .dock-top h3 { font-size: 14.5px; }
   .route-options { overflow-x: auto; padding-bottom: 2px; }
