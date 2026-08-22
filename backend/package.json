@@ -1,0 +1,28 @@
+{
+  "name": "safecall-backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Safe Route Mapping (PS-17) - Role 2 backend service",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand",
+    "seed": "node scripts/loadSeed.js"
+  },
+  "dependencies": {
+    "@mapbox/polyline": "^1.2.1",
+    "@supabase/supabase-js": "^2.112.3",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "ngeohash": "^0.6.4",
+    "pino": "^10.3.1"
+  },
+  "devDependencies": {
+    "jest": "^30.4.2",
+    "supertest": "^7.2.2"
+  }
+}

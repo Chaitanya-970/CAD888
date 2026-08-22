@@ -1,0 +1,62 @@
+# ============================================================
+# Safe Route Mapping (PS-17) - Role 2 backend
+# STANDING DIRECTIVE: do not commit anything to git.
+# This file exists so that IF a repo is ever initialized by
+# accident, nothing sensitive or non-project leaks into it.
+# ============================================================
+
+# --- Secrets / environment (NEVER commit) ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# --- Project planning documents (per team decision: code-only repo) ---
+plans/
+RFCs/
+RULES.md
+TEST_PLAN.md
+
+# --- Hackathon source material ---
+ps/
+
+# --- Dependencies ---
+node_modules/
+package-lock.json.bak
+
+# --- Build / test output ---
+coverage/
+dist/
+build/
+*.log
+npm-debug.log*
+yarn-error.log*
+
+# --- Supabase local dev artifacts ---
+.supabase/
+supabase/.temp/
+
+# --- Local OSRM extracts / geo data (RFC-007 runbook mounts ./data) ---
+backend/data/
+data/
+
+# --- Deploy artifacts ---
+.vercel/
+.railway/
+
+# --- OS junk ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Editor / IDE ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- Misc temp ---
+tmp/
+temp/
+*.tmp
