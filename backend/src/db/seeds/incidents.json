@@ -1,31 +1,258 @@
 {
-  "_comment": "Role 2 TEST FIXTURE ONLY (RFC-001 criterion 5) - NOT the demo dataset. Role 3's final 15-20 report dataset replaces this file later; same schema, same loader. Segments carry coordinates; the loader derives the geohash-7 cell id from them, so no hand-written hashes to get wrong. Reports reference segments by index.",
   "segments": [
-    { "center_lat": 12.9716, "center_lng": 77.5946, "lighting": 20, "foot_traffic": 30 },
-    { "center_lat": 12.9352, "center_lng": 77.6245, "lighting": 85, "foot_traffic": 80 },
-    { "center_lat": 12.9784, "center_lng": 77.6408, "lighting": 55, "foot_traffic": 55 },
-    { "center_lat": 12.9081, "center_lng": 77.6476, "lighting": 30, "foot_traffic": 25 },
-    { "center_lat": 12.9977, "center_lng": 77.5489, "lighting": 90, "foot_traffic": 70 },
-    { "center_lat": 12.9612, "center_lng": 77.6381, "lighting": 45, "foot_traffic": 40 }
+    {
+      "center_lat": 20.27,
+      "center_lng": 85.841,
+      "lighting": 70,
+      "foot_traffic": 80
+    },
+    {
+      "center_lat": 20.268,
+      "center_lng": 85.833,
+      "lighting": 55,
+      "foot_traffic": 65
+    },
+    {
+      "center_lat": 20.276,
+      "center_lng": 85.848,
+      "lighting": 75,
+      "foot_traffic": 85
+    },
+    {
+      "center_lat": 20.356,
+      "center_lng": 85.819,
+      "lighting": 60,
+      "foot_traffic": 70
+    },
+    {
+      "center_lat": 20.298,
+      "center_lng": 85.809,
+      "lighting": 45,
+      "foot_traffic": 40
+    },
+    {
+      "center_lat": 20.293,
+      "center_lng": 85.842,
+      "lighting": 65,
+      "foot_traffic": 60
+    },
+    {
+      "center_lat": 20.296,
+      "center_lng": 85.834,
+      "lighting": 50,
+      "foot_traffic": 55
+    },
+    {
+      "center_lat": 20.259,
+      "center_lng": 85.778,
+      "lighting": 30,
+      "foot_traffic": 25
+    },
+    {
+      "center_lat": 20.335,
+      "center_lng": 85.818,
+      "lighting": 40,
+      "foot_traffic": 35
+    },
+    {
+      "center_lat": 20.294,
+      "center_lng": 85.818,
+      "lighting": 55,
+      "foot_traffic": 50
+    }
   ],
   "reports": [
-    { "segment": 0, "severity": 3, "light_condition": "unlit",   "note": "Streetlamp out near the metro pillar",                 "occurred_at": "2026-08-20T21:30:00+05:30", "reporter_hash": "fx-hash-a1" },
-    { "segment": 0, "severity": 2, "light_condition": "unlit",   "note": "Dark stretch under the flyover",                       "occurred_at": "2026-08-18T22:10:00+05:30", "reporter_hash": "fx-hash-b2" },
-    { "segment": 0, "severity": 3, "light_condition": "unlit",   "note": null,                                                   "occurred_at": "2026-07-28T23:05:00+05:30", "reporter_hash": "fx-hash-c3" },
-    { "segment": 0, "severity": 1, "light_condition": "unknown", "note": "Felt unsafe, hard to say why",                         "occurred_at": "2026-06-15T20:45:00+05:30", "reporter_hash": "fx-hash-d4" },
-    { "segment": 1, "severity": 1, "light_condition": "lit",     "note": "Crowded but fine",                                     "occurred_at": "2026-08-19T20:15:00+05:30", "reporter_hash": "fx-hash-b2" },
-    { "segment": 1, "severity": 2, "light_condition": "lit",     "note": "Crowd thins out after 9pm",                            "occurred_at": "2026-08-02T21:50:00+05:30", "reporter_hash": "fx-hash-e5" },
-    { "segment": 1, "severity": 1, "light_condition": "lit",     "note": null,                                                   "occurred_at": "2026-07-11T19:30:00+05:30", "reporter_hash": "fx-hash-f6" },
-    { "segment": 2, "severity": 2, "light_condition": "unlit",   "note": "One broken lamp near the park gate",                   "occurred_at": "2026-08-15T21:00:00+05:30", "reporter_hash": "fx-hash-a1" },
-    { "segment": 2, "severity": 1, "light_condition": "unknown", "note": null,                                                   "occurred_at": "2026-07-20T22:25:00+05:30", "reporter_hash": "fx-hash-c3" },
-    { "segment": 3, "severity": 3, "light_condition": "unlit",   "note": "No lighting on the service road at all",               "occurred_at": "2026-08-21T22:40:00+05:30", "reporter_hash": "fx-hash-e5" },
-    { "segment": 3, "severity": 3, "light_condition": "unlit",   "note": "Avoid after dark",                                     "occurred_at": "2026-08-16T23:10:00+05:30", "reporter_hash": "fx-hash-d4" },
-    { "segment": 3, "severity": 2, "light_condition": "unknown", "note": null,                                                   "occurred_at": "2026-07-05T21:35:00+05:30", "reporter_hash": "fx-hash-f6" },
-    { "segment": 3, "severity": 1, "light_condition": "unlit",   "note": "Quiet side street",                                    "occurred_at": "2026-06-22T20:20:00+05:30", "reporter_hash": "fx-hash-a1" },
-    { "segment": 4, "severity": 1, "light_condition": "lit",     "note": "Well lit market road",                                 "occurred_at": "2026-08-17T20:05:00+05:30", "reporter_hash": "fx-hash-c3" },
-    { "segment": 4, "severity": 2, "light_condition": "lit",     "note": "Fine till late, shops shut around 10",                 "occurred_at": "2026-08-01T22:55:00+05:30", "reporter_hash": "fx-hash-b2" },
-    { "segment": 5, "severity": 2, "light_condition": "unlit",   "note": "Patchy lighting between the two crossings",            "occurred_at": "2026-08-14T21:45:00+05:30", "reporter_hash": "fx-hash-d4" },
-    { "segment": 5, "severity": 1, "light_condition": "lit",     "note": null,                                                   "occurred_at": "2026-07-26T20:40:00+05:30", "reporter_hash": "fx-hash-e5" },
-    { "segment": 5, "severity": 3, "light_condition": "unlit",   "note": "Recent incident reported here by a friend",            "occurred_at": "2026-08-19T23:20:00+05:30", "reporter_hash": "fx-hash-f6" }
+    {
+      "segment": 1,
+      "severity": 2,
+      "light_condition": "unlit",
+      "note": "Group of men loitering, made comments.",
+      "occurred_at": "2026-08-15T01:17:00",
+      "reporter_hash": "c57a7a6cf14db990"
+    },
+    {
+      "segment": 1,
+      "severity": 3,
+      "light_condition": "unlit",
+      "note": "",
+      "occurred_at": "2026-03-01T01:57:00",
+      "reporter_hash": "c4c2ae0f3a21d78d"
+    },
+    {
+      "segment": 0,
+      "severity": 1,
+      "light_condition": "lit",
+      "note": "No shops open, very quiet stretch.",
+      "occurred_at": "2026-08-14T09:13:00",
+      "reporter_hash": "9551f6a942716bd7"
+    },
+    {
+      "segment": 8,
+      "severity": 2,
+      "light_condition": "unknown",
+      "note": "Street light not working here.",
+      "occurred_at": "2026-05-06T15:28:00",
+      "reporter_hash": "247660963f15423d"
+    },
+    {
+      "segment": 2,
+      "severity": 3,
+      "light_condition": "unlit",
+      "note": "No shops open, very quiet stretch.",
+      "occurred_at": "2026-02-24T20:21:00",
+      "reporter_hash": "2a9991cb1cc1461a"
+    },
+    {
+      "segment": 5,
+      "severity": 1,
+      "light_condition": "unknown",
+      "note": "Bag snatching reported nearby.",
+      "occurred_at": "2026-07-26T09:24:00",
+      "reporter_hash": "3c8041c9b6b3c59a"
+    },
+    {
+      "segment": 9,
+      "severity": 1,
+      "light_condition": "lit",
+      "note": "",
+      "occurred_at": "2026-06-15T07:46:00",
+      "reporter_hash": "5c3c3714c76d7699"
+    },
+    {
+      "segment": 1,
+      "severity": 3,
+      "light_condition": "unknown",
+      "note": "Bag snatching reported nearby.",
+      "occurred_at": "2026-04-02T18:53:00",
+      "reporter_hash": "fec751119bacc734"
+    },
+    {
+      "segment": 9,
+      "severity": 2,
+      "light_condition": "unknown",
+      "note": "No shops open, very quiet stretch.",
+      "occurred_at": "2026-07-03T01:04:00",
+      "reporter_hash": "e418450a6b9f4565"
+    },
+    {
+      "segment": 4,
+      "severity": 1,
+      "light_condition": "unknown",
+      "note": "Someone followed me for a block.",
+      "occurred_at": "2026-08-01T15:55:00",
+      "reporter_hash": "62b42872526267aa"
+    },
+    {
+      "segment": 7,
+      "severity": 3,
+      "light_condition": "unknown",
+      "note": "No shops open, very quiet stretch.",
+      "occurred_at": "2026-03-12T19:10:00",
+      "reporter_hash": "3af691df10fb920e"
+    },
+    {
+      "segment": 4,
+      "severity": 2,
+      "light_condition": "unknown",
+      "note": "Group of men loitering, made comments.",
+      "occurred_at": "2026-02-23T00:41:00",
+      "reporter_hash": "5b1a62e6805cfd0e"
+    },
+    {
+      "segment": 8,
+      "severity": 1,
+      "light_condition": "unknown",
+      "note": "No shops open, very quiet stretch.",
+      "occurred_at": "2026-06-20T13:29:00",
+      "reporter_hash": "bf23f5901b038435"
+    },
+    {
+      "segment": 5,
+      "severity": 1,
+      "light_condition": "unknown",
+      "note": "",
+      "occurred_at": "2026-08-07T15:52:00",
+      "reporter_hash": "c44c7571387fd9e3"
+    },
+    {
+      "segment": 4,
+      "severity": 2,
+      "light_condition": "unknown",
+      "note": "No shops open, very quiet stretch.",
+      "occurred_at": "2026-08-05T15:58:00",
+      "reporter_hash": "1d5eee80bf21548c"
+    },
+    {
+      "segment": 7,
+      "severity": 2,
+      "light_condition": "unknown",
+      "note": "Group of men loitering, made comments.",
+      "occurred_at": "2026-05-12T00:29:00",
+      "reporter_hash": "90211a6c34f9a6cf"
+    },
+    {
+      "segment": 3,
+      "severity": 3,
+      "light_condition": "unknown",
+      "note": "",
+      "occurred_at": "2026-03-31T22:16:00",
+      "reporter_hash": "81530751d5d3205c"
+    },
+    {
+      "segment": 9,
+      "severity": 2,
+      "light_condition": "unknown",
+      "note": "",
+      "occurred_at": "2026-05-11T19:14:00",
+      "reporter_hash": "d2f04c711a8f6456"
+    },
+    {
+      "segment": 1,
+      "severity": 2,
+      "light_condition": "lit",
+      "note": "",
+      "occurred_at": "2026-08-09T09:09:00",
+      "reporter_hash": "d879755ea86202cf"
+    },
+    {
+      "segment": 9,
+      "severity": 3,
+      "light_condition": "unknown",
+      "note": "Someone followed me for a block.",
+      "occurred_at": "2026-08-05T20:24:00",
+      "reporter_hash": "0847a1350815e2ed"
+    },
+    {
+      "segment": 0,
+      "severity": 3,
+      "light_condition": "unlit",
+      "note": "Felt unsafe here at night.",
+      "occurred_at": "2026-08-17T08:00:00",
+      "reporter_hash": "142ce20577230b17"
+    },
+    {
+      "segment": 0,
+      "severity": 3,
+      "light_condition": "unlit",
+      "note": "Corroborating report - same issue reported again.",
+      "occurred_at": "2026-08-16T12:00:00",
+      "reporter_hash": "d7b2bb7478a4c4b1"
+    },
+    {
+      "segment": 3,
+      "severity": 3,
+      "light_condition": "unlit",
+      "note": "Felt unsafe here at night.",
+      "occurred_at": "2026-08-17T07:00:00",
+      "reporter_hash": "0869fa33aa03e0d0"
+    },
+    {
+      "segment": 3,
+      "severity": 3,
+      "light_condition": "unlit",
+      "note": "Corroborating report - same issue reported again.",
+      "occurred_at": "2026-08-16T07:00:00",
+      "reporter_hash": "d903a11d53dada41"
+    }
   ]
 }

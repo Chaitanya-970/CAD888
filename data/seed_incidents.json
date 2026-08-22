@@ -1,262 +1,258 @@
-[
-  {
-    "report_id": "seed-001",
-    "area_label": "Rajmahal Square",
-    "latitude": 20.268341,
-    "longitude": 85.833255,
-    "timestamp": "2026-08-15T01:17:00",
-    "time_bucket": "night",
-    "incident_type": "harassment",
-    "severity": 4,
-    "light_condition": "dark",
-    "note": "Felt unsafe walking alone.",
-    "is_seed_demo_data": true
-  },
-  {
-    "report_id": "seed-002",
-    "area_label": "Nayapalli",
-    "latitude": 20.294008,
-    "longitude": 85.817318,
-    "timestamp": "2026-05-05T07:01:00",
-    "time_bucket": "morning",
-    "incident_type": "poor_lighting",
-    "severity": 2,
-    "light_condition": "well_lit",
-    "note": "No shops open, very quiet stretch.",
-    "is_seed_demo_data": true
-  },
-  {
-    "report_id": "seed-003",
-    "area_label": "Chandrasekharpur",
-    "latitude": 20.335373,
-    "longitude": 85.817509,
-    "timestamp": "2026-05-06T15:28:00",
-    "time_bucket": "day",
-    "incident_type": "catcalling",
-    "severity": 2,
-    "light_condition": "well_lit",
-    "note": "",
-    "is_seed_demo_data": true
-  },
-  {
-    "report_id": "seed-004",
-    "area_label": "Saheed Nagar",
-    "latitude": 20.292413,
-    "longitude": 85.841419,
-    "timestamp": "2026-06-11T13:13:00",
-    "time_bucket": "day",
-    "incident_type": "theft",
-    "severity": 2,
-    "light_condition": "well_lit",
-    "note": "Bag snatching reported nearby.",
-    "is_seed_demo_data": true
-  },
-  {
-    "report_id": "seed-005",
-    "area_label": "Nayapalli",
-    "latitude": 20.293393,
-    "longitude": 85.817702,
-    "timestamp": "2026-06-15T07:46:00",
-    "time_bucket": "morning",
-    "incident_type": "stalking",
-    "severity": 1,
-    "light_condition": "dim",
-    "note": "Bag snatching reported nearby.",
-    "is_seed_demo_data": true
-  },
-  {
-    "report_id": "seed-006",
-    "area_label": "Nayapalli",
-    "latitude": 20.294699,
-    "longitude": 85.818512,
-    "timestamp": "2026-07-03T01:04:00",
-    "time_bucket": "night",
-    "incident_type": "poor_lighting",
-    "severity": 4,
-    "light_condition": "dim",
-    "note": "Felt unsafe walking alone.",
-    "is_seed_demo_data": true
-  },
-  {
-    "report_id": "seed-007",
-    "area_label": "Vani Vihar",
-    "latitude": 20.295813,
-    "longitude": 85.833581,
-    "timestamp": "2026-06-11T21:40:00",
-    "time_bucket": "night",
-    "incident_type": "theft",
-    "severity": 4,
-    "light_condition": "dark",
-    "note": "Someone followed me for a block.",
-    "is_seed_demo_data": true
-  },
-  {
-    "report_id": "seed-008",
-    "area_label": "Rajmahal Square",
-    "latitude": 20.267946,
-    "longitude": 85.832668,
-    "timestamp": "2026-03-19T00:10:00",
-    "time_bucket": "night",
-    "incident_type": "catcalling",
-    "severity": 4,
-    "light_condition": "dark",
-    "note": "No shops open, very quiet stretch.",
-    "is_seed_demo_data": true
-  },
-  {
-    "report_id": "seed-009",
-    "area_label": "Saheed Nagar",
-    "latitude": 20.292665,
-    "longitude": 85.841583,
-    "timestamp": "2026-08-07T15:52:00",
-    "time_bucket": "day",
-    "incident_type": "poor_lighting",
-    "severity": 2,
-    "light_condition": "dim",
-    "note": "Bag snatching reported nearby.",
-    "is_seed_demo_data": true
-  },
-  {
-    "report_id": "seed-010",
-    "area_label": "Patia",
-    "latitude": 20.355661,
-    "longitude": 85.818635,
-    "timestamp": "2026-03-07T21:25:00",
-    "time_bucket": "night",
-    "incident_type": "isolated_no_foot_traffic",
-    "severity": 5,
-    "light_condition": "dark",
-    "note": "Someone followed me for a block.",
-    "is_seed_demo_data": true
-  },
-  {
-    "report_id": "seed-011",
-    "area_label": "Nayapalli",
-    "latitude": 20.294014,
-    "longitude": 85.81741,
-    "timestamp": "2026-05-04T23:25:00",
-    "time_bucket": "night",
-    "incident_type": "unsafe_group_loitering",
-    "severity": 4,
-    "light_condition": "dark",
-    "note": "Street light not working here.",
-    "is_seed_demo_data": true
-  },
-  {
-    "report_id": "seed-012",
-    "area_label": "Rajmahal Square",
-    "latitude": 20.267371,
-    "longitude": 85.832829,
-    "timestamp": "2026-07-13T00:10:00",
-    "time_bucket": "night",
-    "incident_type": "theft",
-    "severity": 5,
-    "light_condition": "dim",
-    "note": "",
-    "is_seed_demo_data": true
-  },
-  {
-    "report_id": "seed-013",
-    "area_label": "Chandrasekharpur",
-    "latitude": 20.335555,
-    "longitude": 85.818362,
-    "timestamp": "2026-06-18T22:55:00",
-    "time_bucket": "night",
-    "incident_type": "poor_lighting",
-    "severity": 3,
-    "light_condition": "dim",
-    "note": "Bag snatching reported nearby.",
-    "is_seed_demo_data": true
-  },
-  {
-    "report_id": "seed-014",
-    "area_label": "Rajmahal Square",
-    "latitude": 20.268542,
-    "longitude": 85.832659,
-    "timestamp": "2026-06-07T20:10:00",
-    "time_bucket": "evening",
-    "incident_type": "stalking",
-    "severity": 3,
-    "light_condition": "dim",
-    "note": "Group of men loitering, made comments.",
-    "is_seed_demo_data": true
-  },
-  {
-    "report_id": "seed-015",
-    "area_label": "Chandrasekharpur",
-    "latitude": 20.334818,
-    "longitude": 85.817512,
-    "timestamp": "2026-07-25T00:19:00",
-    "time_bucket": "night",
-    "incident_type": "theft",
-    "severity": 4,
-    "light_condition": "dark",
-    "note": "Street light not working here.",
-    "is_seed_demo_data": true
-  },
-  {
-    "report_id": "seed-016",
-    "area_label": "Nayapalli",
-    "latitude": 20.293624,
-    "longitude": 85.817626,
-    "timestamp": "2026-05-31T21:01:00",
-    "time_bucket": "night",
-    "incident_type": "poor_lighting",
-    "severity": 4,
-    "light_condition": "dim",
-    "note": "Felt unsafe walking alone.",
-    "is_seed_demo_data": true
-  },
-  {
-    "report_id": "seed-017",
-    "area_label": "Rajmahal Square",
-    "latitude": 20.26823,
-    "longitude": 85.833644,
-    "timestamp": "2026-04-19T09:48:00",
-    "time_bucket": "morning",
-    "incident_type": "catcalling",
-    "severity": 2,
-    "light_condition": "well_lit",
-    "note": "Group of men loitering, made comments.",
-    "is_seed_demo_data": true
-  },
-  {
-    "report_id": "seed-018",
-    "area_label": "Jaydev Vihar",
-    "latitude": 20.297729,
-    "longitude": 85.809714,
-    "timestamp": "2026-04-08T23:27:00",
-    "time_bucket": "night",
-    "incident_type": "harassment",
-    "severity": 4,
-    "light_condition": "dim",
-    "note": "Bag snatching reported nearby.",
-    "is_seed_demo_data": true
-  },
-  {
-    "report_id": "seed-019",
-    "area_label": "Rajmahal Square",
-    "latitude": 20.268641,
-    "longitude": 85.833555,
-    "timestamp": "2026-04-11T21:07:00",
-    "time_bucket": "night",
-    "incident_type": "harassment",
-    "severity": 4,
-    "light_condition": "dark",
-    "note": "No shops open, very quiet stretch.",
-    "is_seed_demo_data": true
-  },
-  {
-    "report_id": "seed-020",
-    "area_label": "Saheed Nagar",
-    "latitude": 20.292613,
-    "longitude": 85.841219,
-    "timestamp": "2026-06-26T07:04:00",
-    "time_bucket": "morning",
-    "incident_type": "isolated_no_foot_traffic",
-    "severity": 1,
-    "light_condition": "well_lit",
-    "note": "Bag snatching reported nearby.",
-    "is_seed_demo_data": true
-  }
-]
+{
+  "segments": [
+    {
+      "center_lat": 20.27,
+      "center_lng": 85.841,
+      "lighting": 70,
+      "foot_traffic": 80
+    },
+    {
+      "center_lat": 20.268,
+      "center_lng": 85.833,
+      "lighting": 55,
+      "foot_traffic": 65
+    },
+    {
+      "center_lat": 20.276,
+      "center_lng": 85.848,
+      "lighting": 75,
+      "foot_traffic": 85
+    },
+    {
+      "center_lat": 20.356,
+      "center_lng": 85.819,
+      "lighting": 60,
+      "foot_traffic": 70
+    },
+    {
+      "center_lat": 20.298,
+      "center_lng": 85.809,
+      "lighting": 45,
+      "foot_traffic": 40
+    },
+    {
+      "center_lat": 20.293,
+      "center_lng": 85.842,
+      "lighting": 65,
+      "foot_traffic": 60
+    },
+    {
+      "center_lat": 20.296,
+      "center_lng": 85.834,
+      "lighting": 50,
+      "foot_traffic": 55
+    },
+    {
+      "center_lat": 20.259,
+      "center_lng": 85.778,
+      "lighting": 30,
+      "foot_traffic": 25
+    },
+    {
+      "center_lat": 20.335,
+      "center_lng": 85.818,
+      "lighting": 40,
+      "foot_traffic": 35
+    },
+    {
+      "center_lat": 20.294,
+      "center_lng": 85.818,
+      "lighting": 55,
+      "foot_traffic": 50
+    }
+  ],
+  "reports": [
+    {
+      "segment": 1,
+      "severity": 2,
+      "light_condition": "unlit",
+      "note": "Group of men loitering, made comments.",
+      "occurred_at": "2026-08-15T01:17:00",
+      "reporter_hash": "c57a7a6cf14db990"
+    },
+    {
+      "segment": 1,
+      "severity": 3,
+      "light_condition": "unlit",
+      "note": "",
+      "occurred_at": "2026-03-01T01:57:00",
+      "reporter_hash": "c4c2ae0f3a21d78d"
+    },
+    {
+      "segment": 0,
+      "severity": 1,
+      "light_condition": "lit",
+      "note": "No shops open, very quiet stretch.",
+      "occurred_at": "2026-08-14T09:13:00",
+      "reporter_hash": "9551f6a942716bd7"
+    },
+    {
+      "segment": 8,
+      "severity": 2,
+      "light_condition": "unknown",
+      "note": "Street light not working here.",
+      "occurred_at": "2026-05-06T15:28:00",
+      "reporter_hash": "247660963f15423d"
+    },
+    {
+      "segment": 2,
+      "severity": 3,
+      "light_condition": "unlit",
+      "note": "No shops open, very quiet stretch.",
+      "occurred_at": "2026-02-24T20:21:00",
+      "reporter_hash": "2a9991cb1cc1461a"
+    },
+    {
+      "segment": 5,
+      "severity": 1,
+      "light_condition": "unknown",
+      "note": "Bag snatching reported nearby.",
+      "occurred_at": "2026-07-26T09:24:00",
+      "reporter_hash": "3c8041c9b6b3c59a"
+    },
+    {
+      "segment": 9,
+      "severity": 1,
+      "light_condition": "lit",
+      "note": "",
+      "occurred_at": "2026-06-15T07:46:00",
+      "reporter_hash": "5c3c3714c76d7699"
+    },
+    {
+      "segment": 1,
+      "severity": 3,
+      "light_condition": "unknown",
+      "note": "Bag snatching reported nearby.",
+      "occurred_at": "2026-04-02T18:53:00",
+      "reporter_hash": "fec751119bacc734"
+    },
+    {
+      "segment": 9,
+      "severity": 2,
+      "light_condition": "unknown",
+      "note": "No shops open, very quiet stretch.",
+      "occurred_at": "2026-07-03T01:04:00",
+      "reporter_hash": "e418450a6b9f4565"
+    },
+    {
+      "segment": 4,
+      "severity": 1,
+      "light_condition": "unknown",
+      "note": "Someone followed me for a block.",
+      "occurred_at": "2026-08-01T15:55:00",
+      "reporter_hash": "62b42872526267aa"
+    },
+    {
+      "segment": 7,
+      "severity": 3,
+      "light_condition": "unknown",
+      "note": "No shops open, very quiet stretch.",
+      "occurred_at": "2026-03-12T19:10:00",
+      "reporter_hash": "3af691df10fb920e"
+    },
+    {
+      "segment": 4,
+      "severity": 2,
+      "light_condition": "unknown",
+      "note": "Group of men loitering, made comments.",
+      "occurred_at": "2026-02-23T00:41:00",
+      "reporter_hash": "5b1a62e6805cfd0e"
+    },
+    {
+      "segment": 8,
+      "severity": 1,
+      "light_condition": "unknown",
+      "note": "No shops open, very quiet stretch.",
+      "occurred_at": "2026-06-20T13:29:00",
+      "reporter_hash": "bf23f5901b038435"
+    },
+    {
+      "segment": 5,
+      "severity": 1,
+      "light_condition": "unknown",
+      "note": "",
+      "occurred_at": "2026-08-07T15:52:00",
+      "reporter_hash": "c44c7571387fd9e3"
+    },
+    {
+      "segment": 4,
+      "severity": 2,
+      "light_condition": "unknown",
+      "note": "No shops open, very quiet stretch.",
+      "occurred_at": "2026-08-05T15:58:00",
+      "reporter_hash": "1d5eee80bf21548c"
+    },
+    {
+      "segment": 7,
+      "severity": 2,
+      "light_condition": "unknown",
+      "note": "Group of men loitering, made comments.",
+      "occurred_at": "2026-05-12T00:29:00",
+      "reporter_hash": "90211a6c34f9a6cf"
+    },
+    {
+      "segment": 3,
+      "severity": 3,
+      "light_condition": "unknown",
+      "note": "",
+      "occurred_at": "2026-03-31T22:16:00",
+      "reporter_hash": "81530751d5d3205c"
+    },
+    {
+      "segment": 9,
+      "severity": 2,
+      "light_condition": "unknown",
+      "note": "",
+      "occurred_at": "2026-05-11T19:14:00",
+      "reporter_hash": "d2f04c711a8f6456"
+    },
+    {
+      "segment": 1,
+      "severity": 2,
+      "light_condition": "lit",
+      "note": "",
+      "occurred_at": "2026-08-09T09:09:00",
+      "reporter_hash": "d879755ea86202cf"
+    },
+    {
+      "segment": 9,
+      "severity": 3,
+      "light_condition": "unknown",
+      "note": "Someone followed me for a block.",
+      "occurred_at": "2026-08-05T20:24:00",
+      "reporter_hash": "0847a1350815e2ed"
+    },
+    {
+      "segment": 0,
+      "severity": 3,
+      "light_condition": "unlit",
+      "note": "Felt unsafe here at night.",
+      "occurred_at": "2026-08-17T08:00:00",
+      "reporter_hash": "142ce20577230b17"
+    },
+    {
+      "segment": 0,
+      "severity": 3,
+      "light_condition": "unlit",
+      "note": "Corroborating report - same issue reported again.",
+      "occurred_at": "2026-08-16T12:00:00",
+      "reporter_hash": "d7b2bb7478a4c4b1"
+    },
+    {
+      "segment": 3,
+      "severity": 3,
+      "light_condition": "unlit",
+      "note": "Felt unsafe here at night.",
+      "occurred_at": "2026-08-17T07:00:00",
+      "reporter_hash": "0869fa33aa03e0d0"
+    },
+    {
+      "segment": 3,
+      "severity": 3,
+      "light_condition": "unlit",
+      "note": "Corroborating report - same issue reported again.",
+      "occurred_at": "2026-08-16T07:00:00",
+      "reporter_hash": "d903a11d53dada41"
+    }
+  ]
+}
