@@ -21,8 +21,8 @@ import { score } from './utils'
 import { fetchRoutes as apiFetchRoutes, submitReport as apiSubmitReport } from './api'
 import type { ApiRoute } from './api'
 
-const ORIGIN = { lat: 12.974, lng: 77.592 }
-const DEST = { lat: 12.986, lng: 77.635 }
+const ORIGIN = { lat: 20.2666, lng: 85.8360 }
+const DEST = { lat: 20.2666, lng: 85.8434 }
 
 function sliderToIso(hourIdx: number): string {
   const now = new Date()
@@ -99,7 +99,7 @@ function App() {
       'Low lighting': 'unlit', 'Quiet / isolated': 'unknown', 'Harassment concern': 'unknown',
       'Obstruction': 'lit', 'Positive: well lit': 'lit',
     }
-    const coords: [number, number] = reportCoords || [12.979, 77.619]
+    const coords: [number, number] = reportCoords || [20.2690, 85.8390]
     const isPositive = kind.startsWith('Positive')
     setReports((prev) => [...prev, { p: coords, kind, age: 'Now', color: isPositive ? '#0f8a72' : '#d9483d' }])
     setReportOpen(false)
@@ -120,7 +120,7 @@ function App() {
 
   return (
     <main className="app-shell">
-      <MapContainer center={[12.981, 77.613]} zoom={14.4} zoomControl={false} className="map" attributionControl={false}>
+      <MapContainer center={[20.2700, 85.8400]} zoom={14.4} zoomControl={false} className="map" attributionControl={false}>
         <TileLayer url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" />
         <MapClickHandler onMapClick={handleMapClick} />
 
@@ -142,7 +142,7 @@ function App() {
           <Tooltip direction="top">Your location</Tooltip>
         </CircleMarker>
         <CircleMarker center={[DEST.lat, DEST.lng]} radius={10} pathOptions={{ color: '#ffffff', fillColor: '#6b46f0', fillOpacity: 1, weight: 3 }}>
-          <Tooltip direction="top">Indiranagar Metro</Tooltip>
+          <Tooltip direction="top">Master Canteen Square</Tooltip>
         </CircleMarker>
 
         {reports.map((r, i) => (
@@ -155,7 +155,7 @@ function App() {
       <div className="map-vignette" />
 
       <Topbar menuOpen={menuOpen} onToggleMenu={() => setMenuOpen((v) => !v)} />
-      <SearchCard destination="Indiranagar Metro Station" />
+      <SearchCard destination="Master Canteen Square" />
 
       {loading && (
         <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 9999 }}>
