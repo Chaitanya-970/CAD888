@@ -1,0 +1,31 @@
+{
+  "_comment": "Role 2 TEST FIXTURE ONLY (RFC-001 criterion 5) - NOT the demo dataset. Role 3's final 15-20 report dataset replaces this file later; same schema, same loader. Segments carry coordinates; the loader derives the geohash-7 cell id from them, so no hand-written hashes to get wrong. Reports reference segments by index.",
+  "segments": [
+    { "center_lat": 12.9716, "center_lng": 77.5946, "lighting": 20, "foot_traffic": 30 },
+    { "center_lat": 12.9352, "center_lng": 77.6245, "lighting": 85, "foot_traffic": 80 },
+    { "center_lat": 12.9784, "center_lng": 77.6408, "lighting": 55, "foot_traffic": 55 },
+    { "center_lat": 12.9081, "center_lng": 77.6476, "lighting": 30, "foot_traffic": 25 },
+    { "center_lat": 12.9977, "center_lng": 77.5489, "lighting": 90, "foot_traffic": 70 },
+    { "center_lat": 12.9612, "center_lng": 77.6381, "lighting": 45, "foot_traffic": 40 }
+  ],
+  "reports": [
+    { "segment": 0, "severity": 3, "light_condition": "unlit",   "note": "Streetlamp out near the metro pillar",                 "occurred_at": "2026-08-20T21:30:00+05:30", "reporter_hash": "fx-hash-a1" },
+    { "segment": 0, "severity": 2, "light_condition": "unlit",   "note": "Dark stretch under the flyover",                       "occurred_at": "2026-08-18T22:10:00+05:30", "reporter_hash": "fx-hash-b2" },
+    { "segment": 0, "severity": 3, "light_condition": "unlit",   "note": null,                                                   "occurred_at": "2026-07-28T23:05:00+05:30", "reporter_hash": "fx-hash-c3" },
+    { "segment": 0, "severity": 1, "light_condition": "unknown", "note": "Felt unsafe, hard to say why",                         "occurred_at": "2026-06-15T20:45:00+05:30", "reporter_hash": "fx-hash-d4" },
+    { "segment": 1, "severity": 1, "light_condition": "lit",     "note": "Crowded but fine",                                     "occurred_at": "2026-08-19T20:15:00+05:30", "reporter_hash": "fx-hash-b2" },
+    { "segment": 1, "severity": 2, "light_condition": "lit",     "note": "Crowd thins out after 9pm",                            "occurred_at": "2026-08-02T21:50:00+05:30", "reporter_hash": "fx-hash-e5" },
+    { "segment": 1, "severity": 1, "light_condition": "lit",     "note": null,                                                   "occurred_at": "2026-07-11T19:30:00+05:30", "reporter_hash": "fx-hash-f6" },
+    { "segment": 2, "severity": 2, "light_condition": "unlit",   "note": "One broken lamp near the park gate",                   "occurred_at": "2026-08-15T21:00:00+05:30", "reporter_hash": "fx-hash-a1" },
+    { "segment": 2, "severity": 1, "light_condition": "unknown", "note": null,                                                   "occurred_at": "2026-07-20T22:25:00+05:30", "reporter_hash": "fx-hash-c3" },
+    { "segment": 3, "severity": 3, "light_condition": "unlit",   "note": "No lighting on the service road at all",               "occurred_at": "2026-08-21T22:40:00+05:30", "reporter_hash": "fx-hash-e5" },
+    { "segment": 3, "severity": 3, "light_condition": "unlit",   "note": "Avoid after dark",                                     "occurred_at": "2026-08-16T23:10:00+05:30", "reporter_hash": "fx-hash-d4" },
+    { "segment": 3, "severity": 2, "light_condition": "unknown", "note": null,                                                   "occurred_at": "2026-07-05T21:35:00+05:30", "reporter_hash": "fx-hash-f6" },
+    { "segment": 3, "severity": 1, "light_condition": "unlit",   "note": "Quiet side street",                                    "occurred_at": "2026-06-22T20:20:00+05:30", "reporter_hash": "fx-hash-a1" },
+    { "segment": 4, "severity": 1, "light_condition": "lit",     "note": "Well lit market road",                                 "occurred_at": "2026-08-17T20:05:00+05:30", "reporter_hash": "fx-hash-c3" },
+    { "segment": 4, "severity": 2, "light_condition": "lit",     "note": "Fine till late, shops shut around 10",                 "occurred_at": "2026-08-01T22:55:00+05:30", "reporter_hash": "fx-hash-b2" },
+    { "segment": 5, "severity": 2, "light_condition": "unlit",   "note": "Patchy lighting between the two crossings",            "occurred_at": "2026-08-14T21:45:00+05:30", "reporter_hash": "fx-hash-d4" },
+    { "segment": 5, "severity": 1, "light_condition": "lit",     "note": null,                                                   "occurred_at": "2026-07-26T20:40:00+05:30", "reporter_hash": "fx-hash-e5" },
+    { "segment": 5, "severity": 3, "light_condition": "unlit",   "note": "Recent incident reported here by a friend",            "occurred_at": "2026-08-19T23:20:00+05:30", "reporter_hash": "fx-hash-f6" }
+  ]
+}
