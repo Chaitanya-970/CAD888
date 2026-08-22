@@ -1,0 +1,272 @@
+import json
+import os
+
+os.makedirs("data", exist_ok=True)
+
+data = [
+  {
+    "report_id": "seed-001",
+    "area_label": "Rajmahal Square",
+    "latitude": 20.268341,
+    "longitude": 85.833255,
+    "timestamp": "2026-08-15T01:17:00",
+    "time_bucket": "night",
+    "incident_type": "harassment",
+    "severity": 4,
+    "light_condition": "dark",
+    "note": "Felt unsafe walking alone.",
+    "is_seed_demo_data": True
+  },
+  {
+    "report_id": "seed-002",
+    "area_label": "Nayapalli",
+    "latitude": 20.294008,
+    "longitude": 85.817318,
+    "timestamp": "2026-05-05T07:01:00",
+    "time_bucket": "morning",
+    "incident_type": "poor_lighting",
+    "severity": 2,
+    "light_condition": "well_lit",
+    "note": "No shops open, very quiet stretch.",
+    "is_seed_demo_data": True
+  },
+  {
+    "report_id": "seed-003",
+    "area_label": "Chandrasekharpur",
+    "latitude": 20.335373,
+    "longitude": 85.817509,
+    "timestamp": "2026-05-06T15:28:00",
+    "time_bucket": "day",
+    "incident_type": "catcalling",
+    "severity": 2,
+    "light_condition": "well_lit",
+    "note": "",
+    "is_seed_demo_data": True
+  },
+  {
+    "report_id": "seed-004",
+    "area_label": "Saheed Nagar",
+    "latitude": 20.292413,
+    "longitude": 85.841419,
+    "timestamp": "2026-06-11T13:13:00",
+    "time_bucket": "day",
+    "incident_type": "theft",
+    "severity": 2,
+    "light_condition": "well_lit",
+    "note": "Bag snatching reported nearby.",
+    "is_seed_demo_data": True
+  },
+  {
+    "report_id": "seed-005",
+    "area_label": "Nayapalli",
+    "latitude": 20.293393,
+    "longitude": 85.817702,
+    "timestamp": "2026-06-15T07:46:00",
+    "time_bucket": "morning",
+    "incident_type": "stalking",
+    "severity": 1,
+    "light_condition": "dim",
+    "note": "Bag snatching reported nearby.",
+    "is_seed_demo_data": True
+  },
+  {
+    "report_id": "seed-006",
+    "area_label": "Nayapalli",
+    "latitude": 20.294699,
+    "longitude": 85.818512,
+    "timestamp": "2026-07-03T01:04:00",
+    "time_bucket": "night",
+    "incident_type": "poor_lighting",
+    "severity": 4,
+    "light_condition": "dim",
+    "note": "Felt unsafe walking alone.",
+    "is_seed_demo_data": True
+  },
+  {
+    "report_id": "seed-007",
+    "area_label": "Vani Vihar",
+    "latitude": 20.295813,
+    "longitude": 85.833581,
+    "timestamp": "2026-06-11T21:40:00",
+    "time_bucket": "night",
+    "incident_type": "theft",
+    "severity": 4,
+    "light_condition": "dark",
+    "note": "Someone followed me for a block.",
+    "is_seed_demo_data": True
+  },
+  {
+    "report_id": "seed-008",
+    "area_label": "Rajmahal Square",
+    "latitude": 20.267946,
+    "longitude": 85.832668,
+    "timestamp": "2026-03-19T00:10:00",
+    "time_bucket": "night",
+    "incident_type": "catcalling",
+    "severity": 4,
+    "light_condition": "dark",
+    "note": "No shops open, very quiet stretch.",
+    "is_seed_demo_data": True
+  },
+  {
+    "report_id": "seed-009",
+    "area_label": "Saheed Nagar",
+    "latitude": 20.292665,
+    "longitude": 85.841583,
+    "timestamp": "2026-08-07T15:52:00",
+    "time_bucket": "day",
+    "incident_type": "poor_lighting",
+    "severity": 2,
+    "light_condition": "dim",
+    "note": "Bag snatching reported nearby.",
+    "is_seed_demo_data": True
+  },
+  {
+    "report_id": "seed-010",
+    "area_label": "Patia",
+    "latitude": 20.355661,
+    "longitude": 85.818635,
+    "timestamp": "2026-03-07T21:25:00",
+    "time_bucket": "night",
+    "incident_type": "isolated_no_foot_traffic",
+    "severity": 5,
+    "light_condition": "dark",
+    "note": "Someone followed me for a block.",
+    "is_seed_demo_data": True
+  },
+  {
+    "report_id": "seed-011",
+    "area_label": "Nayapalli",
+    "latitude": 20.294014,
+    "longitude": 85.81741,
+    "timestamp": "2026-05-04T23:25:00",
+    "time_bucket": "night",
+    "incident_type": "unsafe_group_loitering",
+    "severity": 4,
+    "light_condition": "dark",
+    "note": "Street light not working here.",
+    "is_seed_demo_data": True
+  },
+  {
+    "report_id": "seed-012",
+    "area_label": "Rajmahal Square",
+    "latitude": 20.267371,
+    "longitude": 85.832829,
+    "timestamp": "2026-07-13T00:10:00",
+    "time_bucket": "night",
+    "incident_type": "theft",
+    "severity": 5,
+    "light_condition": "dim",
+    "note": "",
+    "is_seed_demo_data": True
+  },
+  {
+    "report_id": "seed-013",
+    "area_label": "Chandrasekharpur",
+    "latitude": 20.335555,
+    "longitude": 85.818362,
+    "timestamp": "2026-06-18T22:55:00",
+    "time_bucket": "night",
+    "incident_type": "poor_lighting",
+    "severity": 3,
+    "light_condition": "dim",
+    "note": "Bag snatching reported nearby.",
+    "is_seed_demo_data": True
+  },
+  {
+    "report_id": "seed-014",
+    "area_label": "Rajmahal Square",
+    "latitude": 20.268542,
+    "longitude": 85.832659,
+    "timestamp": "2026-06-07T20:10:00",
+    "time_bucket": "evening",
+    "incident_type": "stalking",
+    "severity": 3,
+    "light_condition": "dim",
+    "note": "Group of men loitering, made comments.",
+    "is_seed_demo_data": True
+  },
+  {
+    "report_id": "seed-015",
+    "area_label": "Chandrasekharpur",
+    "latitude": 20.334818,
+    "longitude": 85.817512,
+    "timestamp": "2026-07-25T00:19:00",
+    "time_bucket": "night",
+    "incident_type": "theft",
+    "severity": 4,
+    "light_condition": "dark",
+    "note": "Street light not working here.",
+    "is_seed_demo_data": True
+  },
+  {
+    "report_id": "seed-016",
+    "area_label": "Nayapalli",
+    "latitude": 20.293624,
+    "longitude": 85.817626,
+    "timestamp": "2026-05-31T21:01:00",
+    "time_bucket": "night",
+    "incident_type": "poor_lighting",
+    "severity": 4,
+    "light_condition": "dim",
+    "note": "Felt unsafe walking alone.",
+    "is_seed_demo_data": True
+  },
+  {
+    "report_id": "seed-017",
+    "area_label": "Rajmahal Square",
+    "latitude": 20.26823,
+    "longitude": 85.833644,
+    "timestamp": "2026-04-19T09:48:00",
+    "time_bucket": "morning",
+    "incident_type": "catcalling",
+    "severity": 2,
+    "light_condition": "well_lit",
+    "note": "Group of men loitering, made comments.",
+    "is_seed_demo_data": True
+  },
+  {
+    "report_id": "seed-018",
+    "area_label": "Jaydev Vihar",
+    "latitude": 20.297729,
+    "longitude": 85.809714,
+    "timestamp": "2026-04-08T23:27:00",
+    "time_bucket": "night",
+    "incident_type": "harassment",
+    "severity": 4,
+    "light_condition": "dim",
+    "note": "Bag snatching reported nearby.",
+    "is_seed_demo_data": True
+  },
+  {
+    "report_id": "seed-019",
+    "area_label": "Rajmahal Square",
+    "latitude": 20.268641,
+    "longitude": 85.83355499999999,
+    "timestamp": "2026-04-11T21:07:00",
+    "time_bucket": "night",
+    "incident_type": "harassment",
+    "severity": 4,
+    "light_condition": "dark",
+    "note": "No shops open, very quiet stretch.",
+    "is_seed_demo_data": True
+  },
+  {
+    "report_id": "seed-020",
+    "area_label": "Saheed Nagar",
+    "latitude": 20.292613,
+    "longitude": 85.841219,
+    "timestamp": "2026-06-26T07:04:00",
+    "time_bucket": "morning",
+    "incident_type": "isolated_no_foot_traffic",
+    "severity": 1,
+    "light_condition": "well_lit",
+    "note": "Bag snatching reported nearby.",
+    "is_seed_demo_data": True
+  }
+]
+
+with open("data/seed_incidents.json", "w") as f:
+    json.dump(data, f, indent=2)
+
+print("Saved successfully to data/seed_incidents.json")
