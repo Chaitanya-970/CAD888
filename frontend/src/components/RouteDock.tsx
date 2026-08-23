@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { Compass, Flag, Footprints, Shield, Star, Sun, Zap } from 'lucide-react'
-import type { CSSProperties } from 'react'
+import { useState, useEffect, type CSSProperties } from 'react'
 import type { Route, SafetyLevel } from '../types'
 import { ROUTE_COLORS } from '../types'
 import { score, tone } from '../utils'
@@ -30,6 +30,9 @@ export default function RouteDock({
   hour: number
   safetyLevel: SafetyLevel
 }) {
+  const [aiExplanation, setAiExplanation] = useState<string | null>(null)
+  const [aiLoading, setAiLoading] = useState(false)
+
   const usingApi = apiRoutes !== null && apiRoutes.length > 0
   const activeScore = usingApi
     ? (apiRoutes![selectedIdx]?.score ?? 50)
@@ -37,8 +40,48 @@ export default function RouteDock({
 
   const activeExpl = usingApi ? apiRoutes![selectedIdx]?.explanationInput : null
 
-  const explainText = activeExpl
-    ? buildExplanation(activeExpl)
+  useEffect(() => {
+    if (!activeExpl) {
+      setAiExplanation(null)
+      return
+    }
+    
+    let active = true
+    setAiLoading(true)
+    
+    // Fallback to static text if AI fails
+    const fallbackText = buildExplanation(activeExpl)
+
+    fetch('https://cad-888-z5dl.vercel.app/api/index.py', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ signals: activeExpl, provider: 'gemini' })
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (active) {
+        if (data.explanation) {
+           // Small delay to make the "AI typing" feel real even if it's fast
+           setTimeout(() => setAiExplanation(data.explanation), 300)
+        } else {
+           setAiExplanation(fallbackText)
+        }
+        setAiLoading(false)
+      }
+    })
+    .catch(err => {
+      console.warn('AI Agent fetch failed, using fallback text:', err)
+      if (active) {
+        setAiExplanation(fallbackText)
+        setAiLoading(false)
+      }
+    })
+    
+    return () => { active = false }
+  }, [activeExpl])
+
+  const explainText = usingApi
+    ? (aiLoading ? 'Agent analyzing route safety signals...' : (aiExplanation || buildExplanation(activeExpl!)))
     : (fallbackRoutes[selectedIdx]?.note || 'Route information loading...')
 
   const litPct = activeExpl
@@ -104,7 +147,7 @@ export default function RouteDock({
               {activeScore >= 84 ? 'Excellent choice' : activeScore >= 70 ? 'Strong choice' : 'Use awareness'}
             </span>
           </div>
-          <p>{explainText}</p>
+          <p className={aiLoading ? "ai-loading-text" : ""}>{explainText}</p>
           <div className="breakdown">
             <span><Sun size={15} /> Lighting <b>{litPct}%</b></span>
             <span><Footprints size={15} /> Foot traffic <b>{activeExpl ? (litPct > 70 ? 'Active' : 'Moderate') : 'Moderate'}</b></span>
