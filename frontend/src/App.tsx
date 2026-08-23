@@ -4,7 +4,8 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { Eye, EyeOff, Flag, Loader2, Share2, Shield } from 'lucide-react'
 
 import Topbar from './components/Topbar'
-import SearchCard from './components/SearchCard'
+import SearchCard, { DESTINATIONS } from './components/SearchCard'
+import type { Destination } from './components/SearchCard'
 import InsightCard from './components/InsightCard'
 import CompanionCard from './components/CompanionCard'
 import SafetyModeSlider from './components/SafetyModeSlider'
@@ -22,7 +23,6 @@ import { fetchRoutes as apiFetchRoutes, submitReport as apiSubmitReport } from '
 import type { ApiRoute } from './api'
 
 const ORIGIN = { lat: 20.2666, lng: 85.8360 }
-const DEST = { lat: 20.2666, lng: 85.8434 }
 
 function sliderToIso(hourIdx: number): string {
   const now = new Date()
@@ -54,11 +54,12 @@ function App() {
   const [shareOpen, setShareOpen] = useState(false)
   const [heatmapOn, setHeatmapOn] = useState(false)
   const [reportCoords, setReportCoords] = useState<[number, number] | null>(null)
+  const [dest, setDest] = useState<Destination>(DESTINATIONS[0])
 
-  const loadRoutes = useCallback(async (hourIdx: number) => {
+  const loadRoutes = useCallback(async (hourIdx: number, destination: Destination) => {
     setLoading(true)
     try {
-      const data = await apiFetchRoutes(ORIGIN, DEST, sliderToIso(hourIdx))
+      const data = await apiFetchRoutes(ORIGIN, { lat: destination.lat, lng: destination.lng }, sliderToIso(hourIdx))
       setApiRoutes(data.routes)
       setRouteLabels(labelByRank(data.routes))
       const safestIdx = data.routes.reduce((best, r, i) => (r.score > data.routes[best].score ? i : best), 0)
@@ -71,7 +72,7 @@ function App() {
     }
   }, [])
 
-  useEffect(() => { loadRoutes(hour) }, [hour, loadRoutes])
+  useEffect(() => { loadRoutes(hour, dest) }, [hour, dest, loadRoutes])
 
   const usingApi = apiRoutes !== null && apiRoutes.length > 0
   const activeApiRoute = usingApi ? apiRoutes[selectedIdx] || apiRoutes[0] : null
@@ -141,8 +142,8 @@ function App() {
         <CircleMarker center={[ORIGIN.lat, ORIGIN.lng]} radius={8} pathOptions={{ color: '#ffffff', fillColor: '#0f8a72', fillOpacity: 1, weight: 3 }}>
           <Tooltip direction="top">Your location</Tooltip>
         </CircleMarker>
-        <CircleMarker center={[DEST.lat, DEST.lng]} radius={10} pathOptions={{ color: '#ffffff', fillColor: '#6b46f0', fillOpacity: 1, weight: 3 }}>
-          <Tooltip direction="top">Master Canteen Square</Tooltip>
+        <CircleMarker center={[dest.lat, dest.lng]} radius={10} pathOptions={{ color: '#ffffff', fillColor: '#6b46f0', fillOpacity: 1, weight: 3 }}>
+          <Tooltip direction="top">{dest.name}</Tooltip>
         </CircleMarker>
 
         {reports.map((r, i) => (
@@ -155,7 +156,7 @@ function App() {
       <div className="map-vignette" />
 
       <Topbar menuOpen={menuOpen} onToggleMenu={() => setMenuOpen((v) => !v)} />
-      <SearchCard destination="Master Canteen Square" />
+      <SearchCard selected={dest} onSelect={setDest} onFindRoutes={() => loadRoutes(hour, dest)} loading={loading} />
 
       {loading && (
         <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 9999 }}>
