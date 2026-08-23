@@ -291,3 +291,58 @@ input[type=range]::-webkit-slider-thumb { appearance: none; width: 15px; height:
   .safety-mode-hint { display: none; }
   .eyebrow { font-size: 10px; }
 }
+/* ── Search card: destination search + geocode results ───────────── */
+.destination-search {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+.destination-search input {
+  flex: 1; background: transparent; border: none; outline: none;
+  color: inherit; font: inherit;
+}
+.geo-results {
+  list-style: none; margin: 8px 0 0; padding: 0;
+  max-height: 190px; overflow-y: auto;
+  border-radius: 12px; background: rgba(0, 0, 0, 0.25);
+}
+.geo-results li button {
+  display: block; width: 100%; text-align: left;
+  padding: 9px 12px; background: none; border: none; cursor: pointer;
+  color: inherit; font-size: 0.82rem; line-height: 1.35;
+}
+.geo-results li button:hover { background: rgba(255, 255, 255, 0.08); }
+.icon-button {
+  margin-left: auto; display: inline-flex; align-items: center;
+  background: none; border: none; color: inherit; cursor: pointer; opacity: 0.7;
+}
+.icon-button:hover { opacity: 1; }
+
+/* ── Why modal ───────────────────────────────────────────────────── */
+.modal-backdrop {
+  position: fixed; inset: 0; z-index: 10000;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(4px);
+}
+.why-modal {
+  width: min(440px, calc(100vw - 32px));
+  padding: 20px; border-radius: 18px;
+}
+.why-explanation { font-size: 0.95rem; line-height: 1.5; margin: 12px 0; }
+.why-factors { margin: 10px 0; padding-left: 18px; font-size: 0.86rem; line-height: 1.6; }
+.why-factors-empty, .why-loading, .why-error {
+  font-size: 0.86rem; opacity: 0.8; display: flex; align-items: center; gap: 8px;
+}
+.why-disclaimer {
+  margin-top: 14px; padding-top: 10px; font-size: 0.74rem; opacity: 0.6;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+.why-button {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 8px 13px; border-radius: 11px; cursor: pointer;
+  font-size: 0.8rem; color: inherit;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+.why-button:hover { background: rgba(255, 255, 255, 0.13); }

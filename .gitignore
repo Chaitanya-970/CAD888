@@ -38,8 +38,10 @@ yarn-error.log*
 supabase/.temp/
 
 # --- Local OSRM extracts / geo data (RFC-007 runbook mounts ./data) ---
-backend/data/
-data/
+# Anchored with a leading slash: a bare `data/` also matched
+# backend/src/fallback/data/, silently excluding the demo fallback routes.
+/backend/data/
+/data/
 
 # --- Deploy artifacts ---
 .vercel/

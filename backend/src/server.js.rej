@@ -1,0 +1,24 @@
+diff a/backend/src/server.js b/backend/src/server.js	(rejected hunks)
+@@ -8,6 +8,7 @@ import routeRouter from './routes/route.js';
+ import reportRouter from './routes/report.js';
+ import explainRouter from './routes/explain.js';
+ import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
++import { registerSafetyAgent } from './agent/register.js';
+ 
+ export const logger = pino({ level: process.env.LOG_LEVEL || 'info' });
+ 
+@@ -41,6 +42,14 @@ export function createApp() {
+     next();
+   });
+ 
++  // Role 3 explanation agent (no-op unless EXPLAIN_AGENT_ENABLED=true).
++  if (registerSafetyAgent()) {
++    logger.info(
++      { mode: process.env.EXPLAIN_AGENT_MODE || 'js' },
++      'explanation agent registered'
++    );
++  }
++
+   app.use(healthRouter);
+   app.use(routeRouter);
+   app.use(reportRouter);

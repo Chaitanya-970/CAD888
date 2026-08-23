@@ -1,0 +1,13 @@
+diff a/backend/src/config.js b/backend/src/config.js	(rejected hunks)
+@@ -21,7 +21,10 @@ export function validateConfig(env) {
+     supabaseServiceKey: env.SUPABASE_SERVICE_KEY,
+     reportHashSalt: env.REPORT_HASH_SALT,
+     port: Number(env.PORT || 3000),
+-    corsOrigin: '*',
++    // Default '*' keeps deployed frontends unblocked without extra config;
++    // set CORS_ORIGIN to lock it down to one origin. (Hardcoding '*' here broke
++    // the U-004 config test, which asserts CORS_ORIGIN is honoured.)
++    corsOrigin: env.CORS_ORIGIN || '*',
+     // OSRM routing engine (RFC-002). Defaults target the public demo server;
+     // for the live demo run local Docker OSRM with the foot profile instead
+     // (runbook in RFC-007) and override via env.
