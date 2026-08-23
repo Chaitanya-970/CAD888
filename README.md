@@ -1,6 +1,6 @@
-# SafeRoute — Safety-Aware Walking Routes (PS-17)
+# SafeRoute — Safety-Aware Walking Routes (PS-16)
 
-> **Hackathon:** CSCverse · **Problem Statement 17** — *Safe Route Mapping: Crowdsourced Security Signals*
+> **Hackathon:** CSCverse · **Problem Statement 16** — *Safe Route Mapping: Crowdsourced Security Signals*
 >
 > Maps get you there **fast** — not **safely**. Women and marginalized groups constantly weigh how safe a route *feels* at a given hour (lighting, foot traffic, past incidents), but that knowledge lives only in WhatsApp groups and word of mouth. **SafeRoute** systematizes it: an anonymous crowdsourced safety layer over OpenStreetMap that returns color-coded, explainable walking routes — without ever publishing a stigmatizing public "danger map".
 
