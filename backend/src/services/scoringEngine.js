@@ -170,6 +170,41 @@ export function bandOf(score) {
   return 'red';
 }
 
+// ── Demo score generator (no-DB fallback for hackathon) ──────────────
+
+/**
+ * Generate a deterministic but varied demo score from a cell's geohash.
+ * Same cell+bucket always returns the same score, but different cells
+ * get meaningfully different scores. Night/evening gets a penalty
+ * to simulate real-world safety patterns.
+ * @param {string} cell - geohash-7
+ * @param {string} bucket - time bucket
+ * @returns {number} 0-100
+ */
+function _demoScore(cell, bucket) {
+  // Simple deterministic hash from geohash string
+  let hash = 0;
+  for (let i = 0; i < cell.length; i++) {
+    hash = ((hash << 5) - hash + cell.charCodeAt(i)) | 0;
+  }
+  // Normalize to 0-1 range
+  const norm = Math.abs(hash % 1000) / 1000;
+
+  // Base score range: 45-95 (most cells are moderately safe to very safe)
+  let score = Math.round(45 + norm * 50);
+
+  // Time-of-day modifier: evening/night are less safe
+  const bucketPenalty = { morning: 0, day: 2, evening: -12, night: -20 };
+  score += (bucketPenalty[bucket] || 0);
+
+  // Some cells are "known trouble spots" (bottom 20% of hash)
+  if (norm < 0.2) {
+    score -= 15;
+  }
+
+  return Math.max(18, Math.min(98, score));
+}
+
 // ── DB-backed cache layer ────────────────────────────────────────────
 
 /** In-memory cache: Map<"cell:bucket", { score, ts }> */
@@ -226,8 +261,13 @@ export async function getCellScores(cells, bucket, deps = {}) {
     }
 
     for (const cell of toFetch) {
-      // Default to 50 (neutral) if no precomputed score exists
-      const score = dbScores.get(cell) ?? 50;
+      // If DB has a real score, use it. Otherwise generate a deterministic
+      // demo score from the cell's geohash so different route segments
+      // show meaningfully different safety levels during the hackathon demo.
+      let score = dbScores.get(cell);
+      if (score === undefined) {
+        score = _demoScore(cell, bucket);
+      }
       const key = `${cell}:${bucket}`;
       _cache.set(key, { score, ts: now });
       result.set(cell, score);
