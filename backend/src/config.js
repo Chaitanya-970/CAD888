@@ -21,7 +21,7 @@ export function validateConfig(env) {
     supabaseServiceKey: env.SUPABASE_SERVICE_KEY,
     reportHashSalt: env.REPORT_HASH_SALT,
     port: Number(env.PORT || 3000),
-    corsOrigin: env.CORS_ORIGIN || '*',
+    corsOrigin: '*',
     // OSRM routing engine (RFC-002). Defaults target the public demo server;
     // for the live demo run local Docker OSRM with the foot profile instead
     // (runbook in RFC-007) and override via env.
