@@ -3,15 +3,12 @@ import { Bell, Menu, Shield } from 'lucide-react'
 export default function Topbar({ menuOpen, onToggleMenu }: { menuOpen: boolean; onToggleMenu: () => void }) {
   return (
     <header className="topbar">
-      <div className="brand">
+      <a href="/" className="brand" aria-label="Go to Safeway home">
         <span className="brand-mark"><Shield size={18} /></span>
         <span>SAFEWAY</span>
-        <small>BETA</small>
-      </div>
+      </a>
       <nav className="desktop-nav" aria-label="Main navigation">
         <button className="active">Route planner</button>
-        <button>Safety map</button>
-        <button>My reports</button>
       </nav>
       <div className="top-actions">
         <button className="icon-button" aria-label="Notifications"><Bell size={18} /></button>
