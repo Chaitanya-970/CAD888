@@ -1,0 +1,4516 @@
+From 2e66b07e6c6cf5bbb6aabe116b049b744326ce44 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Sun, 23 Aug 2026 00:20:36 +0000
+Subject: [PATCH] Connect frontend, backend and AI agent
+
+- Restore the missing static fallback data file (a bare 'data/' gitignore rule
+  was silently excluding it), so OSRM outages serve labeled static routes
+- Add the Role 3 explanation agent bridge with three runtimes: in-process JS,
+  the deployed Python function over HTTP, and a local python subprocess
+- Evaluate time buckets in local time (TIME_BUCKET_UTC_OFFSET_MIN)
+- Restore CORS_ORIGIN support (hardcoded '*' broke the U-004 config test)
+- Wire the frontend Why panel to /api/explain-context and make the destination
+  search real instead of a hardcoded label
+---
+ .gitignore                                    |    6 +-
+ .../dbscan_hotspots.cpython-313.pyc           |  Bin 5951 -> 0 bytes
+ .../__pycache__/explain_agent.cpython-313.pyc |  Bin 10721 -> 0 bytes
+ .../signal_contract.cpython-313.pyc           |  Bin 3055 -> 0 bytes
+ backend/.env.example                          |   19 +
+ backend/src/agent/register.js                 |   47 +
+ backend/src/config.js                         |    5 +-
+ backend/src/fallback/data/demo-routes.json    | 2902 +++++++++++++++++
+ backend/src/fallback/staticRoutes.js          |   11 +-
+ backend/src/server.js                         |    9 +
+ backend/src/services/explainAgent.js          |  302 ++
+ backend/src/services/explainContext.js        |    7 +-
+ backend/src/services/scoringEngine.js         |   11 +-
+ backend/tests/explainAgent.test.js            |  240 ++
+ backend/tests/scoringEngine.test.js           |   24 +
+ frontend/.env.example                         |    6 +-
+ frontend/src/App.tsx                          |   97 +-
+ frontend/src/components/SearchCard.tsx        |  103 +-
+ frontend/src/components/WhyModal.tsx          |   96 +
+ frontend/src/geocode.ts                       |   39 +
+ frontend/src/styles.css                       |   57 +-
+ 21 files changed, 3952 insertions(+), 29 deletions(-)
+ delete mode 100644 ai_agent/__pycache__/dbscan_hotspots.cpython-313.pyc
+ delete mode 100644 ai_agent/__pycache__/explain_agent.cpython-313.pyc
+ delete mode 100644 ai_agent/__pycache__/signal_contract.cpython-313.pyc
+ create mode 100644 backend/src/agent/register.js
+ create mode 100644 backend/src/fallback/data/demo-routes.json
+ create mode 100644 backend/src/services/explainAgent.js
+ create mode 100644 backend/tests/explainAgent.test.js
+ create mode 100644 frontend/src/components/WhyModal.tsx
+ create mode 100644 frontend/src/geocode.ts
+
+diff --git a/.gitignore b/.gitignore
+index 9e2897f..08c0ec1 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -38,8 +38,10 @@ yarn-error.log*
+ supabase/.temp/
+ 
+ # --- Local OSRM extracts / geo data (RFC-007 runbook mounts ./data) ---
+-backend/data/
+-data/
++# Anchored with a leading slash: a bare `data/` also matched
++# backend/src/fallback/data/, silently excluding the demo fallback routes.
++/backend/data/
++/data/
+ 
+ # --- Deploy artifacts ---
+ .vercel/
+diff --git a/ai_agent/__pycache__/dbscan_hotspots.cpython-313.pyc b/ai_agent/__pycache__/dbscan_hotspots.cpython-313.pyc
+deleted file mode 100644
+index 59e3ebf478510992330ad6c26d19f4fa7c4dc7c0..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+HcmV?d00001
+
+literal 5951
+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
+
+diff --git a/ai_agent/__pycache__/explain_agent.cpython-313.pyc b/ai_agent/__pycache__/explain_agent.cpython-313.pyc
+deleted file mode 100644
+index 9a4142a824b98c6983fb4e78fa1f0ac17145f131..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+HcmV?d00001
+
+literal 10721
+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
+B3fcew
+
+diff --git a/ai_agent/__pycache__/signal_contract.cpython-313.pyc b/ai_agent/__pycache__/signal_contract.cpython-313.pyc
+deleted file mode 100644
+index dfa72d5c242fedf0867ae943b10c9af033642505..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+HcmV?d00001
+
+literal 3055
+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
+
+diff --git a/backend/.env.example b/backend/.env.example
+index e9ffcc6..402d596 100644
+--- a/backend/.env.example
++++ b/backend/.env.example
+@@ -19,3 +19,22 @@ CORS_ORIGIN=http://localhost:5173
+ # RFC-007 Resilience & Deployment
+ # When true, OSRM failures serve pre-scored static routes instead of 502
+ STATIC_FALLBACK_ENABLED=true
++
++# --- Time buckets --------------------------------------------------------
++# Buckets are about how a street FEELS locally, so evaluate them in local time.
++# India Standard Time = 330. Leave unset/0 to keep the old UTC behaviour.
++TIME_BUCKET_UTC_OFFSET_MIN=330
++
++# --- Role 3 explanation agent -------------------------------------------
++# Attaches a grounded 1-2 sentence "explanation" to GET /api/explain-context.
++EXPLAIN_AGENT_ENABLED=true
++# js     = render in-process (works on Vercel serverless, no LLM)
++# http   = call the agent deployed from ai_agent/ (real LLM, backend stays on Vercel)
++# python = spawn ai_agent/explain_agent.py (needs Python on the host)
++EXPLAIN_AGENT_MODE=js
++# Required when EXPLAIN_AGENT_MODE=http - the ai_agent Vercel deployment URL:
++# EXPLAIN_AGENT_URL=https://cad888-agent.vercel.app/api
++# Only used when EXPLAIN_AGENT_MODE=python: mock | grok | gemini
++EXPLAIN_AGENT_PROVIDER=mock
++EXPLAIN_AGENT_TIMEOUT_MS=8000
++# PYTHON_BIN=python3
+diff --git a/backend/src/agent/register.js b/backend/src/agent/register.js
+new file mode 100644
+index 0000000..59dda22
+--- /dev/null
++++ b/backend/src/agent/register.js
+@@ -0,0 +1,47 @@
++/**
++ * Registers the Role 3 Explainable Safety Agent as the explanation provider
++ * for GET /api/explain-context.
++ *
++ * Imported once from server.js. Enabled with EXPLAIN_AGENT_ENABLED=true so the
++ * agent can be switched off without touching code (e.g. if a demo host has no
++ * Python and you also want the JS renderer silenced).
++ *
++ * The provider is additive by contract: it only ever sets `explanation` and
++ * `explanationSource` on the response. It never modifies score, band, factors,
++ * or disclaimer, and any failure inside it is swallowed upstream.
++ */
++
++import { registerExplainProvider } from '../services/explainContext.js';
++import { explainRoute, worstCellOf } from '../services/explainAgent.js';
++
++const LABELS = ['Fastest', 'Balanced', 'Safest'];
++
++export function registerSafetyAgent() {
++  if (process.env.EXPLAIN_AGENT_ENABLED !== 'true') return false;
++
++  registerExplainProvider(async (result, internals = {}) => {
++    const { cells = [], cellScoreMap = new Map(), bucket = 'day', deps = {} } = internals;
++    if (cells.length === 0) return;
++
++    const { cell } = worstCellOf(cells, cellScoreMap);
++
++    const out = await explainRoute(
++      {
++        cell,
++        score: result.score,
++        bucket,
++        routeLabel: LABELS[result.routeIndex] || `Route ${result.routeIndex + 1}`,
++      },
++      deps
++    );
++
++    if (out) {
++      result.explanation = out.explanation;
++      result.explanationSource = out.mode; // "js" | "python"
++    }
++  });
++
++  return true;
++}
++
++export default registerSafetyAgent;
+diff --git a/backend/src/config.js b/backend/src/config.js
+index 0dfe820..84973d8 100644
+--- a/backend/src/config.js
++++ b/backend/src/config.js
+@@ -21,7 +21,10 @@ export function validateConfig(env) {
+     supabaseServiceKey: env.SUPABASE_SERVICE_KEY,
+     reportHashSalt: env.REPORT_HASH_SALT,
+     port: Number(env.PORT || 3000),
+-    corsOrigin: '*',
++    // Default '*' keeps deployed frontends unblocked without extra config;
++    // set CORS_ORIGIN to lock it down to one origin. (Hardcoding '*' here broke
++    // the U-004 config test, which asserts CORS_ORIGIN is honoured.)
++    corsOrigin: env.CORS_ORIGIN || '*',
+     // OSRM routing engine (RFC-002). Defaults target the public demo server;
+     // for the live demo run local Docker OSRM with the foot profile instead
+     // (runbook in RFC-007) and override via env.
+diff --git a/backend/src/fallback/data/demo-routes.json b/backend/src/fallback/data/demo-routes.json
+new file mode 100644
+index 0000000..ad8c285
+--- /dev/null
++++ b/backend/src/fallback/data/demo-routes.json
+@@ -0,0 +1,2902 @@
++{
++  "day": [
++    {
++      "originLat": 12.9716,
++      "originLng": 77.5946,
++      "label": "day",
++      "routes": [
++        {
++          "index": 0,
++          "summary": {
++            "distanceM": 1450,
++            "durationS": 1080
++          },
++          "geometry": [
++            [
++              12.9716,
++              77.5946
++            ],
++            [
++              12.9723,
++              77.59505
++            ],
++            [
++              12.973,
++              77.5955
++            ],
++            [
++              12.9737,
++              77.59595
++            ],
++            [
++              12.9744,
++              77.5964
++            ],
++            [
++              12.9751,
++              77.59685
++            ],
++            [
++              12.9758,
++              77.5973
++            ],
++            [
++              12.9765,
++              77.59775
++            ],
++            [
++              12.9772,
++              77.5982
++            ],
++            [
++              12.9779,
++              77.59865
++            ],
++            [
++              12.9786,
++              77.5991
++            ],
++            [
++              12.9793,
++              77.59955
++            ],
++            [
++              12.98,
++              77.6
++            ]
++          ],
++          "score": 74,
++          "band": "green",
++          "cells": [
++            "tdr1v9q",
++            "tdr1v9w",
++            "tdr1v9x",
++            "tdr1v9z",
++            "tdr1vf0",
++            "tdr1vf2",
++            "tdr1vf3",
++            "tdr1vf9",
++            "tdr1vff"
++          ],
++          "cellScores": [
++            {
++              "cell": "tdr1v9q",
++              "score": 81
++            },
++            {
++              "cell": "tdr1v9w",
++              "score": 72
++            },
++            {
++              "cell": "tdr1v9x",
++              "score": 71
++            },
++            {
++              "cell": "tdr1v9z",
++              "score": 72
++            },
++            {
++              "cell": "tdr1vf0",
++              "score": 63
++            },
++            {
++              "cell": "tdr1vf2",
++              "score": 69
++            },
++            {
++              "cell": "tdr1vf3",
++              "score": 69
++            },
++            {
++              "cell": "tdr1vf9",
++              "score": 69
++            },
++            {
++              "cell": "tdr1vff",
++              "score": 71
++            }
++          ],
++          "explanationInput": {
++            "unlitCells": 0,
++            "totalCells": 9,
++            "reportsLast30d": 1,
++            "worstCellScore": 63,
++            "timeBucket": "day"
++          }
++        },
++        {
++          "index": 1,
++          "summary": {
++            "distanceM": 1720,
++            "durationS": 1290
++          },
++          "geometry": [
++            [
++              12.9716,
++              77.5946
++            ],
++            [
++              12.973206,
++              77.595503
++            ],
++            [
++              12.97475,
++              77.596375
++            ],
++            [
++              12.976175,
++              77.597187
++            ],
++            [
++              12.977431,
++              77.597916
++            ],
++            [
++              12.978481,
++              77.59854
++            ],
++            [
++              12.9793,
++              77.59905
++            ],
++            [
++              12.979881,
++              77.59944
++            ],
++            [
++              12.980231,
++              77.599716
++            ],
++            [
++              12.980375,
++              77.599887
++            ],
++            [
++              12.98035,
++              77.599975
++            ],
++            [
++              12.980206,
++              77.600003
++            ],
++            [
++              12.98,
++              77.6
++            ]
++          ],
++          "score": 82,
++          "band": "green",
++          "cells": [
++            "tdr1v9q",
++            "tdr1v9x",
++            "tdr1v9z",
++            "tdr1vf0",
++            "tdr1vf3",
++            "tdr1vf9",
++            "tdr1vfc",
++            "tdr1vff",
++            "tdr1vg4"
++          ],
++          "cellScores": [
++            {
++              "cell": "tdr1v9q",
++              "score": 89
++            },
++            {
++              "cell": "tdr1v9x",
++              "score": 79
++            },
++            {
++              "cell": "tdr1v9z",
++              "score": 80
++            },
++            {
++              "cell": "tdr1vf0",
++              "score": 88
++            },
++            {
++              "cell": "tdr1vf3",
++              "score": 71
++            },
++            {
++              "cell": "tdr1vf9",
++              "score": 77
++            },
++            {
++              "cell": "tdr1vfc",
++              "score": 85
++            },
++            {
++              "cell": "tdr1vff",
++              "score": 79
++            },
++            {
++              "cell": "tdr1vg4",
++              "score": 84
++            }
++          ],
++          "explanationInput": {
++            "unlitCells": 0,
++            "totalCells": 9,
++            "reportsLast30d": 0,
++            "worstCellScore": 71,
++            "timeBucket": "day"
++          }
++        },
++        {
++          "index": 2,
++          "summary": {
++            "distanceM": 1610,
++            "durationS": 1200
++          },
++          "geometry": [
++            [
++              12.9716,
++              77.5946
++            ],
++            [
++              12.971524,
++              77.594662
++            ],
++            [
++              12.9715,
++              77.59475
++            ],
++            [
++              12.971579,
++              77.594889
++            ],
++            [
++              12.971802,
++              77.595101
++            ],
++            [
++              12.972202,
++              77.595401
++            ],
++            [
++              12.9728,
++              77.5958
++            ],
++            [
++              12.973602,
++              77.596301
++            ],
++            [
++              12.974602,
++              77.596901
++            ],
++            [
++              12.975779,
++              77.597589
++            ],
++            [
++              12.9771,
++              77.59835
++            ],
++            [
++              12.978524,
++              77.599162
++            ],
++            [
++              12.98,
++              77.6
++            ]
++          ],
++          "score": 68,
++          "band": "yellow",
++          "cells": [
++            "tdr1v9q",
++            "tdr1v9r",
++            "tdr1v9x",
++            "tdr1v9z",
++            "tdr1vcb",
++            "tdr1vf0",
++            "tdr1vf3",
++            "tdr1vf9",
++            "tdr1vff"
++          ],
++          "cellScores": [
++            {
++              "cell": "tdr1v9q",
++              "score": 75
++            },
++            {
++              "cell": "tdr1v9r",
++              "score": 65
++            },
++            {
++              "cell": "tdr1v9x",
++              "score": 65
++            },
++            {
++              "cell": "tdr1v9z",
++              "score": 66
++            },
++            {
++              "cell": "tdr1vcb",
++              "score": 54
++            },
++            {
++              "cell": "tdr1vf0",
++              "score": 74
++            },
++            {
++              "cell": "tdr1vf3",
++              "score": 63
++            },
++            {
++              "cell": "tdr1vf9",
++              "score": 63
++            },
++            {
++              "cell": "tdr1vff",
++              "score": 65
++            }
++          ],
++          "explanationInput": {
++            "unlitCells": 2,
++            "totalCells": 9,
++            "reportsLast30d": 2,
++            "worstCellScore": 54,
++            "timeBucket": "day"
++          }
++        }
++      ]
++    },
++    {
++      "originLat": 20.2666,
++      "originLng": 85.836,
++      "label": "day",
++      "routes": [
++        {
++          "index": 0,
++          "summary": {
++            "distanceM": 1450,
++            "durationS": 1080
++          },
++          "geometry": [
++            [
++              20.2666,
++              85.836
++            ],
++            [
++              20.2666,
++              85.836617
++            ],
++            [
++              20.2666,
++              85.837233
++            ],
++            [
++              20.2666,
++              85.83785
++            ],
++            [
++              20.2666,
++              85.838467
++            ],
++            [
++              20.2666,
++              85.839083
++            ],
++            [
++              20.2666,
++              85.8397
++            ],
++            [
++              20.2666,
++              85.840317
++            ],
++            [
++              20.2666,
++              85.840933
++            ],
++            [
++              20.2666,
++              85.84155
++            ],
++            [
++              20.2666,
++              85.842167
++            ],
++            [
++              20.2666,
++              85.842783
++            ],
++            [
++              20.2666,
++              85.8434
++            ]
++          ],
++          "score": 74,
++          "band": "green",
++          "cells": [
++            "tgt531r",
++            "tgt5332",
++            "tgt5333",
++            "tgt5336",
++            "tgt5337",
++            "tgt533k",
++            "tgt533m"
++          ],
++          "cellScores": [
++            {
++              "cell": "tgt531r",
++              "score": 76
++            },
++            {
++              "cell": "tgt5332",
++              "score": 71
++            },
++            {
++              "cell": "tgt5333",
++              "score": 66
++            },
++            {
++              "cell": "tgt5336",
++              "score": 63
++            },
++            {
++              "cell": "tgt5337",
++              "score": 72
++            },
++            {
++              "cell": "tgt533k",
++              "score": 67
++            },
++            {
++              "cell": "tgt533m",
++              "score": 82
++            }
++          ],
++          "explanationInput": {
++            "unlitCells": 0,
++            "totalCells": 7,
++            "reportsLast30d": 1,
++            "worstCellScore": 63,
++            "timeBucket": "day"
++          }
++        },
++        {
++          "index": 1,
++          "summary": {
++            "distanceM": 1720,
++            "durationS": 1290
++          },
++          "geometry": [
++            [
++              20.2666,
++              85.836
++            ],
++            [
++              20.267506,
++              85.83707
++            ],
++            [
++              20.26835,
++              85.838108
++            ],
++            [
++              20.269075,
++              85.839087
++            ],
++            [
++              20.269631,
++              85.839982
++            ],
++            [
++              20.269981,
++              85.840774
++            ],
++            [
++              20.2701,
++              85.84145
++            ],
++            [
++              20.269981,
++              85.842007
++            ],
++            [
++              20.269631,
++              85.842449
++            ],
++            [
++              20.269075,
++              85.842787
++            ],
++            [
++              20.26835,
++              85.843042
++            ],
++            [
++              20.267506,
++              85.843236
++            ],
++            [
++              20.2666,
++              85.8434
++            ]
++          ],
++          "score": 82,
++          "band": "green",
++          "cells": [
++            "tgt531r",
++            "tgt5338",
++            "tgt5339",
++            "tgt533f",
++            "tgt5365",
++            "tgt536h",
++            "tgt533u",
++            "tgt533s",
++            "tgt533t",
++            "tgt533m"
++          ],
++          "cellScores": [
++            {
++              "cell": "tgt531r",
++              "score": 84
++            },
++            {
++              "cell": "tgt5338",
++              "score": 79
++            },
++            {
++              "cell": "tgt5339",
++              "score": 90
++            },
++            {
++              "cell": "tgt533f",
++              "score": 82
++            },
++            {
++              "cell": "tgt5365",
++              "score": 77
++            },
++            {
++              "cell": "tgt536h",
++              "score": 71
++            },
++            {
++              "cell": "tgt533u",
++              "score": 86
++            },
++            {
++              "cell": "tgt533s",
++              "score": 89
++            },
++            {
++              "cell": "tgt533t",
++              "score": 85
++            },
++            {
++              "cell": "tgt533m",
++              "score": 90
++            }
++          ],
++          "explanationInput": {
++            "unlitCells": 0,
++            "totalCells": 10,
++            "reportsLast30d": 0,
++            "worstCellScore": 71,
++            "timeBucket": "day"
++          }
++        },
++        {
++          "index": 2,
++          "summary": {
++            "distanceM": 1610,
++            "durationS": 1200
++          },
++          "geometry": [
++            [
++              20.2666,
++              85.836
++            ],
++            [
++              20.265824,
++              85.836228
++            ],
++            [
++              20.2651,
++              85.836483
++            ],
++            [
++              20.264479,
++              85.836789
++            ],
++            [
++              20.264002,
++              85.837168
++            ],
++            [
++              20.263702,
++              85.837634
++            ],
++            [
++              20.2636,
++              85.8382
++            ],
++            [
++              20.263702,
++              85.838868
++            ],
++            [
++              20.264002,
++              85.839634
++            ],
++            [
++              20.264479,
++              85.840489
++            ],
++            [
++              20.2651,
++              85.841417
++            ],
++            [
++              20.265824,
++              85.842395
++            ],
++            [
++              20.2666,
++              85.8434
++            ]
++          ],
++          "score": 68,
++          "band": "yellow",
++          "cells": [
++            "tgt531r",
++            "tgt5332",
++            "tgt5330",
++            "tgt532b",
++            "tgt532c",
++            "tgt532f",
++            "tgt5335",
++            "tgt533k",
++            "tgt533m"
++          ],
++          "cellScores": [
++            {
++              "cell": "tgt531r",
++              "score": 70
++            },
++            {
++              "cell": "tgt5332",
++              "score": 65
++            },
++            {
++              "cell": "tgt5330",
++              "score": 76
++            },
++            {
++              "cell": "tgt532b",
++              "score": 61
++            },
++            {
++              "cell": "tgt532c",
++              "score": 54
++            },
++            {
++              "cell": "tgt532f",
++              "score": 60
++            },
++            {
++              "cell": "tgt5335",
++              "score": 74
++            },
++            {
++              "cell": "tgt533k",
++              "score": 61
++            },
++            {
++              "cell": "tgt533m",
++              "score": 76
++            }
++          ],
++          "explanationInput": {
++            "unlitCells": 2,
++            "totalCells": 9,
++            "reportsLast30d": 2,
++            "worstCellScore": 54,
++            "timeBucket": "day"
++          }
++        }
++      ]
++    }
++  ],
++  "morning": [
++    {
++      "originLat": 12.9716,
++      "originLng": 77.5946,
++      "label": "morning",
++      "routes": [
++        {
++          "index": 0,
++          "summary": {
++            "distanceM": 1450,
++            "durationS": 1080
++          },
++          "geometry": [
++            [
++              12.9716,
++              77.5946
++            ],
++            [
++              12.9723,
++              77.59505
++            ],
++            [
++              12.973,
++              77.5955
++            ],
++            [
++              12.9737,
++              77.59595
++            ],
++            [
++              12.9744,
++              77.5964
++            ],
++            [
++              12.9751,
++              77.59685
++            ],
++            [
++              12.9758,
++              77.5973
++            ],
++            [
++              12.9765,
++              77.59775
++            ],
++            [
++              12.9772,
++              77.5982
++            ],
++            [
++              12.9779,
++              77.59865
++            ],
++            [
++              12.9786,
++              77.5991
++            ],
++            [
++              12.9793,
++              77.59955
++            ],
++            [
++              12.98,
++              77.6
++            ]
++          ],
++          "score": 72,
++          "band": "green",
++          "cells": [
++            "tdr1v9q",
++            "tdr1v9w",
++            "tdr1v9x",
++            "tdr1v9z",
++            "tdr1vf0",
++            "tdr1vf2",
++            "tdr1vf3",
++            "tdr1vf9",
++            "tdr1vff"
++          ],
++          "cellScores": [
++            {
++              "cell": "tdr1v9q",
++              "score": 79
++            },
++            {
++              "cell": "tdr1v9w",
++              "score": 70
++            },
++            {
++              "cell": "tdr1v9x",
++              "score": 69
++            },
++            {
++              "cell": "tdr1v9z",
++              "score": 70
++            },
++            {
++              "cell": "tdr1vf0",
++              "score": 61
++            },
++            {
++              "cell": "tdr1vf2",
++              "score": 67
++            },
++            {
++              "cell": "tdr1vf3",
++              "score": 67
++            },
++            {
++              "cell": "tdr1vf9",
++              "score": 67
++            },
++            {
++              "cell": "tdr1vff",
++              "score": 69
++            }
++          ],
++          "explanationInput": {
++            "unlitCells": 0,
++            "totalCells": 9,
++            "reportsLast30d": 1,
++            "worstCellScore": 61,
++            "timeBucket": "morning"
++          }
++        },
++        {
++          "index": 1,
++          "summary": {
++            "distanceM": 1720,
++            "durationS": 1290
++          },
++          "geometry": [
++            [
++              12.9716,
++              77.5946
++            ],
++            [
++              12.973206,
++              77.595503
++            ],
++            [
++              12.97475,
++              77.596375
++            ],
++            [
++              12.976175,
++              77.597187
++            ],
++            [
++              12.977431,
++              77.597916
++            ],
++            [
++              12.978481,
++              77.59854
++            ],
++            [
++              12.9793,
++              77.59905
++            ],
++            [
++              12.979881,
++              77.59944
++            ],
++            [
++              12.980231,
++              77.599716
++            ],
++            [
++              12.980375,
++              77.599887
++            ],
++            [
++              12.98035,
++              77.599975
++            ],
++            [
++              12.980206,
++              77.600003
++            ],
++            [
++              12.98,
++              77.6
++            ]
++          ],
++          "score": 80,
++          "band": "green",
++          "cells": [
++            "tdr1v9q",
++            "tdr1v9x",
++            "tdr1v9z",
++            "tdr1vf0",
++            "tdr1vf3",
++            "tdr1vf9",
++            "tdr1vfc",
++            "tdr1vff",
++            "tdr1vg4"
++          ],
++          "cellScores": [
++            {
++              "cell": "tdr1v9q",
++              "score": 87
++            },
++            {
++              "cell": "tdr1v9x",
++              "score": 77
++            },
++            {
++              "cell": "tdr1v9z",
++              "score": 78
++            },
++            {
++              "cell": "tdr1vf0",
++              "score": 86
++            },
++            {
++              "cell": "tdr1vf3",
++              "score": 69
++            },
++            {
++              "cell": "tdr1vf9",
++              "score": 75
++            },
++            {
++              "cell": "tdr1vfc",
++              "score": 83
++            },
++            {
++              "cell": "tdr1vff",
++              "score": 77
++            },
++            {
++              "cell": "tdr1vg4",
++              "score": 82
++            }
++          ],
++          "explanationInput": {
++            "unlitCells": 0,
++            "totalCells": 9,
++            "reportsLast30d": 0,
++            "worstCellScore": 69,
++            "timeBucket": "morning"
++          }
++        },
++        {
++          "index": 2,
++          "summary": {
++            "distanceM": 1610,
++            "durationS": 1200
++          },
++          "geometry": [
++            [
++              12.9716,
++              77.5946
++            ],
++            [
++              12.971524,
++              77.594662
++            ],
++            [
++              12.9715,
++              77.59475
++            ],
++            [
++              12.971579,
++              77.594889
++            ],
++            [
++              12.971802,
++              77.595101
++            ],
++            [
++              12.972202,
++              77.595401
++            ],
++            [
++              12.9728,
++              77.5958
++            ],
++            [
++              12.973602,
++              77.596301
++            ],
++            [
++              12.974602,
++              77.596901
++            ],
++            [
++              12.975779,
++              77.597589
++            ],
++            [
++              12.9771,
++              77.59835
++            ],
++            [
++              12.978524,
++              77.599162
++            ],
++            [
++              12.98,
++              77.6
++            ]
++          ],
++          "score": 66,
++          "band": "yellow",
++          "cells": [
++            "tdr1v9q",
++            "tdr1v9r",
++            "tdr1v9x",
++            "tdr1v9z",
++            "tdr1vcb",
++            "tdr1vf0",
++            "tdr1vf3",
++            "tdr1vf9",
++            "tdr1vff"
++          ],
++          "cellScores": [
++            {
++              "cell": "tdr1v9q",
++              "score": 73
++            },
++            {
++              "cell": "tdr1v9r",
++              "score": 63
++            },
++            {
++              "cell": "tdr1v9x",
++              "score": 63
++            },
++            {
++              "cell": "tdr1v9z",
++              "score": 64
++            },
++            {
++              "cell": "tdr1vcb",
++              "score": 52
++            },
++            {
++              "cell": "tdr1vf0",
++              "score": 72
++            },
++            {
++              "cell": "tdr1vf3",
++              "score": 61
++            },
++            {
++              "cell": "tdr1vf9",
++              "score": 61
++            },
++            {
++              "cell": "tdr1vff",
++              "score": 63
++            }
++          ],
++          "explanationInput": {
++            "unlitCells": 2,
++            "totalCells": 9,
++            "reportsLast30d": 2,
++            "worstCellScore": 52,
++            "timeBucket": "morning"
++          }
++        }
++      ]
++    },
++    {
++      "originLat": 20.2666,
++      "originLng": 85.836,
++      "label": "morning",
++      "routes": [
++        {
++          "index": 0,
++          "summary": {
++            "distanceM": 1450,
++            "durationS": 1080
++          },
++          "geometry": [
++            [
++              20.2666,
++              85.836
++            ],
++            [
++              20.2666,
++              85.836617
++            ],
++            [
++              20.2666,
++              85.837233
++            ],
++            [
++              20.2666,
++              85.83785
++            ],
++            [
++              20.2666,
++              85.838467
++            ],
++            [
++              20.2666,
++              85.839083
++            ],
++            [
++              20.2666,
++              85.8397
++            ],
++            [
++              20.2666,
++              85.840317
++            ],
++            [
++              20.2666,
++              85.840933
++            ],
++            [
++              20.2666,
++              85.84155
++            ],
++            [
++              20.2666,
++              85.842167
++            ],
++            [
++              20.2666,
++              85.842783
++            ],
++            [
++              20.2666,
++              85.8434
++            ]
++          ],
++          "score": 72,
++          "band": "green",
++          "cells": [
++            "tgt531r",
++            "tgt5332",
++            "tgt5333",
++            "tgt5336",
++            "tgt5337",
++            "tgt533k",
++            "tgt533m"
++          ],
++          "cellScores": [
++            {
++              "cell": "tgt531r",
++              "score": 74
++            },
++            {
++              "cell": "tgt5332",
++              "score": 69
++            },
++            {
++              "cell": "tgt5333",
++              "score": 64
++            },
++            {
++              "cell": "tgt5336",
++              "score": 61
++            },
++            {
++              "cell": "tgt5337",
++              "score": 70
++            },
++            {
++              "cell": "tgt533k",
++              "score": 65
++            },
++            {
++              "cell": "tgt533m",
++              "score": 80
++            }
++          ],
++          "explanationInput": {
++            "unlitCells": 0,
++            "totalCells": 7,
++            "reportsLast30d": 1,
++            "worstCellScore": 61,
++            "timeBucket": "morning"
++          }
++        },
++        {
++          "index": 1,
++          "summary": {
++            "distanceM": 1720,
++            "durationS": 1290
++          },
++          "geometry": [
++            [
++              20.2666,
++              85.836
++            ],
++            [
++              20.267506,
++              85.83707
++            ],
++            [
++              20.26835,
++              85.838108
++            ],
++            [
++              20.269075,
++              85.839087
++            ],
++            [
++              20.269631,
++              85.839982
++            ],
++            [
++              20.269981,
++              85.840774
++            ],
++            [
++              20.2701,
++              85.84145
++            ],
++            [
++              20.269981,
++              85.842007
++            ],
++            [
++              20.269631,
++              85.842449
++            ],
++            [
++              20.269075,
++              85.842787
++            ],
++            [
++              20.26835,
++              85.843042
++            ],
++            [
++              20.267506,
++              85.843236
++            ],
++            [
++              20.2666,
++              85.8434
++            ]
++          ],
++          "score": 80,
++          "band": "green",
++          "cells": [
++            "tgt531r",
++            "tgt5338",
++            "tgt5339",
++            "tgt533f",
++            "tgt5365",
++            "tgt536h",
++            "tgt533u",
++            "tgt533s",
++            "tgt533t",
++            "tgt533m"
++          ],
++          "cellScores": [
++            {
++              "cell": "tgt531r",
++              "score": 82
++            },
++            {
++              "cell": "tgt5338",
++              "score": 77
++            },
++            {
++              "cell": "tgt5339",
++              "score": 88
++            },
++            {
++              "cell": "tgt533f",
++              "score": 80
++            },
++            {
++              "cell": "tgt5365",
++              "score": 75
++            },
++            {
++              "cell": "tgt536h",
++              "score": 69
++            },
++            {
++              "cell": "tgt533u",
++              "score": 84
++            },
++            {
++              "cell": "tgt533s",
++              "score": 87
++            },
++            {
++              "cell": "tgt533t",
++              "score": 83
++            },
++            {
++              "cell": "tgt533m",
++              "score": 88
++            }
++          ],
++          "explanationInput": {
++            "unlitCells": 0,
++            "totalCells": 10,
++            "reportsLast30d": 0,
++            "worstCellScore": 69,
++            "timeBucket": "morning"
++          }
++        },
++        {
++          "index": 2,
++          "summary": {
++            "distanceM": 1610,
++            "durationS": 1200
++          },
++          "geometry": [
++            [
++              20.2666,
++              85.836
++            ],
++            [
++              20.265824,
++              85.836228
++            ],
++            [
++              20.2651,
++              85.836483
++            ],
++            [
++              20.264479,
++              85.836789
++            ],
++            [
++              20.264002,
++              85.837168
++            ],
++            [
++              20.263702,
++              85.837634
++            ],
++            [
++              20.2636,
++              85.8382
++            ],
++            [
++              20.263702,
++              85.838868
++            ],
++            [
++              20.264002,
++              85.839634
++            ],
++            [
++              20.264479,
++              85.840489
++            ],
++            [
++              20.2651,
++              85.841417
++            ],
++            [
++              20.265824,
++              85.842395
++            ],
++            [
++              20.2666,
++              85.8434
++            ]
++          ],
++          "score": 66,
++          "band": "yellow",
++          "cells": [
++            "tgt531r",
++            "tgt5332",
++            "tgt5330",
++            "tgt532b",
++            "tgt532c",
++            "tgt532f",
++            "tgt5335",
++            "tgt533k",
++            "tgt533m"
++          ],
++          "cellScores": [
++            {
++              "cell": "tgt531r",
++              "score": 68
++            },
++            {
++              "cell": "tgt5332",
++              "score": 63
++            },
++            {
++              "cell": "tgt5330",
++              "score": 74
++            },
++            {
++              "cell": "tgt532b",
++              "score": 59
++            },
++            {
++              "cell": "tgt532c",
++              "score": 52
++            },
++            {
++              "cell": "tgt532f",
++              "score": 58
++            },
++            {
++              "cell": "tgt5335",
++              "score": 72
++            },
++            {
++              "cell": "tgt533k",
++              "score": 59
++            },
++            {
++              "cell": "tgt533m",
++              "score": 74
++            }
++          ],
++          "explanationInput": {
++            "unlitCells": 2,
++            "totalCells": 9,
++            "reportsLast30d": 2,
++            "worstCellScore": 52,
++            "timeBucket": "morning"
++          }
++        }
++      ]
++    }
++  ],
++  "evening": [
++    {
++      "originLat": 12.9716,
++      "originLng": 77.5946,
++      "label": "evening",
++      "routes": [
++        {
++          "index": 0,
++          "summary": {
++            "distanceM": 1450,
++            "durationS": 1080
++          },
++          "geometry": [
++            [
++              12.9716,
++              77.5946
++            ],
++            [
++              12.9723,
++              77.59505
++            ],
++            [
++              12.973,
++              77.5955
++            ],
++            [
++              12.9737,
++              77.59595
++            ],
++            [
++              12.9744,
++              77.5964
++            ],
++            [
++              12.9751,
++              77.59685
++            ],
++            [
++              12.9758,
++              77.5973
++            ],
++            [
++              12.9765,
++              77.59775
++            ],
++            [
++              12.9772,
++              77.5982
++            ],
++            [
++              12.9779,
++              77.59865
++            ],
++            [
++              12.9786,
++              77.5991
++            ],
++            [
++              12.9793,
++              77.59955
++            ],
++            [
++              12.98,
++              77.6
++            ]
++          ],
++          "score": 58,
++          "band": "yellow",
++          "cells": [
++            "tdr1v9q",
++            "tdr1v9w",
++            "tdr1v9x",
++            "tdr1v9z",
++            "tdr1vf0",
++            "tdr1vf2",
++            "tdr1vf3",
++            "tdr1vf9",
++            "tdr1vff"
++          ],
++          "cellScores": [
++            {
++              "cell": "tdr1v9q",
++              "score": 65
++            },
++            {
++              "cell": "tdr1v9w",
++              "score": 56
++            },
++            {
++              "cell": "tdr1v9x",
++              "score": 55
++            },
++            {
++              "cell": "tdr1v9z",
++              "score": 56
++            },
++            {
++              "cell": "tdr1vf0",
++              "score": 41
++            },
++            {
++              "cell": "tdr1vf2",
++              "score": 53
++            },
++            {
++              "cell": "tdr1vf3",
++              "score": 53
++            },
++            {
++              "cell": "tdr1vf9",
++              "score": 53
++            },
++            {
++              "cell": "tdr1vff",
++              "score": 55
++            }
++          ],
++          "explanationInput": {
++            "unlitCells": 2,
++            "totalCells": 9,
++            "reportsLast30d": 3,
++            "worstCellScore": 41,
++            "timeBucket": "evening"
++          }
++        },
++        {
++          "index": 1,
++          "summary": {
++            "distanceM": 1720,
++            "durationS": 1290
++          },
++          "geometry": [
++            [
++              12.9716,
++              77.5946
++            ],
++            [
++              12.973206,
++              77.595503
++            ],
++            [
++              12.97475,
++              77.596375
++            ],
++            [
++              12.976175,
++              77.597187
++            ],
++            [
++              12.977431,
++              77.597916
++            ],
++            [
++              12.978481,
++              77.59854
++            ],
++            [
++              12.9793,
++              77.59905
++            ],
++            [
++              12.979881,
++              77.59944
++            ],
++            [
++              12.980231,
++              77.599716
++            ],
++            [
++              12.980375,
++              77.599887
++            ],
++            [
++              12.98035,
++              77.599975
++            ],
++            [
++              12.980206,
++              77.600003
++            ],
++            [
++              12.98,
++              77.6
++            ]
++          ],
++          "score": 66,
++          "band": "yellow",
++          "cells": [
++            "tdr1v9q",
++            "tdr1v9x",
++            "tdr1v9z",
++            "tdr1vf0",
++            "tdr1vf3",
++            "tdr1vf9",
++            "tdr1vfc",
++            "tdr1vff",
++            "tdr1vg4"
++          ],
++          "cellScores": [
++            {
++              "cell": "tdr1v9q",
++              "score": 73
++            },
++            {
++              "cell": "tdr1v9x",
++              "score": 63
++            },
++            {
++              "cell": "tdr1v9z",
++              "score": 64
++            },
++            {
++              "cell": "tdr1vf0",
++              "score": 72
++            },
++            {
++              "cell": "tdr1vf3",
++              "score": 49
++            },
++            {
++              "cell": "tdr1vf9",
++              "score": 61
++            },
++            {
++              "cell": "tdr1vfc",
++              "score": 69
++            },
++            {
++              "cell": "tdr1vff",
++              "score": 63
++            },
++            {
++              "cell": "tdr1vg4",
++              "score": 68
++            }
++          ],
++          "explanationInput": {
++            "unlitCells": 1,
++            "totalCells": 9,
++            "reportsLast30d": 2,
++            "worstCellScore": 49,
++            "timeBucket": "evening"
++          }
++        },
++        {
++          "index": 2,
++          "summary": {
++            "distanceM": 1610,
++            "durationS": 1200
++          },
++          "geometry": [
++            [
++              12.9716,
++              77.5946
++            ],
++            [
++              12.971524,
++              77.594662
++            ],
++            [
++              12.9715,
++              77.59475
++            ],
++            [
++              12.971579,
++              77.594889
++            ],
++            [
++              12.971802,
++              77.595101
++            ],
++            [
++              12.972202,
++              77.595401
++            ],
++            [
++              12.9728,
++              77.5958
++            ],
++            [
++              12.973602,
++              77.596301
++            ],
++            [
++              12.974602,
++              77.596901
++            ],
++            [
++              12.975779,
++              77.597589
++            ],
++            [
++              12.9771,
++              77.59835
++            ],
++            [
++              12.978524,
++              77.599162
++            ],
++            [
++              12.98,
++              77.6
++            ]
++          ],
++          "score": 52,
++          "band": "yellow",
++          "cells": [
++            "tdr1v9q",
++            "tdr1v9r",
++            "tdr1v9x",
++            "tdr1v9z",
++            "tdr1vcb",
++            "tdr1vf0",
++            "tdr1vf3",
++            "tdr1vf9",
++            "tdr1vff"
++          ],
++          "cellScores": [
++            {
++              "cell": "tdr1v9q",
++              "score": 59
++            },
++            {
++              "cell": "tdr1v9r",
++              "score": 49
++            },
++            {
++              "cell": "tdr1v9x",
++              "score": 49
++            },
++            {
++              "cell": "tdr1v9z",
++              "score": 50
++            },
++            {
++              "cell": "tdr1vcb",
++              "score": 35
++            },
++            {
++              "cell": "tdr1vf0",
++              "score": 58
++            },
++            {
++              "cell": "tdr1vf3",
++              "score": 47
++            },
++            {
++              "cell": "tdr1vf9",
++              "score": 47
++            },
++            {
++              "cell": "tdr1vff",
++              "score": 49
++            }
++          ],
++          "explanationInput": {
++            "unlitCells": 3,
++            "totalCells": 9,
++            "reportsLast30d": 4,
++            "worstCellScore": 35,
++            "timeBucket": "evening"
++          }
++        }
++      ]
++    },
++    {
++      "originLat": 20.2666,
++      "originLng": 85.836,
++      "label": "evening",
++      "routes": [
++        {
++          "index": 0,
++          "summary": {
++            "distanceM": 1450,
++            "durationS": 1080
++          },
++          "geometry": [
++            [
++              20.2666,
++              85.836
++            ],
++            [
++              20.2666,
++              85.836617
++            ],
++            [
++              20.2666,
++              85.837233
++            ],
++            [
++              20.2666,
++              85.83785
++            ],
++            [
++              20.2666,
++              85.838467
++            ],
++            [
++              20.2666,
++              85.839083
++            ],
++            [
++              20.2666,
++              85.8397
++            ],
++            [
++              20.2666,
++              85.840317
++            ],
++            [
++              20.2666,
++              85.840933
++            ],
++            [
++              20.2666,
++              85.84155
++            ],
++            [
++              20.2666,
++              85.842167
++            ],
++            [
++              20.2666,
++              85.842783
++            ],
++            [
++              20.2666,
++              85.8434
++            ]
++          ],
++          "score": 58,
++          "band": "yellow",
++          "cells": [
++            "tgt531r",
++            "tgt5332",
++            "tgt5333",
++            "tgt5336",
++            "tgt5337",
++            "tgt533k",
++            "tgt533m"
++          ],
++          "cellScores": [
++            {
++              "cell": "tgt531r",
++              "score": 60
++            },
++            {
++              "cell": "tgt5332",
++              "score": 55
++            },
++            {
++              "cell": "tgt5333",
++              "score": 50
++            },
++            {
++              "cell": "tgt5336",
++              "score": 41
++            },
++            {
++              "cell": "tgt5337",
++              "score": 56
++            },
++            {
++              "cell": "tgt533k",
++              "score": 51
++            },
++            {
++              "cell": "tgt533m",
++              "score": 66
++            }
++          ],
++          "explanationInput": {
++            "unlitCells": 2,
++            "totalCells": 7,
++            "reportsLast30d": 3,
++            "worstCellScore": 41,
++            "timeBucket": "evening"
++          }
++        },
++        {
++          "index": 1,
++          "summary": {
++            "distanceM": 1720,
++            "durationS": 1290
++          },
++          "geometry": [
++            [
++              20.2666,
++              85.836
++            ],
++            [
++              20.267506,
++              85.83707
++            ],
++            [
++              20.26835,
++              85.838108
++            ],
++            [
++              20.269075,
++              85.839087
++            ],
++            [
++              20.269631,
++              85.839982
++            ],
++            [
++              20.269981,
++              85.840774
++            ],
++            [
++              20.2701,
++              85.84145
++            ],
++            [
++              20.269981,
++              85.842007
++            ],
++            [
++              20.269631,
++              85.842449
++            ],
++            [
++              20.269075,
++              85.842787
++            ],
++            [
++              20.26835,
++              85.843042
++            ],
++            [
++              20.267506,
++              85.843236
++            ],
++            [
++              20.2666,
++              85.8434
++            ]
++          ],
++          "score": 66,
++          "band": "yellow",
++          "cells": [
++            "tgt531r",
++            "tgt5338",
++            "tgt5339",
++            "tgt533f",
++            "tgt5365",
++            "tgt536h",
++            "tgt533u",
++            "tgt533s",
++            "tgt533t",
++            "tgt533m"
++          ],
++          "cellScores": [
++            {
++              "cell": "tgt531r",
++              "score": 68
++            },
++            {
++              "cell": "tgt5338",
++              "score": 63
++            },
++            {
++              "cell": "tgt5339",
++              "score": 74
++            },
++            {
++              "cell": "tgt533f",
++              "score": 66
++            },
++            {
++              "cell": "tgt5365",
++              "score": 61
++            },
++            {
++              "cell": "tgt536h",
++              "score": 49
++            },
++            {
++              "cell": "tgt533u",
++              "score": 70
++            },
++            {
++              "cell": "tgt533s",
++              "score": 73
++            },
++            {
++              "cell": "tgt533t",
++              "score": 69
++            },
++            {
++              "cell": "tgt533m",
++              "score": 74
++            }
++          ],
++          "explanationInput": {
++            "unlitCells": 1,
++            "totalCells": 10,
++            "reportsLast30d": 2,
++            "worstCellScore": 49,
++            "timeBucket": "evening"
++          }
++        },
++        {
++          "index": 2,
++          "summary": {
++            "distanceM": 1610,
++            "durationS": 1200
++          },
++          "geometry": [
++            [
++              20.2666,
++              85.836
++            ],
++            [
++              20.265824,
++              85.836228
++            ],
++            [
++              20.2651,
++              85.836483
++            ],
++            [
++              20.264479,
++              85.836789
++            ],
++            [
++              20.264002,
++              85.837168
++            ],
++            [
++              20.263702,
++              85.837634
++            ],
++            [
++              20.2636,
++              85.8382
++            ],
++            [
++              20.263702,
++              85.838868
++            ],
++            [
++              20.264002,
++              85.839634
++            ],
++            [
++              20.264479,
++              85.840489
++            ],
++            [
++              20.2651,
++              85.841417
++            ],
++            [
++              20.265824,
++              85.842395
++            ],
++            [
++              20.2666,
++              85.8434
++            ]
++          ],
++          "score": 52,
++          "band": "yellow",
++          "cells": [
++            "tgt531r",
++            "tgt5332",
++            "tgt5330",
++            "tgt532b",
++            "tgt532c",
++            "tgt532f",
++            "tgt5335",
++            "tgt533k",
++            "tgt533m"
++          ],
++          "cellScores": [
++            {
++              "cell": "tgt531r",
++              "score": 54
++            },
++            {
++              "cell": "tgt5332",
++              "score": 49
++            },
++            {
++              "cell": "tgt5330",
++              "score": 60
++            },
++            {
++              "cell": "tgt532b",
++              "score": 45
++            },
++            {
++              "cell": "tgt532c",
++              "score": 35
++            },
++            {
++              "cell": "tgt532f",
++              "score": 44
++            },
++            {
++              "cell": "tgt5335",
++              "score": 58
++            },
++            {
++              "cell": "tgt533k",
++              "score": 45
++            },
++            {
++              "cell": "tgt533m",
++              "score": 60
++            }
++          ],
++          "explanationInput": {
++            "unlitCells": 3,
++            "totalCells": 9,
++            "reportsLast30d": 4,
++            "worstCellScore": 35,
++            "timeBucket": "evening"
++          }
++        }
++      ]
++    }
++  ],
++  "night": [
++    {
++      "originLat": 12.9716,
++      "originLng": 77.5946,
++      "label": "night",
++      "routes": [
++        {
++          "index": 0,
++          "summary": {
++            "distanceM": 1450,
++            "durationS": 1080
++          },
++          "geometry": [
++            [
++              12.9716,
++              77.5946
++            ],
++            [
++              12.9723,
++              77.59505
++            ],
++            [
++              12.973,
++              77.5955
++            ],
++            [
++              12.9737,
++              77.59595
++            ],
++            [
++              12.9744,
++              77.5964
++            ],
++            [
++              12.9751,
++              77.59685
++            ],
++            [
++              12.9758,
++              77.5973
++            ],
++            [
++              12.9765,
++              77.59775
++            ],
++            [
++              12.9772,
++              77.5982
++            ],
++            [
++              12.9779,
++              77.59865
++            ],
++            [
++              12.9786,
++              77.5991
++            ],
++            [
++              12.9793,
++              77.59955
++            ],
++            [
++              12.98,
++              77.6
++            ]
++          ],
++          "score": 44,
++          "band": "yellow",
++          "cells": [
++            "tdr1v9q",
++            "tdr1v9w",
++            "tdr1v9x",
++            "tdr1v9z",
++            "tdr1vf0",
++            "tdr1vf2",
++            "tdr1vf3",
++            "tdr1vf9",
++            "tdr1vff"
++          ],
++          "cellScores": [
++            {
++              "cell": "tdr1v9q",
++              "score": 51
++            },
++            {
++              "cell": "tdr1v9w",
++              "score": 42
++            },
++            {
++              "cell": "tdr1v9x",
++              "score": 41
++            },
++            {
++              "cell": "tdr1v9z",
++              "score": 42
++            },
++            {
++              "cell": "tdr1vf0",
++              "score": 28
++            },
++            {
++              "cell": "tdr1vf2",
++              "score": 39
++            },
++            {
++              "cell": "tdr1vf3",
++              "score": 39
++            },
++            {
++              "cell": "tdr1vf9",
++              "score": 39
++            },
++            {
++              "cell": "tdr1vff",
++              "score": 41
++            }
++          ],
++          "explanationInput": {
++            "unlitCells": 4,
++            "totalCells": 9,
++            "reportsLast30d": 5,
++            "worstCellScore": 28,
++            "timeBucket": "night"
++          }
++        },
++        {
++          "index": 1,
++          "summary": {
++            "distanceM": 1720,
++            "durationS": 1290
++          },
++          "geometry": [
++            [
++              12.9716,
++              77.5946
++            ],
++            [
++              12.973206,
++              77.595503
++            ],
++            [
++              12.97475,
++              77.596375
++            ],
++            [
++              12.976175,
++              77.597187
++            ],
++            [
++              12.977431,
++              77.597916
++            ],
++            [
++              12.978481,
++              77.59854
++            ],
++            [
++              12.9793,
++              77.59905
++            ],
++            [
++              12.979881,
++              77.59944
++            ],
++            [
++              12.980231,
++              77.599716
++            ],
++            [
++              12.980375,
++              77.599887
++            ],
++            [
++              12.98035,
++              77.599975
++            ],
++            [
++              12.980206,
++              77.600003
++            ],
++            [
++              12.98,
++              77.6
++            ]
++          ],
++          "score": 55,
++          "band": "yellow",
++          "cells": [
++            "tdr1v9q",
++            "tdr1v9x",
++            "tdr1v9z",
++            "tdr1vf0",
++            "tdr1vf3",
++            "tdr1vf9",
++            "tdr1vfc",
++            "tdr1vff",
++            "tdr1vg4"
++          ],
++          "cellScores": [
++            {
++              "cell": "tdr1v9q",
++              "score": 62
++            },
++            {
++              "cell": "tdr1v9x",
++              "score": 52
++            },
++            {
++              "cell": "tdr1v9z",
++              "score": 53
++            },
++            {
++              "cell": "tdr1vf0",
++              "score": 61
++            },
++            {
++              "cell": "tdr1vf3",
++              "score": 34
++            },
++            {
++              "cell": "tdr1vf9",
++              "score": 50
++            },
++            {
++              "cell": "tdr1vfc",
++              "score": 58
++            },
++            {
++              "cell": "tdr1vff",
++              "score": 52
++            },
++            {
++              "cell": "tdr1vg4",
++              "score": 57
++            }
++          ],
++          "explanationInput": {
++            "unlitCells": 3,
++            "totalCells": 9,
++            "reportsLast30d": 3,
++            "worstCellScore": 34,
++            "timeBucket": "night"
++          }
++        },
++        {
++          "index": 2,
++          "summary": {
++            "distanceM": 1610,
++            "durationS": 1200
++          },
++          "geometry": [
++            [
++              12.9716,
++              77.5946
++            ],
++            [
++              12.971524,
++              77.594662
++            ],
++            [
++              12.9715,
++              77.59475
++            ],
++            [
++              12.971579,
++              77.594889
++            ],
++            [
++              12.971802,
++              77.595101
++            ],
++            [
++              12.972202,
++              77.595401
++            ],
++            [
++              12.9728,
++              77.5958
++            ],
++            [
++              12.973602,
++              77.596301
++            ],
++            [
++              12.974602,
++              77.596901
++            ],
++            [
++              12.975779,
++              77.597589
++            ],
++            [
++              12.9771,
++              77.59835
++            ],
++            [
++              12.978524,
++              77.599162
++            ],
++            [
++              12.98,
++              77.6
++            ]
++          ],
++          "score": 38,
++          "band": "red",
++          "cells": [
++            "tdr1v9q",
++            "tdr1v9r",
++            "tdr1v9x",
++            "tdr1v9z",
++            "tdr1vcb",
++            "tdr1vf0",
++            "tdr1vf3",
++            "tdr1vf9",
++            "tdr1vff"
++          ],
++          "cellScores": [
++            {
++              "cell": "tdr1v9q",
++              "score": 45
++            },
++            {
++              "cell": "tdr1v9r",
++              "score": 35
++            },
++            {
++              "cell": "tdr1v9x",
++              "score": 35
++            },
++            {
++              "cell": "tdr1v9z",
++              "score": 36
++            },
++            {
++              "cell": "tdr1vcb",
++              "score": 21
++            },
++            {
++              "cell": "tdr1vf0",
++              "score": 44
++            },
++            {
++              "cell": "tdr1vf3",
++              "score": 33
++            },
++            {
++              "cell": "tdr1vf9",
++              "score": 33
++            },
++            {
++              "cell": "tdr1vff",
++              "score": 35
++            }
++          ],
++          "explanationInput": {
++            "unlitCells": 6,
++            "totalCells": 9,
++            "reportsLast30d": 7,
++            "worstCellScore": 21,
++            "timeBucket": "night"
++          }
++        }
++      ]
++    },
++    {
++      "originLat": 20.2666,
++      "originLng": 85.836,
++      "label": "night",
++      "routes": [
++        {
++          "index": 0,
++          "summary": {
++            "distanceM": 1450,
++            "durationS": 1080
++          },
++          "geometry": [
++            [
++              20.2666,
++              85.836
++            ],
++            [
++              20.2666,
++              85.836617
++            ],
++            [
++              20.2666,
++              85.837233
++            ],
++            [
++              20.2666,
++              85.83785
++            ],
++            [
++              20.2666,
++              85.838467
++            ],
++            [
++              20.2666,
++              85.839083
++            ],
++            [
++              20.2666,
++              85.8397
++            ],
++            [
++              20.2666,
++              85.840317
++            ],
++            [
++              20.2666,
++              85.840933
++            ],
++            [
++              20.2666,
++              85.84155
++            ],
++            [
++              20.2666,
++              85.842167
++            ],
++            [
++              20.2666,
++              85.842783
++            ],
++            [
++              20.2666,
++              85.8434
++            ]
++          ],
++          "score": 44,
++          "band": "yellow",
++          "cells": [
++            "tgt531r",
++            "tgt5332",
++            "tgt5333",
++            "tgt5336",
++            "tgt5337",
++            "tgt533k",
++            "tgt533m"
++          ],
++          "cellScores": [
++            {
++              "cell": "tgt531r",
++              "score": 46
++            },
++            {
++              "cell": "tgt5332",
++              "score": 41
++            },
++            {
++              "cell": "tgt5333",
++              "score": 36
++            },
++            {
++              "cell": "tgt5336",
++              "score": 28
++            },
++            {
++              "cell": "tgt5337",
++              "score": 42
++            },
++            {
++              "cell": "tgt533k",
++              "score": 37
++            },
++            {
++              "cell": "tgt533m",
++              "score": 52
++            }
++          ],
++          "explanationInput": {
++            "unlitCells": 4,
++            "totalCells": 7,
++            "reportsLast30d": 5,
++            "worstCellScore": 28,
++            "timeBucket": "night"
++          }
++        },
++        {
++          "index": 1,
++          "summary": {
++            "distanceM": 1720,
++            "durationS": 1290
++          },
++          "geometry": [
++            [
++              20.2666,
++              85.836
++            ],
++            [
++              20.267506,
++              85.83707
++            ],
++            [
++              20.26835,
++              85.838108
++            ],
++            [
++              20.269075,
++              85.839087
++            ],
++            [
++              20.269631,
++              85.839982
++            ],
++            [
++              20.269981,
++              85.840774
++            ],
++            [
++              20.2701,
++              85.84145
++            ],
++            [
++              20.269981,
++              85.842007
++            ],
++            [
++              20.269631,
++              85.842449
++            ],
++            [
++              20.269075,
++              85.842787
++            ],
++            [
++              20.26835,
++              85.843042
++            ],
++            [
++              20.267506,
++              85.843236
++            ],
++            [
++              20.2666,
++              85.8434
++            ]
++          ],
++          "score": 55,
++          "band": "yellow",
++          "cells": [
++            "tgt531r",
++            "tgt5338",
++            "tgt5339",
++            "tgt533f",
++            "tgt5365",
++            "tgt536h",
++            "tgt533u",
++            "tgt533s",
++            "tgt533t",
++            "tgt533m"
++          ],
++          "cellScores": [
++            {
++              "cell": "tgt531r",
++              "score": 57
++            },
++            {
++              "cell": "tgt5338",
++              "score": 52
++            },
++            {
++              "cell": "tgt5339",
++              "score": 63
++            },
++            {
++              "cell": "tgt533f",
++              "score": 55
++            },
++            {
++              "cell": "tgt5365",
++              "score": 50
++            },
++            {
++              "cell": "tgt536h",
++              "score": 34
++            },
++            {
++              "cell": "tgt533u",
++              "score": 59
++            },
++            {
++              "cell": "tgt533s",
++              "score": 62
++            },
++            {
++              "cell": "tgt533t",
++              "score": 58
++            },
++            {
++              "cell": "tgt533m",
++              "score": 63
++            }
++          ],
++          "explanationInput": {
++            "unlitCells": 3,
++            "totalCells": 10,
++            "reportsLast30d": 3,
++            "worstCellScore": 34,
++            "timeBucket": "night"
++          }
++        },
++        {
++          "index": 2,
++          "summary": {
++            "distanceM": 1610,
++            "durationS": 1200
++          },
++          "geometry": [
++            [
++              20.2666,
++              85.836
++            ],
++            [
++              20.265824,
++              85.836228
++            ],
++            [
++              20.2651,
++              85.836483
++            ],
++            [
++              20.264479,
++              85.836789
++            ],
++            [
++              20.264002,
++              85.837168
++            ],
++            [
++              20.263702,
++              85.837634
++            ],
++            [
++              20.2636,
++              85.8382
++            ],
++            [
++              20.263702,
++              85.838868
++            ],
++            [
++              20.264002,
++              85.839634
++            ],
++            [
++              20.264479,
++              85.840489
++            ],
++            [
++              20.2651,
++              85.841417
++            ],
++            [
++              20.265824,
++              85.842395
++            ],
++            [
++              20.2666,
++              85.8434
++            ]
++          ],
++          "score": 38,
++          "band": "red",
++          "cells": [
++            "tgt531r",
++            "tgt5332",
++            "tgt5330",
++            "tgt532b",
++            "tgt532c",
++            "tgt532f",
++            "tgt5335",
++            "tgt533k",
++            "tgt533m"
++          ],
++          "cellScores": [
++            {
++              "cell": "tgt531r",
++              "score": 40
++            },
++            {
++              "cell": "tgt5332",
++              "score": 35
++            },
++            {
++              "cell": "tgt5330",
++              "score": 46
++            },
++            {
++              "cell": "tgt532b",
++              "score": 31
++            },
++            {
++              "cell": "tgt532c",
++              "score": 21
++            },
++            {
++              "cell": "tgt532f",
++              "score": 30
++            },
++            {
++              "cell": "tgt5335",
++              "score": 44
++            },
++            {
++              "cell": "tgt533k",
++              "score": 31
++            },
++            {
++              "cell": "tgt533m",
++              "score": 46
++            }
++          ],
++          "explanationInput": {
++            "unlitCells": 6,
++            "totalCells": 9,
++            "reportsLast30d": 7,
++            "worstCellScore": 21,
++            "timeBucket": "night"
++          }
++        }
++      ]
++    }
++  ]
++}
+\ No newline at end of file
+diff --git a/backend/src/fallback/staticRoutes.js b/backend/src/fallback/staticRoutes.js
+index 629adf0..f8467ce 100644
+--- a/backend/src/fallback/staticRoutes.js
++++ b/backend/src/fallback/staticRoutes.js
+@@ -43,8 +43,15 @@ function getStaticData() {
+  */
+ export function getFallbackRoutes(origin, bucket, deps = {}) {
+   const getCfg = deps.getConfig || getConfig;
+-  const cfg = getCfg();
+-  if (!cfg.staticFallbackEnabled) return null;
++  // Config may throw when required env vars are absent. A fallback lookup must
++  // never turn an upstream 502 into a 500 - treat unreadable config as "disabled".
++  let cfg;
++  try {
++    cfg = getCfg();
++  } catch {
++    return null;
++  }
++  if (!cfg || !cfg.staticFallbackEnabled) return null;
+ 
+   const data = getStaticData();
+   // Map morning/evening to day if missing in our minimal demo dataset
+diff --git a/backend/src/server.js b/backend/src/server.js
+index 7ef8221..5c71a60 100644
+--- a/backend/src/server.js
++++ b/backend/src/server.js
+@@ -8,6 +8,7 @@ import routeRouter from './routes/route.js';
+ import reportRouter from './routes/report.js';
+ import explainRouter from './routes/explain.js';
+ import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
++import { registerSafetyAgent } from './agent/register.js';
+ 
+ export const logger = pino({ level: process.env.LOG_LEVEL || 'info' });
+ 
+@@ -41,6 +42,14 @@ export function createApp() {
+     next();
+   });
+ 
++  // Role 3 explanation agent (no-op unless EXPLAIN_AGENT_ENABLED=true).
++  if (registerSafetyAgent()) {
++    logger.info(
++      { mode: process.env.EXPLAIN_AGENT_MODE || 'js' },
++      'explanation agent registered'
++    );
++  }
++
+   app.use(healthRouter);
+   app.use(routeRouter);
+   app.use(reportRouter);
+diff --git a/backend/src/services/explainAgent.js b/backend/src/services/explainAgent.js
+new file mode 100644
+index 0000000..04fa993
+--- /dev/null
++++ b/backend/src/services/explainAgent.js
+@@ -0,0 +1,302 @@
++/**
++ * Role 3 integration — Explainable Safety Agent bridge.
++ *
++ * Turns the grounded factors from RFC-006 (explainContext.js) into the
++ * `signals` contract defined in ai_agent/signal_contract.py, then renders a
++ * 1-2 sentence plain-English explanation.
++ *
++ * Two runtimes, chosen by EXPLAIN_AGENT_MODE:
++ *
++ *   "js"     (default) — renders in-process using the same grounding rules as
++ *                        ai_agent/explain_agent.py's mock/fallback template.
++ *                        Works everywhere, including Vercel serverless.
++ *   "python" —           spawns `python3 ai_agent/explain_agent.py` and pipes
++ *                        JSON over stdin/stdout, per ai_agent/README.md. Gives
++ *                        you real Grok/Gemini output. Requires a host with
++ *                        Python (local dev, Railway, Render, Docker) — NOT
++ *                        Vercel serverless.
++ *   "http"   —           POSTs to the agent deployed as its own Python function
++ *                        (ai_agent/api/index.py + ai_agent/vercel.json). Set
++ *                        EXPLAIN_AGENT_URL to that deployment's URL. This is the
++ *                        one that gives you a real LLM while the backend stays
++ *                        on Vercel.
++ *
++ * Failures are always non-fatal: the caller keeps its base contract and simply
++ * gets no `explanation` field.
++ */
++
++import { execFile } from 'node:child_process';
++import path from 'node:path';
++import { fileURLToPath } from 'node:url';
++
++const __dirname = path.dirname(fileURLToPath(import.meta.url));
++/** Repo root — src/services/ → src/ → backend/ → repo root. */
++const REPO_ROOT = path.resolve(__dirname, '..', '..', '..');
++const AGENT_SCRIPT = path.join(REPO_ROOT, 'ai_agent', 'explain_agent.py');
++
++const AGENT_TIMEOUT_MS = Number(process.env.EXPLAIN_AGENT_TIMEOUT_MS || 8000);
++
++/** Default provider for the remote modes. */
++const DEFAULT_PROVIDER = process.env.EXPLAIN_AGENT_PROVIDER || 'mock';
++
++// ── Signal building ──────────────────────────────────────────────────
++
++/**
++ * Pick the worst-scoring cell on the route — the one the explanation is about.
++ *
++ * @param {string[]} cells
++ * @param {Map<string, number>} cellScoreMap
++ * @returns {{ cell: string, score: number }}
++ */
++export function worstCellOf(cells, cellScoreMap) {
++  let cell = cells[0];
++  let score = Infinity;
++  for (const c of cells) {
++    const s = cellScoreMap.get(c) ?? 50;
++    if (s < score) {
++      score = s;
++      cell = c;
++    }
++  }
++  return { cell, score: score === Infinity ? 50 : score };
++}
++
++/**
++ * Build one `signals` object matching ai_agent/signal_contract.py exactly.
++ * Every value comes from the DB or the scoring engine — nothing is invented.
++ *
++ * @param {object} params
++ * @param {string} params.cell - geohash-7 the explanation is about
++ * @param {number} params.score - route score 0-100
++ * @param {string} params.bucket - morning|day|evening|night
++ * @param {string} [params.routeLabel]
++ * @param {object} [deps] - { getDb }
++ * @returns {Promise<object>} signals
++ */
++export async function buildSignals({ cell, score, bucket, routeLabel = 'Route' }, deps = {}) {
++  const getDb = deps.getDb;
++  const db = getDb ? getDb() : (await import('../db/supabase.js')).default();
++
++  // Lighting / foot traffic for the worst cell.
++  let lighting = 50;
++  let footTraffic = 50;
++  try {
++    const { data: seg } = await db
++      .from('road_segments')
++      .select('lighting, foot_traffic')
++      .eq('cell_geohash', cell)
++      .single();
++    if (seg) {
++      lighting = seg.lighting ?? 50;
++      footTraffic = seg.foot_traffic ?? 50;
++    }
++  } catch {
++    /* fall through to neutral defaults */
++  }
++
++  // Recent reports in that cell — severity, light condition, verbatim notes.
++  let reports = [];
++  try {
++    const { data } = await db
++      .from('incident_reports')
++      .select('severity, light_condition, note, occurred_at, reporter_hash')
++      .eq('cell_geohash', cell)
++      .order('occurred_at', { ascending: false })
++      .limit(20);
++    reports = data || [];
++  } catch {
++    reports = [];
++  }
++
++  const incidentSummary = [];
++  let corroborated = false;
++
++  if (reports.length > 0) {
++    const now = Date.now();
++    const daysAgo = reports.map((r) =>
++      Math.floor((now - new Date(r.occurred_at).getTime()) / 86_400_000)
++    );
++    const severities = reports.map((r) => Number(r.severity) || 1);
++
++    // Most common light_condition.
++    const lightCounts = {};
++    for (const r of reports) {
++      const lc = r.light_condition || 'unknown';
++      lightCounts[lc] = (lightCounts[lc] || 0) + 1;
++    }
++    const lightMode = Object.entries(lightCounts).sort((a, b) => b[1] - a[1])[0][0];
++
++    incidentSummary.push({
++      count: reports.length,
++      most_recent_days_ago: Math.min(...daysAgo),
++      severity_avg: Number(
++        (severities.reduce((a, b) => a + b, 0) / severities.length).toFixed(1)
++      ),
++      light_condition_mode: lightMode,
++      sample_notes: reports
++        .map((r) => r.note)
++        .filter((n) => typeof n === 'string' && n.trim() !== '')
++        .slice(0, 3),
++    });
++
++    // Corroborated = >= 2 distinct reporters (matches the scoring engine's rule).
++    const reporters = new Set(reports.map((r) => r.reporter_hash).filter(Boolean));
++    corroborated = reporters.size >= 2 || (reporters.size === 0 && reports.length >= 2);
++  }
++
++  return {
++    segment_id: cell,
++    route_label: routeLabel,
++    time_bucket: bucket,
++    safety_score: score,
++    lighting,
++    foot_traffic: footTraffic,
++    incident_summary: incidentSummary,
++    corroborated,
++  };
++}
++
++// ── Renderer A: in-process JS (Vercel-safe) ──────────────────────────
++
++/**
++ * Port of ai_agent/explain_agent.py's grounded fallback template.
++ * Never names an incident category — the DB has no such field.
++ *
++ * @param {object} s - signals
++ * @returns {string}
++ */
++export function renderExplanationJs(s) {
++  const parts = [];
++  const lightWord = s.lighting < 40 ? 'poorly lit' : s.lighting < 70 ? 'partly lit' : 'well lit';
++  const trafficWord =
++    s.foot_traffic < 40 ? 'quiet' : s.foot_traffic < 70 ? 'moderately busy' : 'busy';
++
++  parts.push(
++    `This stretch is ${lightWord} and ${trafficWord} during the ${s.time_bucket}, scoring ${s.safety_score} out of 100.`
++  );
++
++  const inc = s.incident_summary[0];
++  if (inc) {
++    if (s.corroborated) {
++      parts.push(
++        `${inc.count} independent reports here in the last ${inc.most_recent_days_ago <= 30 ? '30 days' : 'months'} (most recent ${inc.most_recent_days_ago} day${inc.most_recent_days_ago === 1 ? '' : 's'} ago, average severity ${inc.severity_avg}/3).`
++      );
++    } else {
++      parts.push(
++        `One unconfirmed report was logged ${inc.most_recent_days_ago} day${inc.most_recent_days_ago === 1 ? '' : 's'} ago; it has not been corroborated by another reporter.`
++      );
++    }
++    if (inc.sample_notes.length > 0) {
++      parts.push(`One reporter noted: "${inc.sample_notes[0]}"`);
++    }
++  }
++
++  return parts.join(' ');
++}
++
++// ── Renderer B: Python subprocess (real LLM) ─────────────────────────
++
++/**
++ * Call ai_agent/explain_agent.py over stdin/stdout.
++ *
++ * @param {object} signals
++ * @param {string} provider - mock | grok | gemini
++ * @returns {Promise<string>}
++ */
++export function renderExplanationPython(signals, provider = 'mock') {
++  return new Promise((resolve, reject) => {
++    const bin = process.env.PYTHON_BIN || 'python3';
++    const child = execFile(
++      bin,
++      [AGENT_SCRIPT, '--provider', provider],
++      { timeout: AGENT_TIMEOUT_MS, cwd: REPO_ROOT, maxBuffer: 1024 * 1024 },
++      (err, stdout, stderr) => {
++        if (err) return reject(new Error(stderr || err.message));
++        try {
++          const parsed = JSON.parse(stdout);
++          if (!parsed.explanation) return reject(new Error('agent returned no explanation'));
++          resolve(String(parsed.explanation).trim());
++        } catch (e) {
++          reject(e);
++        }
++      }
++    );
++    child.stdin.end(JSON.stringify(signals));
++  });
++}
++
++// ── Renderer C: deployed Python function over HTTP ───────────────────
++
++/**
++ * POST to the agent deployed from ai_agent/ (api/index.py). Contract:
++ *   request  { "signals": {...}, "provider": "gemini" }
++ *   response { "explanation": "..." }
++ *
++ * @param {object} signals
++ * @param {string} provider - mock | grok | gemini
++ * @returns {Promise<string>}
++ */
++export async function renderExplanationHttp(signals, provider = 'gemini') {
++  const url = process.env.EXPLAIN_AGENT_URL;
++  if (!url) throw new Error('EXPLAIN_AGENT_URL is not set');
++
++  const controller = new AbortController();
++  const timer = setTimeout(() => controller.abort(), AGENT_TIMEOUT_MS);
++  try {
++    const res = await fetch(url, {
++      method: 'POST',
++      headers: { 'Content-Type': 'application/json' },
++      body: JSON.stringify({ signals, provider }),
++      signal: controller.signal,
++    });
++    if (!res.ok) throw new Error(`agent HTTP ${res.status}`);
++    const body = await res.json();
++    if (!body.explanation) throw new Error(body.error || 'agent returned no explanation');
++    return String(body.explanation).trim();
++  } finally {
++    clearTimeout(timer);
++  }
++}
++
++// ── Public entry point ───────────────────────────────────────────────
++
++/**
++ * Produce an explanation for one route. Returns null on any failure so the
++ * caller's base contract is never at risk.
++ *
++ * @param {object} params - passed through to buildSignals
++ * @param {object} [deps] - { getDb }
++ * @returns {Promise<{ explanation: string, signals: object, mode: string } | null>}
++ */
++export async function explainRoute(params, deps = {}) {
++  try {
++    const signals = await buildSignals(params, deps);
++    const mode = process.env.EXPLAIN_AGENT_MODE || 'js';
++    const provider = process.env.EXPLAIN_AGENT_PROVIDER || DEFAULT_PROVIDER;
++
++    // Every remote mode degrades to the in-process renderer on failure, so a
++    // cold Python function or a dead LLM never costs you the explanation.
++    let explanation;
++    let usedMode = mode;
++    if (mode === 'python' || mode === 'http') {
++      try {
++        explanation =
++          mode === 'python'
++            ? await renderExplanationPython(signals, provider)
++            : await renderExplanationHttp(signals, provider);
++      } catch {
++        explanation = renderExplanationJs(signals);
++        usedMode = `${mode}-fallback-js`;
++      }
++    } else {
++      explanation = renderExplanationJs(signals);
++      usedMode = 'js';
++    }
++
++    return { explanation, signals, mode: usedMode };
++  } catch {
++    return null;
++  }
++}
++
++export default explainRoute;
+diff --git a/backend/src/services/explainContext.js b/backend/src/services/explainContext.js
+index 15efd4f..c92a6ec 100644
+--- a/backend/src/services/explainContext.js
++++ b/backend/src/services/explainContext.js
+@@ -207,10 +207,13 @@ export async function buildExplainContext(params, deps = {}) {
+     generatedAt: new Date().toISOString(),
+   };
+ 
+-  // If an explain provider is registered, let it enrich (but never alter base contract)
++  // If an explain provider is registered, let it enrich (but never alter base contract).
++  // The second argument hands the provider the internals it needs to build the
++  // Role 3 signals contract (cells, scores, time bucket, DB deps) without those
++  // ever leaking into the public JSON response.
+   if (_explainProvider) {
+     try {
+-      await _explainProvider(result);
++      await _explainProvider(result, { cells, cellScoreMap, bucket, deps });
+     } catch {
+       // Provider failures are non-fatal — the base response is always valid
+     }
+diff --git a/backend/src/services/scoringEngine.js b/backend/src/services/scoringEngine.js
+index f19f26b..46b0b10 100644
+--- a/backend/src/services/scoringEngine.js
++++ b/backend/src/services/scoringEngine.js
+@@ -31,11 +31,20 @@ import getSupabase from '../db/supabase.js';
+ 
+ /**
+  * Determine the time bucket for a Date (or hour number).
++ *
++ * Buckets describe how a street FEELS locally ("night" = dark), so they must be
++ * evaluated in the city's local time, not UTC. Set TIME_BUCKET_UTC_OFFSET_MIN
++ * to the deployment city's offset (IST = 330). Default 0 keeps UTC behaviour.
++ *
+  * @param {Date|number} dateOrHour
+  * @returns {'morning'|'day'|'evening'|'night'}
+  */
+ export function bucketOf(dateOrHour) {
+-  const h = typeof dateOrHour === 'number' ? dateOrHour : dateOrHour.getUTCHours();
++  const offsetMin = Number(process.env.TIME_BUCKET_UTC_OFFSET_MIN || 0);
++  const h =
++    typeof dateOrHour === 'number'
++      ? dateOrHour
++      : new Date(dateOrHour.getTime() + offsetMin * 60_000).getUTCHours();
+   if (h >= TIME_BUCKETS.morning.start && h < TIME_BUCKETS.morning.end) return 'morning';
+   if (h >= TIME_BUCKETS.day.start && h < TIME_BUCKETS.day.end) return 'day';
+   if (h >= TIME_BUCKETS.evening.start && h < TIME_BUCKETS.evening.end) return 'evening';
+diff --git a/backend/tests/explainAgent.test.js b/backend/tests/explainAgent.test.js
+new file mode 100644
+index 0000000..23d031c
+--- /dev/null
++++ b/backend/tests/explainAgent.test.js
+@@ -0,0 +1,240 @@
++/**
++ * Role 3 bridge tests — signal building, JS renderer grounding, and the
++ * additive provider registration.
++ */
++
++import { jest } from '@jest/globals';
++
++import {
++  buildSignals,
++  renderExplanationJs,
++  worstCellOf,
++  explainRoute,
++} from '../src/services/explainAgent.js';
++import {
++  buildExplainContext,
++  registerExplainProvider,
++  _clearMicroCache,
++} from '../src/services/explainContext.js';
++import { registerSafetyAgent } from '../src/agent/register.js';
++import { _clearCache } from '../src/services/scoringEngine.js';
++
++function makeDb({ segment = null, reports = [] } = {}) {
++  return {
++    from: jest.fn((table) => {
++      if (table === 'road_segments') {
++        return {
++          select: jest.fn().mockReturnValue({
++            in: jest.fn().mockResolvedValue({ data: segment ? [segment] : [], error: null }),
++            eq: jest.fn().mockReturnValue({
++              single: jest.fn().mockResolvedValue({ data: segment, error: null }),
++            }),
++          }),
++        };
++      }
++      if (table === 'incident_reports') {
++        return {
++          select: jest.fn().mockReturnValue({
++            in: jest.fn().mockReturnValue({
++              gte: jest.fn().mockResolvedValue({ data: reports, error: null }),
++            }),
++            eq: jest.fn().mockReturnValue({
++              order: jest.fn().mockReturnValue({
++                limit: jest.fn().mockResolvedValue({ data: reports, error: null }),
++              }),
++            }),
++          }),
++        };
++      }
++      if (table === 'segment_safety_scores') {
++        return {
++          select: jest.fn().mockReturnValue({
++            eq: jest.fn().mockReturnValue({
++              in: jest.fn().mockResolvedValue({ data: [], error: null }),
++            }),
++          }),
++          upsert: jest.fn().mockResolvedValue({ error: null }),
++        };
++      }
++      return {};
++    }),
++  };
++}
++
++const daysAgo = (n) => new Date(Date.now() - n * 86_400_000).toISOString();
++
++describe('worstCellOf', () => {
++  test('picks the lowest-scoring cell', () => {
++    const map = new Map([['aaa', 80], ['bbb', 31], ['ccc', 55]]);
++    expect(worstCellOf(['aaa', 'bbb', 'ccc'], map)).toEqual({ cell: 'bbb', score: 31 });
++  });
++});
++
++describe('buildSignals', () => {
++  test('matches the signal_contract.py shape', async () => {
++    const db = makeDb({
++      segment: { lighting: 30, foot_traffic: 25 },
++      reports: [
++        { severity: 2, light_condition: 'unlit', note: 'Street light out.', occurred_at: daysAgo(3), reporter_hash: 'h1' },
++        { severity: 3, light_condition: 'unlit', note: 'Very dark here.', occurred_at: daysAgo(9), reporter_hash: 'h2' },
++      ],
++    });
++
++    const s = await buildSignals(
++      { cell: 'tdr1xyz', score: 38, bucket: 'night', routeLabel: 'Fastest' },
++      { getDb: () => db }
++    );
++
++    expect(Object.keys(s).sort()).toEqual([
++      'corroborated', 'foot_traffic', 'incident_summary', 'lighting',
++      'route_label', 'safety_score', 'segment_id', 'time_bucket',
++    ]);
++    expect(s.lighting).toBe(30);
++    expect(s.incident_summary[0].count).toBe(2);
++    expect(s.incident_summary[0].light_condition_mode).toBe('unlit');
++    expect(s.incident_summary[0].severity_avg).toBe(2.5);
++    expect(s.corroborated).toBe(true); // two distinct reporter hashes
++  });
++
++  test('single reporter is not corroborated', async () => {
++    const db = makeDb({
++      segment: { lighting: 60, foot_traffic: 55 },
++      reports: [
++        { severity: 1, light_condition: 'unknown', note: 'Felt uneasy.', occurred_at: daysAgo(5), reporter_hash: 'h1' },
++      ],
++    });
++    const s = await buildSignals({ cell: 'x', score: 64, bucket: 'evening' }, { getDb: () => db });
++    expect(s.corroborated).toBe(false);
++    expect(s.incident_summary[0].count).toBe(1);
++  });
++
++  test('no reports → empty incident_summary, never fabricated', async () => {
++    const db = makeDb({ segment: { lighting: 85, foot_traffic: 80 }, reports: [] });
++    const s = await buildSignals({ cell: 'x', score: 88, bucket: 'night' }, { getDb: () => db });
++    expect(s.incident_summary).toEqual([]);
++    expect(s.corroborated).toBe(false);
++  });
++});
++
++describe('renderExplanationJs grounding', () => {
++  const CATEGORY_WORDS = [
++    'harassment', 'theft', 'stalking', 'assault', 'catcalling',
++    'robbery', 'kidnapping', 'mugging', 'molestation',
++  ];
++
++  test('never invents an incident category', () => {
++    const text = renderExplanationJs({
++      segment_id: 'x', route_label: 'Fastest', time_bucket: 'night', safety_score: 32,
++      lighting: 20, foot_traffic: 15, corroborated: true,
++      incident_summary: [{ count: 3, most_recent_days_ago: 4, severity_avg: 2.3, light_condition_mode: 'unlit', sample_notes: [] }],
++    }).toLowerCase();
++    for (const w of CATEGORY_WORDS) expect(text).not.toContain(w);
++  });
++
++  test('claims no incidents when there are none', () => {
++    const text = renderExplanationJs({
++      segment_id: 'x', route_label: 'Safest', time_bucket: 'night', safety_score: 88,
++      lighting: 85, foot_traffic: 80, corroborated: false, incident_summary: [],
++    }).toLowerCase();
++    expect(text).not.toContain('report');
++    expect(text).toContain('well lit');
++  });
++
++  test('uncorroborated report is phrased as single and unconfirmed', () => {
++    const text = renderExplanationJs({
++      segment_id: 'x', route_label: 'Balanced', time_bucket: 'evening', safety_score: 64,
++      lighting: 50, foot_traffic: 55, corroborated: false,
++      incident_summary: [{ count: 1, most_recent_days_ago: 5, severity_avg: 1, light_condition_mode: 'unknown', sample_notes: [] }],
++    }).toLowerCase();
++    expect(text).toContain('unconfirmed');
++    expect(text).not.toContain('repeated');
++  });
++});
++
++describe('explainRoute', () => {
++  test('returns an explanation in js mode', async () => {
++    const db = makeDb({ segment: { lighting: 30, foot_traffic: 20 }, reports: [] });
++    const out = await explainRoute({ cell: 'x', score: 41, bucket: 'night' }, { getDb: () => db });
++    expect(out.mode).toBe('js');
++    expect(typeof out.explanation).toBe('string');
++    expect(out.explanation.length).toBeGreaterThan(10);
++  });
++});
++
++describe('http mode', () => {
++  const realFetch = global.fetch;
++  afterEach(() => {
++    global.fetch = realFetch;
++    delete process.env.EXPLAIN_AGENT_MODE;
++    delete process.env.EXPLAIN_AGENT_URL;
++  });
++
++  test('uses the deployed agent when it answers', async () => {
++    process.env.EXPLAIN_AGENT_MODE = 'http';
++    process.env.EXPLAIN_AGENT_URL = 'https://agent.example/api';
++    global.fetch = jest.fn().mockResolvedValue({
++      ok: true,
++      json: async () => ({ explanation: 'Remote agent says this block is dark.' }),
++    });
++
++    const db = makeDb({ segment: { lighting: 30, foot_traffic: 20 }, reports: [] });
++    const out = await explainRoute({ cell: 'x', score: 41, bucket: 'night' }, { getDb: () => db });
++
++    expect(out.explanation).toBe('Remote agent says this block is dark.');
++    expect(out.mode).toBe('http');
++  });
++
++  test('falls back to the local renderer when the agent is down', async () => {
++    process.env.EXPLAIN_AGENT_MODE = 'http';
++    process.env.EXPLAIN_AGENT_URL = 'https://agent.example/api';
++    global.fetch = jest.fn().mockRejectedValue(new Error('cold start timeout'));
++
++    const db = makeDb({ segment: { lighting: 30, foot_traffic: 20 }, reports: [] });
++    const out = await explainRoute({ cell: 'x', score: 41, bucket: 'night' }, { getDb: () => db });
++
++    expect(out.mode).toBe('http-fallback-js');
++    expect(out.explanation.length).toBeGreaterThan(10);
++  });
++});
++
++describe('agent registration is additive', () => {
++  afterEach(() => {
++    registerExplainProvider(null);
++    delete process.env.EXPLAIN_AGENT_ENABLED;
++    _clearMicroCache();
++    _clearCache();
++  });
++
++  test('adds explanation without altering the base contract', async () => {
++    process.env.EXPLAIN_AGENT_ENABLED = 'true';
++    expect(registerSafetyAgent()).toBe(true);
++
++    const db = makeDb({ segment: { lighting: 25, foot_traffic: 30 }, reports: [] });
++    const result = await buildExplainContext(
++      {
++        origin: { lat: 12.97, lng: 77.59 },
++        destination: { lat: 12.98, lng: 77.6 },
++        time: new Date('2026-08-22T23:00:00Z'),
++        routeIndex: 0,
++      },
++      {
++        getDb: () => db,
++        fetchRoutes: async () => [
++          { index: 0, distanceM: 1000, durationS: 800, coords: [[12.97, 77.59], [12.98, 77.6]] },
++        ],
++      }
++    );
++
++    expect(result).toHaveProperty('score');
++    expect(result).toHaveProperty('band');
++    expect(result).toHaveProperty('factors');
++    expect(result).toHaveProperty('disclaimer');
++    expect(result).toHaveProperty('explanation');
++    expect(result.explanationSource).toBe('js');
++  });
++
++  test('is a no-op when disabled', () => {
++    process.env.EXPLAIN_AGENT_ENABLED = 'false';
++    expect(registerSafetyAgent()).toBe(false);
++  });
++});
+diff --git a/backend/tests/scoringEngine.test.js b/backend/tests/scoringEngine.test.js
+index 831cf8c..6f0e7e1 100644
+--- a/backend/tests/scoringEngine.test.js
++++ b/backend/tests/scoringEngine.test.js
+@@ -404,3 +404,27 @@ describe('Criterion 7 — updateCellScore', () => {
+     expect(fromCallCount).toBeGreaterThan(countAfterFirst);
+   });
+ });
++
++// ── Local-time buckets (TIME_BUCKET_UTC_OFFSET_MIN) ──────────────────
++
++describe('bucketOf respects the local UTC offset', () => {
++  const prev = process.env.TIME_BUCKET_UTC_OFFSET_MIN;
++  afterEach(() => {
++    if (prev === undefined) delete process.env.TIME_BUCKET_UTC_OFFSET_MIN;
++    else process.env.TIME_BUCKET_UTC_OFFSET_MIN = prev;
++  });
++
++  test('9:30pm IST is night, not day', () => {
++    const t = new Date('2026-08-22T21:30:00+05:30'); // 16:00 UTC
++    delete process.env.TIME_BUCKET_UTC_OFFSET_MIN;
++    expect(bucketOf(t)).toBe('day'); // UTC default — the old behaviour
++
++    process.env.TIME_BUCKET_UTC_OFFSET_MIN = '330';
++    expect(bucketOf(t)).toBe('night');
++  });
++
++  test('2pm IST stays day', () => {
++    process.env.TIME_BUCKET_UTC_OFFSET_MIN = '330';
++    expect(bucketOf(new Date('2026-08-22T14:00:00+05:30'))).toBe('day');
++  });
++});
+diff --git a/frontend/.env.example b/frontend/.env.example
+index e927ba1..7207df0 100644
+--- a/frontend/.env.example
++++ b/frontend/.env.example
+@@ -1 +1,5 @@
+-VITE_API_URL=https://cad-888.vercel.app
++# Local development against a backend running on your machine:
++VITE_API_URL=http://localhost:3000
++
++# Deployed frontend — point at your deployed backend instead:
++# VITE_API_URL=https://cad-888.vercel.app
+diff --git a/frontend/src/App.tsx b/frontend/src/App.tsx
+index 165e3fb..7f3ce9a 100644
+--- a/frontend/src/App.tsx
++++ b/frontend/src/App.tsx
+@@ -1,7 +1,7 @@
+ import { useCallback, useEffect, useMemo, useState } from 'react'
+ import { MapContainer, TileLayer, Polyline, CircleMarker, Tooltip, Circle } from 'react-leaflet'
+ import { AnimatePresence, motion } from 'framer-motion'
+-import { Eye, EyeOff, Flag, Loader2, Share2, Shield } from 'lucide-react'
++import { Eye, EyeOff, Flag, HelpCircle, Loader2, Share2, Shield } from 'lucide-react'
+ 
+ import Topbar from './components/Topbar'
+ import SearchCard from './components/SearchCard'
+@@ -13,16 +13,22 @@ import TimeCard from './components/TimeCard'
+ import ReportModal from './components/ReportModal'
+ import ShareModal from './components/ShareModal'
+ import MapClickHandler from './components/MapClickHandler'
++import WhyModal, { type ExplainContext } from './components/WhyModal'
+ 
+ import { routes as fallbackRoutes, seedReports, hours, heatmapPoints } from './data'
+ import type { Report, SafetyLevel } from './types'
+ import { ROUTE_COLORS } from './types'
+ import { score } from './utils'
+-import { fetchRoutes as apiFetchRoutes, submitReport as apiSubmitReport } from './api'
++import {
++  fetchRoutes as apiFetchRoutes,
++  submitReport as apiSubmitReport,
++  fetchExplainContext as apiFetchExplain,
++} from './api'
+ import type { ApiRoute } from './api'
++import { currentPosition, type Place } from './geocode'
+ 
+-const ORIGIN = { lat: 20.2666, lng: 85.8360 }
+-const DEST = { lat: 20.2666, lng: 85.8434 }
++const DEFAULT_ORIGIN = { lat: 20.2666, lng: 85.8360 }
++const DEFAULT_DEST = { lat: 20.2666, lng: 85.8434 }
+ 
+ function sliderToIso(hourIdx: number): string {
+   const now = new Date()
+@@ -55,10 +61,22 @@ function App() {
+   const [heatmapOn, setHeatmapOn] = useState(false)
+   const [reportCoords, setReportCoords] = useState<[number, number] | null>(null)
+ 
++  // Origin/destination are state, not constants — the search card drives them.
++  const [origin, setOrigin] = useState(DEFAULT_ORIGIN)
++  const [dest, setDest] = useState(DEFAULT_DEST)
++  const [originLabel, setOriginLabel] = useState('Current location')
++  const [destLabel, setDestLabel] = useState('Master Canteen Square')
++
++  // "Why?" panel
++  const [whyOpen, setWhyOpen] = useState(false)
++  const [whyData, setWhyData] = useState<ExplainContext | null>(null)
++  const [whyLoading, setWhyLoading] = useState(false)
++  const [whyError, setWhyError] = useState<string | null>(null)
++
+   const loadRoutes = useCallback(async (hourIdx: number) => {
+     setLoading(true)
+     try {
+-      const data = await apiFetchRoutes(ORIGIN, DEST, sliderToIso(hourIdx))
++      const data = await apiFetchRoutes(origin, dest, sliderToIso(hourIdx))
+       setApiRoutes(data.routes)
+       setRouteLabels(labelByRank(data.routes))
+       const safestIdx = data.routes.reduce((best, r, i) => (r.score > data.routes[best].score ? i : best), 0)
+@@ -69,10 +87,48 @@ function App() {
+     } finally {
+       setLoading(false)
+     }
+-  }, [])
++  }, [origin, dest])
+ 
+   useEffect(() => { loadRoutes(hour) }, [hour, loadRoutes])
+ 
++  // ── "Why?" — hits GET /api/explain-context for the selected route ──
++  const openWhy = useCallback(async () => {
++    setWhyOpen(true)
++    setWhyLoading(true)
++    setWhyError(null)
++    setWhyData(null)
++    try {
++      const data = await apiFetchExplain({
++        originLat: origin.lat,
++        originLng: origin.lng,
++        destLat: dest.lat,
++        destLng: dest.lng,
++        time: sliderToIso(hour),
++        routeIndex: selectedIdx,
++      })
++      setWhyData(data)
++    } catch (e) {
++      setWhyError(e instanceof Error ? e.message : String(e))
++    } finally {
++      setWhyLoading(false)
++    }
++  }, [origin, dest, hour, selectedIdx])
++
++  const handlePickDestination = (p: Place) => {
++    setDest({ lat: p.lat, lng: p.lng })
++    setDestLabel(p.label.split(',')[0])
++  }
++
++  const handleUseMyLocation = async () => {
++    const pos = await currentPosition()
++    if (pos) {
++      setOrigin(pos)
++      setOriginLabel('My location')
++    } else {
++      setOriginLabel('Location unavailable — using default')
++    }
++  }
++
+   const usingApi = apiRoutes !== null && apiRoutes.length > 0
+   const activeApiRoute = usingApi ? apiRoutes[selectedIdx] || apiRoutes[0] : null
+ 
+@@ -138,11 +194,11 @@ function App() {
+                 pathOptions={{ color: r.color, weight: i === selectedIdx ? 7 : 4, opacity: i === selectedIdx ? 0.95 : 0.27, lineCap: 'round' }} />
+             ))}
+ 
+-        <CircleMarker center={[ORIGIN.lat, ORIGIN.lng]} radius={8} pathOptions={{ color: '#ffffff', fillColor: '#0f8a72', fillOpacity: 1, weight: 3 }}>
+-          <Tooltip direction="top">Your location</Tooltip>
++        <CircleMarker center={[origin.lat, origin.lng]} radius={8} pathOptions={{ color: '#ffffff', fillColor: '#0f8a72', fillOpacity: 1, weight: 3 }}>
++          <Tooltip direction="top">{originLabel}</Tooltip>
+         </CircleMarker>
+-        <CircleMarker center={[DEST.lat, DEST.lng]} radius={10} pathOptions={{ color: '#ffffff', fillColor: '#6b46f0', fillOpacity: 1, weight: 3 }}>
+-          <Tooltip direction="top">Master Canteen Square</Tooltip>
++        <CircleMarker center={[dest.lat, dest.lng]} radius={10} pathOptions={{ color: '#ffffff', fillColor: '#6b46f0', fillOpacity: 1, weight: 3 }}>
++          <Tooltip direction="top">{destLabel}</Tooltip>
+         </CircleMarker>
+ 
+         {reports.map((r, i) => (
+@@ -155,7 +211,14 @@ function App() {
+       <div className="map-vignette" />
+ 
+       <Topbar menuOpen={menuOpen} onToggleMenu={() => setMenuOpen((v) => !v)} />
+-      <SearchCard destination="Master Canteen Square" />
++      <SearchCard
++        destinationLabel={destLabel}
++        originLabel={originLabel}
++        onPickDestination={handlePickDestination}
++        onUseMyLocation={handleUseMyLocation}
++        onSubmit={() => loadRoutes(hour)}
++        busy={loading}
++      />
+ 
+       {loading && (
+         <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 9999 }}>
+@@ -172,6 +235,7 @@ function App() {
+         <button className={`heatmap-toggle ${heatmapOn ? 'heatmap-on' : ''}`} onClick={() => setHeatmapOn((v) => !v)} aria-pressed={heatmapOn} title={heatmapOn ? 'Hide safety heatmap' : 'Show safety heatmap'}>
+           {heatmapOn ? <EyeOff size={15} /> : <Eye size={15} />} Heatmap
+         </button>
++        <button className="why-button" onClick={openWhy}><HelpCircle size={15} /> Why?</button>
+         <button className="share-button" onClick={() => setShareOpen(true)}><Share2 size={15} /> Share route</button>
+       </div>
+ 
+@@ -182,6 +246,17 @@ function App() {
+       <AnimatePresence>
+         {reportOpen && <ReportModal onClose={() => { setReportOpen(false); setReportCoords(null) }} onSubmit={handleReport} coords={reportCoords} />}
+       </AnimatePresence>
++      <AnimatePresence>
++        {whyOpen && (
++          <WhyModal
++            data={whyData}
++            loading={whyLoading}
++            error={whyError}
++            routeLabel={routeLabels[selectedIdx] || 'Selected'}
++            onClose={() => setWhyOpen(false)}
++          />
++        )}
++      </AnimatePresence>
+       <AnimatePresence>
+         {shareOpen && <ShareModal onClose={() => setShareOpen(false)} />}
+       </AnimatePresence>
+diff --git a/frontend/src/components/SearchCard.tsx b/frontend/src/components/SearchCard.tsx
+index 7b19d8c..cd470b3 100644
+--- a/frontend/src/components/SearchCard.tsx
++++ b/frontend/src/components/SearchCard.tsx
+@@ -1,17 +1,104 @@
+-import { ChevronDown, MapPin, Navigation } from 'lucide-react'
++import { useEffect, useRef, useState } from 'react'
++import { Crosshair, Loader2, MapPin, Navigation } from 'lucide-react'
++import { geocode, type Place } from '../geocode'
++
++export default function SearchCard({
++  destinationLabel,
++  originLabel,
++  onPickDestination,
++  onUseMyLocation,
++  onSubmit,
++  busy = false,
++}: {
++  destinationLabel: string
++  originLabel: string
++  onPickDestination: (place: Place) => void
++  onUseMyLocation: () => void
++  onSubmit: () => void
++  busy?: boolean
++}) {
++  const [query, setQuery] = useState('')
++  const [results, setResults] = useState<Place[]>([])
++  const [searching, setSearching] = useState(false)
++  const [editing, setEditing] = useState(false)
++  const timer = useRef<number | undefined>(undefined)
++
++  // Debounced geocode — Nominatim allows ~1 req/sec.
++  useEffect(() => {
++    window.clearTimeout(timer.current)
++    if (query.trim().length < 3) {
++      setResults([])
++      return
++    }
++    timer.current = window.setTimeout(async () => {
++      setSearching(true)
++      try {
++        setResults(await geocode(query))
++      } catch {
++        setResults([])
++      } finally {
++        setSearching(false)
++      }
++    }, 600)
++    return () => window.clearTimeout(timer.current)
++  }, [query])
+ 
+-export default function SearchCard({ destination }: { destination: string }) {
+   return (
+     <section className="search-card glass">
+       <div className="eyebrow"><span className="live-dot" /> SAFETY-OPTIMIZED ROUTING</div>
+-      <div className="location-row"><span className="origin-dot" /><span>Current location</span></div>
++
++      <div className="location-row">
++        <span className="origin-dot" />
++        <span>{originLabel}</span>
++        <button className="icon-button" type="button" onClick={onUseMyLocation} title="Use my location">
++          <Crosshair size={15} />
++        </button>
++      </div>
++
+       <div className="connector" />
+-      <button className="location-row destination" type="button">
+-        <MapPin size={18} />
+-        <div><small>WHERE TO?</small><strong>{destination}</strong></div>
+-        <ChevronDown size={17} />
++
++      {editing ? (
++        <div className="destination-search">
++          <MapPin size={18} />
++          <input
++            autoFocus
++            value={query}
++            placeholder="Search a destination…"
++            onChange={(e) => setQuery(e.target.value)}
++            onKeyDown={(e) => { if (e.key === 'Escape') setEditing(false) }}
++          />
++          {searching && <Loader2 size={15} className="spin" />}
++        </div>
++      ) : (
++        <button className="location-row destination" type="button" onClick={() => setEditing(true)}>
++          <MapPin size={18} />
++          <div><small>WHERE TO?</small><strong>{destinationLabel}</strong></div>
++        </button>
++      )}
++
++      {editing && results.length > 0 && (
++        <ul className="geo-results">
++          {results.map((p) => (
++            <li key={`${p.lat},${p.lng}`}>
++              <button
++                type="button"
++                onClick={() => {
++                  onPickDestination(p)
++                  setEditing(false)
++                  setQuery('')
++                  setResults([])
++                }}
++              >
++                {p.label}
++              </button>
++            </li>
++          ))}
++        </ul>
++      )}
++
++      <button className="route-button" onClick={onSubmit} disabled={busy}>
++        {busy ? <Loader2 size={17} className="spin" /> : <Navigation size={17} />} Find safer routes
+       </button>
+-      <button className="route-button"><Navigation size={17} /> Find safer routes</button>
+     </section>
+   )
+ }
+diff --git a/frontend/src/components/WhyModal.tsx b/frontend/src/components/WhyModal.tsx
+new file mode 100644
+index 0000000..485b081
+--- /dev/null
++++ b/frontend/src/components/WhyModal.tsx
+@@ -0,0 +1,96 @@
++import { motion } from 'framer-motion'
++import { Loader2, ShieldQuestion, X } from 'lucide-react'
++
++export type ExplainFactor =
++  | { type: 'lighting'; value: string; cellsAffected: number; ofTotalCells: number }
++  | { type: 'incidents'; count30d: number; worstBucket: string; cell: string }
++  | { type: 'floor'; triggered: boolean; minCellScore: number }
++
++export type ExplainContext = {
++  routeIndex: number
++  score: number
++  band: 'green' | 'yellow' | 'red'
++  factors: ExplainFactor[]
++  /** Added by the Role 3 agent when EXPLAIN_AGENT_ENABLED=true. Optional by contract. */
++  explanation?: string
++  explanationSource?: string
++  disclaimer: string
++  generatedAt: string
++}
++
++function factorLine(f: ExplainFactor): string {
++  switch (f.type) {
++    case 'lighting':
++      return `${f.cellsAffected} of ${f.ofTotalCells} blocks on this route are poorly lit.`
++    case 'incidents':
++      return `${f.count30d} report${f.count30d === 1 ? '' : 's'} in the last 30 days, mostly in the ${f.worstBucket}.`
++    case 'floor':
++      return `One block scores just ${f.minCellScore} — low enough to pull the whole route down.`
++    default:
++      return ''
++  }
++}
++
++export default function WhyModal({
++  data,
++  loading,
++  error,
++  routeLabel,
++  onClose,
++}: {
++  data: ExplainContext | null
++  loading: boolean
++  error: string | null
++  routeLabel: string
++  onClose: () => void
++}) {
++  return (
++    <motion.div
++      className="modal-backdrop"
++      initial={{ opacity: 0 }}
++      animate={{ opacity: 1 }}
++      exit={{ opacity: 0 }}
++      onClick={onClose}
++    >
++      <motion.section
++        className="why-modal glass"
++        initial={{ opacity: 0, y: 24 }}
++        animate={{ opacity: 1, y: 0 }}
++        exit={{ opacity: 0, y: 24 }}
++        onClick={(e) => e.stopPropagation()}
++      >
++        <header className="panel-heading">
++          <div>
++            <span className="eyebrow">WHY THIS SCORE</span>
++            <h2><ShieldQuestion size={17} /> {routeLabel} route</h2>
++          </div>
++          <button className="icon-button" onClick={onClose} aria-label="Close"><X size={17} /></button>
++        </header>
++
++        {loading && <p className="why-loading"><Loader2 size={16} className="spin" /> Checking community signals…</p>}
++
++        {error && !loading && <p className="why-error">Couldn’t load the explanation: {error}</p>}
++
++        {data && !loading && (
++          <>
++            <div className={`score-pill ${data.band}`}>{data.score} / 100</div>
++
++            {data.explanation && <p className="why-explanation">{data.explanation}</p>}
++
++            {data.factors.length > 0 ? (
++              <ul className="why-factors">
++                {data.factors.map((f, i) => <li key={i}>{factorLine(f)}</li>)}
++              </ul>
++            ) : (
++              <p className="why-factors-empty">
++                No lighting gaps, recent reports, or low-scoring blocks found on this route.
++              </p>
++            )}
++
++            <footer className="why-disclaimer">{data.disclaimer}</footer>
++          </>
++        )}
++      </motion.section>
++    </motion.div>
++  )
++}
+diff --git a/frontend/src/geocode.ts b/frontend/src/geocode.ts
+new file mode 100644
+index 0000000..e1f6eaf
+--- /dev/null
++++ b/frontend/src/geocode.ts
+@@ -0,0 +1,39 @@
++/**
++ * Minimal forward geocoding via OpenStreetMap Nominatim.
++ *
++ * Nominatim's usage policy: max 1 request/second, and it wants a descriptive
++ * referrer/user agent. That's fine for a demo and for judging, but for anything
++ * beyond that, proxy it through the backend or swap in a paid geocoder.
++ */
++
++export type Place = { label: string; lat: number; lng: number }
++
++const NOMINATIM = 'https://nominatim.openstreetmap.org/search'
++
++export async function geocode(query: string, limit = 5): Promise<Place[]> {
++  const q = query.trim()
++  if (q.length < 3) return []
++
++  const url = `${NOMINATIM}?format=json&limit=${limit}&q=${encodeURIComponent(q)}`
++  const res = await fetch(url, { headers: { Accept: 'application/json' } })
++  if (!res.ok) throw new Error(`Geocode failed: ${res.status}`)
++
++  const rows: Array<{ display_name: string; lat: string; lon: string }> = await res.json()
++  return rows.map((r) => ({
++    label: r.display_name,
++    lat: Number(r.lat),
++    lng: Number(r.lon),
++  }))
++}
++
++/** Browser geolocation, promisified. Resolves null if denied or unavailable. */
++export function currentPosition(): Promise<{ lat: number; lng: number } | null> {
++  return new Promise((resolve) => {
++    if (!('geolocation' in navigator)) return resolve(null)
++    navigator.geolocation.getCurrentPosition(
++      (pos) => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
++      () => resolve(null),
++      { enableHighAccuracy: true, timeout: 8000 }
++    )
++  })
++}
+diff --git a/frontend/src/styles.css b/frontend/src/styles.css
+index 5bd888f..214afb9 100644
+--- a/frontend/src/styles.css
++++ b/frontend/src/styles.css
+@@ -293,4 +293,59 @@ input[type=range]::-webkit-slider-thumb { appearance: none; width: 15px; height:
+   .floating-actions { bottom: 224px; flex-direction: column; }
+   .safety-mode-hint { display: none; }
+   .eyebrow { font-size: 10px; }
+-}
+\ No newline at end of file
++}
++/* ── Search card: destination search + geocode results ───────────── */
++.destination-search {
++  display: flex; align-items: center; gap: 10px;
++  padding: 10px 12px; border-radius: 12px;
++  background: rgba(255, 255, 255, 0.06);
++  border: 1px solid rgba(255, 255, 255, 0.12);
++}
++.destination-search input {
++  flex: 1; background: transparent; border: none; outline: none;
++  color: inherit; font: inherit;
++}
++.geo-results {
++  list-style: none; margin: 8px 0 0; padding: 0;
++  max-height: 190px; overflow-y: auto;
++  border-radius: 12px; background: rgba(0, 0, 0, 0.25);
++}
++.geo-results li button {
++  display: block; width: 100%; text-align: left;
++  padding: 9px 12px; background: none; border: none; cursor: pointer;
++  color: inherit; font-size: 0.82rem; line-height: 1.35;
++}
++.geo-results li button:hover { background: rgba(255, 255, 255, 0.08); }
++.icon-button {
++  margin-left: auto; display: inline-flex; align-items: center;
++  background: none; border: none; color: inherit; cursor: pointer; opacity: 0.7;
++}
++.icon-button:hover { opacity: 1; }
++
++/* ── Why modal ───────────────────────────────────────────────────── */
++.modal-backdrop {
++  position: fixed; inset: 0; z-index: 10000;
++  display: flex; align-items: center; justify-content: center;
++  background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(4px);
++}
++.why-modal {
++  width: min(440px, calc(100vw - 32px));
++  padding: 20px; border-radius: 18px;
++}
++.why-explanation { font-size: 0.95rem; line-height: 1.5; margin: 12px 0; }
++.why-factors { margin: 10px 0; padding-left: 18px; font-size: 0.86rem; line-height: 1.6; }
++.why-factors-empty, .why-loading, .why-error {
++  font-size: 0.86rem; opacity: 0.8; display: flex; align-items: center; gap: 8px;
++}
++.why-disclaimer {
++  margin-top: 14px; padding-top: 10px; font-size: 0.74rem; opacity: 0.6;
++  border-top: 1px solid rgba(255, 255, 255, 0.12);
++}
++.why-button {
++  display: inline-flex; align-items: center; gap: 7px;
++  padding: 8px 13px; border-radius: 11px; cursor: pointer;
++  font-size: 0.8rem; color: inherit;
++  background: rgba(255, 255, 255, 0.07);
++  border: 1px solid rgba(255, 255, 255, 0.14);
++}
++.why-button:hover { background: rgba(255, 255, 255, 0.13); }
+-- 
+2.43.0
+
