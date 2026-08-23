@@ -39,7 +39,7 @@ Three independently deployable pieces:
 | Piece | Stack | Owner | What it does |
 |---|---|---|---|
 | [`backend/`](backend) | Node 20 · Express 5 · Supabase · zod · pino | Role 2 | Routing client (OSRM), safety scoring engine, anonymous report ingestion, explanation-context API, static-route fallback |
-| [`frontend/`](frontend) | React 19 · Vite · TypeScript · Leaflet · Tailwind | Role 1 | Full-screen map, Fast/Safe/Balanced route cards, day-night time slider, 2-tap report modal, "Why?" panel |
+| [`frontend/`](frontend) | React 19 · Vite · TypeScript · Leaflet · Tailwind | Role 1 | Full-screen map with click-to-set points, Fast/Safe/Balanced route cards, day-night time slider, 2-tap report modal, "Why?" panel, share-live-route modal, typed API client (`src/api.ts`) |
 | [`ai_agent/`](ai_agent) | Python 3 (zero required deps for mock mode) | Role 3 | Explainable Safety Agent (LLM via provider: `mock`/`grok`/`gemini`), DBSCAN hotspot clustering (stretch) |
 
 ## Repository Layout
@@ -111,6 +111,11 @@ npm install
 npm run dev      # → http://localhost:5173  (CORS already allowlisted)
 ```
 
+> **Point it at your local backend:** the API client (`src/api.ts`) reads `VITE_API_URL`
+> and falls back to the deployed Vercel URL when unset. For local development create
+> `frontend/.env` containing `VITE_API_URL=http://localhost:3000` — otherwise the app
+> will call the cloud deployment instead of your machine.
+
 ### 3. AI Explanation Agent (optional — mock mode needs no keys)
 
 ```powershell
@@ -144,6 +149,7 @@ Codes: `INVALID_REQUEST`(400) · `RATE_LIMITED`(429) · `UPSTREAM_OSRM`(502) · 
 { "routes": [ {
     "index": 0,
     "summary": { "distanceM": 1450, "durationS": 1080 },
+    "geometry": [[12.9716, 77.5946]],          // [[lat,lng],...] polyline for map rendering
     "score": 62, "band": "yellow",             // green ≥70 · yellow 40–69 · red <40
     "cells": ["tdr1xyz"],                      // ordered geohash-7 path
     "cellScores": [{ "cell": "tdr1xyz", "score": 58 }],
