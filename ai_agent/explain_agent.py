@@ -44,8 +44,7 @@ STRICT RULES - follow exactly:
 7. Keep the tone calm and factual, not alarmist.
 8. Output ONLY the explanation sentence(s). No preamble, no JSON, no extra commentary."""
 
-# Specific incident-category words the model must NEVER invent, since
-# Role 2's DB has no such field - only used by the grounding check below.
+
 _CATEGORY_WORDS = {
     "harassment", "theft", "stalking", "assault", "catcalling",
     "robbery", "kidnapping", "mugging", "molestation",
@@ -185,19 +184,7 @@ def explain_route(signals: dict, provider: str = "mock") -> str:
     return explanation
 
 
-# --- CLI bridge for Role 2's Node.js backend ---------------------------------
-# Role 2's backend is Express/Node, not Python, so it can't `import` this file
-# directly. Instead, their server spawns this script as a subprocess, writes
-# one JSON signals object to stdin, and reads one JSON {"explanation": "..."}
-# object back from stdout. This keeps the integration to a single child-process
-# call - no extra HTTP server/port to run and keep alive during the demo.
-#
-# Example from Node (using Node's built-in child_process):
-#   import { execFile } from 'node:child_process';
-#   execFile('python3', ['ai_agent/explain_agent.py', '--provider', 'gemini'],
-#     { input: JSON.stringify(signals) }, (err, stdout) => { ... });
-# (exact call style depends on how Role 2 wires it up - see ai_agent/README.md)
-if __name__ == "__main__":
+
     import argparse
     import json
     import sys

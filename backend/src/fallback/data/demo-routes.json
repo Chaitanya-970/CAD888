@@ -1,0 +1,2902 @@
+{
+  "day": [
+    {
+      "originLat": 12.9716,
+      "originLng": 77.5946,
+      "label": "day",
+      "routes": [
+        {
+          "index": 0,
+          "summary": {
+            "distanceM": 1450,
+            "durationS": 1080
+          },
+          "geometry": [
+            [
+              12.9716,
+              77.5946
+            ],
+            [
+              12.9723,
+              77.59505
+            ],
+            [
+              12.973,
+              77.5955
+            ],
+            [
+              12.9737,
+              77.59595
+            ],
+            [
+              12.9744,
+              77.5964
+            ],
+            [
+              12.9751,
+              77.59685
+            ],
+            [
+              12.9758,
+              77.5973
+            ],
+            [
+              12.9765,
+              77.59775
+            ],
+            [
+              12.9772,
+              77.5982
+            ],
+            [
+              12.9779,
+              77.59865
+            ],
+            [
+              12.9786,
+              77.5991
+            ],
+            [
+              12.9793,
+              77.59955
+            ],
+            [
+              12.98,
+              77.6
+            ]
+          ],
+          "score": 74,
+          "band": "green",
+          "cells": [
+            "tdr1v9q",
+            "tdr1v9w",
+            "tdr1v9x",
+            "tdr1v9z",
+            "tdr1vf0",
+            "tdr1vf2",
+            "tdr1vf3",
+            "tdr1vf9",
+            "tdr1vff"
+          ],
+          "cellScores": [
+            {
+              "cell": "tdr1v9q",
+              "score": 81
+            },
+            {
+              "cell": "tdr1v9w",
+              "score": 72
+            },
+            {
+              "cell": "tdr1v9x",
+              "score": 71
+            },
+            {
+              "cell": "tdr1v9z",
+              "score": 72
+            },
+            {
+              "cell": "tdr1vf0",
+              "score": 63
+            },
+            {
+              "cell": "tdr1vf2",
+              "score": 69
+            },
+            {
+              "cell": "tdr1vf3",
+              "score": 69
+            },
+            {
+              "cell": "tdr1vf9",
+              "score": 69
+            },
+            {
+              "cell": "tdr1vff",
+              "score": 71
+            }
+          ],
+          "explanationInput": {
+            "unlitCells": 0,
+            "totalCells": 9,
+            "reportsLast30d": 1,
+            "worstCellScore": 63,
+            "timeBucket": "day"
+          }
+        },
+        {
+          "index": 1,
+          "summary": {
+            "distanceM": 1720,
+            "durationS": 1290
+          },
+          "geometry": [
+            [
+              12.9716,
+              77.5946
+            ],
+            [
+              12.973206,
+              77.595503
+            ],
+            [
+              12.97475,
+              77.596375
+            ],
+            [
+              12.976175,
+              77.597187
+            ],
+            [
+              12.977431,
+              77.597916
+            ],
+            [
+              12.978481,
+              77.59854
+            ],
+            [
+              12.9793,
+              77.59905
+            ],
+            [
+              12.979881,
+              77.59944
+            ],
+            [
+              12.980231,
+              77.599716
+            ],
+            [
+              12.980375,
+              77.599887
+            ],
+            [
+              12.98035,
+              77.599975
+            ],
+            [
+              12.980206,
+              77.600003
+            ],
+            [
+              12.98,
+              77.6
+            ]
+          ],
+          "score": 82,
+          "band": "green",
+          "cells": [
+            "tdr1v9q",
+            "tdr1v9x",
+            "tdr1v9z",
+            "tdr1vf0",
+            "tdr1vf3",
+            "tdr1vf9",
+            "tdr1vfc",
+            "tdr1vff",
+            "tdr1vg4"
+          ],
+          "cellScores": [
+            {
+              "cell": "tdr1v9q",
+              "score": 89
+            },
+            {
+              "cell": "tdr1v9x",
+              "score": 79
+            },
+            {
+              "cell": "tdr1v9z",
+              "score": 80
+            },
+            {
+              "cell": "tdr1vf0",
+              "score": 88
+            },
+            {
+              "cell": "tdr1vf3",
+              "score": 71
+            },
+            {
+              "cell": "tdr1vf9",
+              "score": 77
+            },
+            {
+              "cell": "tdr1vfc",
+              "score": 85
+            },
+            {
+              "cell": "tdr1vff",
+              "score": 79
+            },
+            {
+              "cell": "tdr1vg4",
+              "score": 84
+            }
+          ],
+          "explanationInput": {
+            "unlitCells": 0,
+            "totalCells": 9,
+            "reportsLast30d": 0,
+            "worstCellScore": 71,
+            "timeBucket": "day"
+          }
+        },
+        {
+          "index": 2,
+          "summary": {
+            "distanceM": 1610,
+            "durationS": 1200
+          },
+          "geometry": [
+            [
+              12.9716,
+              77.5946
+            ],
+            [
+              12.971524,
+              77.594662
+            ],
+            [
+              12.9715,
+              77.59475
+            ],
+            [
+              12.971579,
+              77.594889
+            ],
+            [
+              12.971802,
+              77.595101
+            ],
+            [
+              12.972202,
+              77.595401
+            ],
+            [
+              12.9728,
+              77.5958
+            ],
+            [
+              12.973602,
+              77.596301
+            ],
+            [
+              12.974602,
+              77.596901
+            ],
+            [
+              12.975779,
+              77.597589
+            ],
+            [
+              12.9771,
+              77.59835
+            ],
+            [
+              12.978524,
+              77.599162
+            ],
+            [
+              12.98,
+              77.6
+            ]
+          ],
+          "score": 68,
+          "band": "yellow",
+          "cells": [
+            "tdr1v9q",
+            "tdr1v9r",
+            "tdr1v9x",
+            "tdr1v9z",
+            "tdr1vcb",
+            "tdr1vf0",
+            "tdr1vf3",
+            "tdr1vf9",
+            "tdr1vff"
+          ],
+          "cellScores": [
+            {
+              "cell": "tdr1v9q",
+              "score": 75
+            },
+            {
+              "cell": "tdr1v9r",
+              "score": 65
+            },
+            {
+              "cell": "tdr1v9x",
+              "score": 65
+            },
+            {
+              "cell": "tdr1v9z",
+              "score": 66
+            },
+            {
+              "cell": "tdr1vcb",
+              "score": 54
+            },
+            {
+              "cell": "tdr1vf0",
+              "score": 74
+            },
+            {
+              "cell": "tdr1vf3",
+              "score": 63
+            },
+            {
+              "cell": "tdr1vf9",
+              "score": 63
+            },
+            {
+              "cell": "tdr1vff",
+              "score": 65
+            }
+          ],
+          "explanationInput": {
+            "unlitCells": 2,
+            "totalCells": 9,
+            "reportsLast30d": 2,
+            "worstCellScore": 54,
+            "timeBucket": "day"
+          }
+        }
+      ]
+    },
+    {
+      "originLat": 20.2666,
+      "originLng": 85.836,
+      "label": "day",
+      "routes": [
+        {
+          "index": 0,
+          "summary": {
+            "distanceM": 1450,
+            "durationS": 1080
+          },
+          "geometry": [
+            [
+              20.2666,
+              85.836
+            ],
+            [
+              20.2666,
+              85.836617
+            ],
+            [
+              20.2666,
+              85.837233
+            ],
+            [
+              20.2666,
+              85.83785
+            ],
+            [
+              20.2666,
+              85.838467
+            ],
+            [
+              20.2666,
+              85.839083
+            ],
+            [
+              20.2666,
+              85.8397
+            ],
+            [
+              20.2666,
+              85.840317
+            ],
+            [
+              20.2666,
+              85.840933
+            ],
+            [
+              20.2666,
+              85.84155
+            ],
+            [
+              20.2666,
+              85.842167
+            ],
+            [
+              20.2666,
+              85.842783
+            ],
+            [
+              20.2666,
+              85.8434
+            ]
+          ],
+          "score": 74,
+          "band": "green",
+          "cells": [
+            "tgt531r",
+            "tgt5332",
+            "tgt5333",
+            "tgt5336",
+            "tgt5337",
+            "tgt533k",
+            "tgt533m"
+          ],
+          "cellScores": [
+            {
+              "cell": "tgt531r",
+              "score": 76
+            },
+            {
+              "cell": "tgt5332",
+              "score": 71
+            },
+            {
+              "cell": "tgt5333",
+              "score": 66
+            },
+            {
+              "cell": "tgt5336",
+              "score": 63
+            },
+            {
+              "cell": "tgt5337",
+              "score": 72
+            },
+            {
+              "cell": "tgt533k",
+              "score": 67
+            },
+            {
+              "cell": "tgt533m",
+              "score": 82
+            }
+          ],
+          "explanationInput": {
+            "unlitCells": 0,
+            "totalCells": 7,
+            "reportsLast30d": 1,
+            "worstCellScore": 63,
+            "timeBucket": "day"
+          }
+        },
+        {
+          "index": 1,
+          "summary": {
+            "distanceM": 1720,
+            "durationS": 1290
+          },
+          "geometry": [
+            [
+              20.2666,
+              85.836
+            ],
+            [
+              20.267506,
+              85.83707
+            ],
+            [
+              20.26835,
+              85.838108
+            ],
+            [
+              20.269075,
+              85.839087
+            ],
+            [
+              20.269631,
+              85.839982
+            ],
+            [
+              20.269981,
+              85.840774
+            ],
+            [
+              20.2701,
+              85.84145
+            ],
+            [
+              20.269981,
+              85.842007
+            ],
+            [
+              20.269631,
+              85.842449
+            ],
+            [
+              20.269075,
+              85.842787
+            ],
+            [
+              20.26835,
+              85.843042
+            ],
+            [
+              20.267506,
+              85.843236
+            ],
+            [
+              20.2666,
+              85.8434
+            ]
+          ],
+          "score": 82,
+          "band": "green",
+          "cells": [
+            "tgt531r",
+            "tgt5338",
+            "tgt5339",
+            "tgt533f",
+            "tgt5365",
+            "tgt536h",
+            "tgt533u",
+            "tgt533s",
+            "tgt533t",
+            "tgt533m"
+          ],
+          "cellScores": [
+            {
+              "cell": "tgt531r",
+              "score": 84
+            },
+            {
+              "cell": "tgt5338",
+              "score": 79
+            },
+            {
+              "cell": "tgt5339",
+              "score": 90
+            },
+            {
+              "cell": "tgt533f",
+              "score": 82
+            },
+            {
+              "cell": "tgt5365",
+              "score": 77
+            },
+            {
+              "cell": "tgt536h",
+              "score": 71
+            },
+            {
+              "cell": "tgt533u",
+              "score": 86
+            },
+            {
+              "cell": "tgt533s",
+              "score": 89
+            },
+            {
+              "cell": "tgt533t",
+              "score": 85
+            },
+            {
+              "cell": "tgt533m",
+              "score": 90
+            }
+          ],
+          "explanationInput": {
+            "unlitCells": 0,
+            "totalCells": 10,
+            "reportsLast30d": 0,
+            "worstCellScore": 71,
+            "timeBucket": "day"
+          }
+        },
+        {
+          "index": 2,
+          "summary": {
+            "distanceM": 1610,
+            "durationS": 1200
+          },
+          "geometry": [
+            [
+              20.2666,
+              85.836
+            ],
+            [
+              20.265824,
+              85.836228
+            ],
+            [
+              20.2651,
+              85.836483
+            ],
+            [
+              20.264479,
+              85.836789
+            ],
+            [
+              20.264002,
+              85.837168
+            ],
+            [
+              20.263702,
+              85.837634
+            ],
+            [
+              20.2636,
+              85.8382
+            ],
+            [
+              20.263702,
+              85.838868
+            ],
+            [
+              20.264002,
+              85.839634
+            ],
+            [
+              20.264479,
+              85.840489
+            ],
+            [
+              20.2651,
+              85.841417
+            ],
+            [
+              20.265824,
+              85.842395
+            ],
+            [
+              20.2666,
+              85.8434
+            ]
+          ],
+          "score": 68,
+          "band": "yellow",
+          "cells": [
+            "tgt531r",
+            "tgt5332",
+            "tgt5330",
+            "tgt532b",
+            "tgt532c",
+            "tgt532f",
+            "tgt5335",
+            "tgt533k",
+            "tgt533m"
+          ],
+          "cellScores": [
+            {
+              "cell": "tgt531r",
+              "score": 70
+            },
+            {
+              "cell": "tgt5332",
+              "score": 65
+            },
+            {
+              "cell": "tgt5330",
+              "score": 76
+            },
+            {
+              "cell": "tgt532b",
+              "score": 61
+            },
+            {
+              "cell": "tgt532c",
+              "score": 54
+            },
+            {
+              "cell": "tgt532f",
+              "score": 60
+            },
+            {
+              "cell": "tgt5335",
+              "score": 74
+            },
+            {
+              "cell": "tgt533k",
+              "score": 61
+            },
+            {
+              "cell": "tgt533m",
+              "score": 76
+            }
+          ],
+          "explanationInput": {
+            "unlitCells": 2,
+            "totalCells": 9,
+            "reportsLast30d": 2,
+            "worstCellScore": 54,
+            "timeBucket": "day"
+          }
+        }
+      ]
+    }
+  ],
+  "morning": [
+    {
+      "originLat": 12.9716,
+      "originLng": 77.5946,
+      "label": "morning",
+      "routes": [
+        {
+          "index": 0,
+          "summary": {
+            "distanceM": 1450,
+            "durationS": 1080
+          },
+          "geometry": [
+            [
+              12.9716,
+              77.5946
+            ],
+            [
+              12.9723,
+              77.59505
+            ],
+            [
+              12.973,
+              77.5955
+            ],
+            [
+              12.9737,
+              77.59595
+            ],
+            [
+              12.9744,
+              77.5964
+            ],
+            [
+              12.9751,
+              77.59685
+            ],
+            [
+              12.9758,
+              77.5973
+            ],
+            [
+              12.9765,
+              77.59775
+            ],
+            [
+              12.9772,
+              77.5982
+            ],
+            [
+              12.9779,
+              77.59865
+            ],
+            [
+              12.9786,
+              77.5991
+            ],
+            [
+              12.9793,
+              77.59955
+            ],
+            [
+              12.98,
+              77.6
+            ]
+          ],
+          "score": 72,
+          "band": "green",
+          "cells": [
+            "tdr1v9q",
+            "tdr1v9w",
+            "tdr1v9x",
+            "tdr1v9z",
+            "tdr1vf0",
+            "tdr1vf2",
+            "tdr1vf3",
+            "tdr1vf9",
+            "tdr1vff"
+          ],
+          "cellScores": [
+            {
+              "cell": "tdr1v9q",
+              "score": 79
+            },
+            {
+              "cell": "tdr1v9w",
+              "score": 70
+            },
+            {
+              "cell": "tdr1v9x",
+              "score": 69
+            },
+            {
+              "cell": "tdr1v9z",
+              "score": 70
+            },
+            {
+              "cell": "tdr1vf0",
+              "score": 61
+            },
+            {
+              "cell": "tdr1vf2",
+              "score": 67
+            },
+            {
+              "cell": "tdr1vf3",
+              "score": 67
+            },
+            {
+              "cell": "tdr1vf9",
+              "score": 67
+            },
+            {
+              "cell": "tdr1vff",
+              "score": 69
+            }
+          ],
+          "explanationInput": {
+            "unlitCells": 0,
+            "totalCells": 9,
+            "reportsLast30d": 1,
+            "worstCellScore": 61,
+            "timeBucket": "morning"
+          }
+        },
+        {
+          "index": 1,
+          "summary": {
+            "distanceM": 1720,
+            "durationS": 1290
+          },
+          "geometry": [
+            [
+              12.9716,
+              77.5946
+            ],
+            [
+              12.973206,
+              77.595503
+            ],
+            [
+              12.97475,
+              77.596375
+            ],
+            [
+              12.976175,
+              77.597187
+            ],
+            [
+              12.977431,
+              77.597916
+            ],
+            [
+              12.978481,
+              77.59854
+            ],
+            [
+              12.9793,
+              77.59905
+            ],
+            [
+              12.979881,
+              77.59944
+            ],
+            [
+              12.980231,
+              77.599716
+            ],
+            [
+              12.980375,
+              77.599887
+            ],
+            [
+              12.98035,
+              77.599975
+            ],
+            [
+              12.980206,
+              77.600003
+            ],
+            [
+              12.98,
+              77.6
+            ]
+          ],
+          "score": 80,
+          "band": "green",
+          "cells": [
+            "tdr1v9q",
+            "tdr1v9x",
+            "tdr1v9z",
+            "tdr1vf0",
+            "tdr1vf3",
+            "tdr1vf9",
+            "tdr1vfc",
+            "tdr1vff",
+            "tdr1vg4"
+          ],
+          "cellScores": [
+            {
+              "cell": "tdr1v9q",
+              "score": 87
+            },
+            {
+              "cell": "tdr1v9x",
+              "score": 77
+            },
+            {
+              "cell": "tdr1v9z",
+              "score": 78
+            },
+            {
+              "cell": "tdr1vf0",
+              "score": 86
+            },
+            {
+              "cell": "tdr1vf3",
+              "score": 69
+            },
+            {
+              "cell": "tdr1vf9",
+              "score": 75
+            },
+            {
+              "cell": "tdr1vfc",
+              "score": 83
+            },
+            {
+              "cell": "tdr1vff",
+              "score": 77
+            },
+            {
+              "cell": "tdr1vg4",
+              "score": 82
+            }
+          ],
+          "explanationInput": {
+            "unlitCells": 0,
+            "totalCells": 9,
+            "reportsLast30d": 0,
+            "worstCellScore": 69,
+            "timeBucket": "morning"
+          }
+        },
+        {
+          "index": 2,
+          "summary": {
+            "distanceM": 1610,
+            "durationS": 1200
+          },
+          "geometry": [
+            [
+              12.9716,
+              77.5946
+            ],
+            [
+              12.971524,
+              77.594662
+            ],
+            [
+              12.9715,
+              77.59475
+            ],
+            [
+              12.971579,
+              77.594889
+            ],
+            [
+              12.971802,
+              77.595101
+            ],
+            [
+              12.972202,
+              77.595401
+            ],
+            [
+              12.9728,
+              77.5958
+            ],
+            [
+              12.973602,
+              77.596301
+            ],
+            [
+              12.974602,
+              77.596901
+            ],
+            [
+              12.975779,
+              77.597589
+            ],
+            [
+              12.9771,
+              77.59835
+            ],
+            [
+              12.978524,
+              77.599162
+            ],
+            [
+              12.98,
+              77.6
+            ]
+          ],
+          "score": 66,
+          "band": "yellow",
+          "cells": [
+            "tdr1v9q",
+            "tdr1v9r",
+            "tdr1v9x",
+            "tdr1v9z",
+            "tdr1vcb",
+            "tdr1vf0",
+            "tdr1vf3",
+            "tdr1vf9",
+            "tdr1vff"
+          ],
+          "cellScores": [
+            {
+              "cell": "tdr1v9q",
+              "score": 73
+            },
+            {
+              "cell": "tdr1v9r",
+              "score": 63
+            },
+            {
+              "cell": "tdr1v9x",
+              "score": 63
+            },
+            {
+              "cell": "tdr1v9z",
+              "score": 64
+            },
+            {
+              "cell": "tdr1vcb",
+              "score": 52
+            },
+            {
+              "cell": "tdr1vf0",
+              "score": 72
+            },
+            {
+              "cell": "tdr1vf3",
+              "score": 61
+            },
+            {
+              "cell": "tdr1vf9",
+              "score": 61
+            },
+            {
+              "cell": "tdr1vff",
+              "score": 63
+            }
+          ],
+          "explanationInput": {
+            "unlitCells": 2,
+            "totalCells": 9,
+            "reportsLast30d": 2,
+            "worstCellScore": 52,
+            "timeBucket": "morning"
+          }
+        }
+      ]
+    },
+    {
+      "originLat": 20.2666,
+      "originLng": 85.836,
+      "label": "morning",
+      "routes": [
+        {
+          "index": 0,
+          "summary": {
+            "distanceM": 1450,
+            "durationS": 1080
+          },
+          "geometry": [
+            [
+              20.2666,
+              85.836
+            ],
+            [
+              20.2666,
+              85.836617
+            ],
+            [
+              20.2666,
+              85.837233
+            ],
+            [
+              20.2666,
+              85.83785
+            ],
+            [
+              20.2666,
+              85.838467
+            ],
+            [
+              20.2666,
+              85.839083
+            ],
+            [
+              20.2666,
+              85.8397
+            ],
+            [
+              20.2666,
+              85.840317
+            ],
+            [
+              20.2666,
+              85.840933
+            ],
+            [
+              20.2666,
+              85.84155
+            ],
+            [
+              20.2666,
+              85.842167
+            ],
+            [
+              20.2666,
+              85.842783
+            ],
+            [
+              20.2666,
+              85.8434
+            ]
+          ],
+          "score": 72,
+          "band": "green",
+          "cells": [
+            "tgt531r",
+            "tgt5332",
+            "tgt5333",
+            "tgt5336",
+            "tgt5337",
+            "tgt533k",
+            "tgt533m"
+          ],
+          "cellScores": [
+            {
+              "cell": "tgt531r",
+              "score": 74
+            },
+            {
+              "cell": "tgt5332",
+              "score": 69
+            },
+            {
+              "cell": "tgt5333",
+              "score": 64
+            },
+            {
+              "cell": "tgt5336",
+              "score": 61
+            },
+            {
+              "cell": "tgt5337",
+              "score": 70
+            },
+            {
+              "cell": "tgt533k",
+              "score": 65
+            },
+            {
+              "cell": "tgt533m",
+              "score": 80
+            }
+          ],
+          "explanationInput": {
+            "unlitCells": 0,
+            "totalCells": 7,
+            "reportsLast30d": 1,
+            "worstCellScore": 61,
+            "timeBucket": "morning"
+          }
+        },
+        {
+          "index": 1,
+          "summary": {
+            "distanceM": 1720,
+            "durationS": 1290
+          },
+          "geometry": [
+            [
+              20.2666,
+              85.836
+            ],
+            [
+              20.267506,
+              85.83707
+            ],
+            [
+              20.26835,
+              85.838108
+            ],
+            [
+              20.269075,
+              85.839087
+            ],
+            [
+              20.269631,
+              85.839982
+            ],
+            [
+              20.269981,
+              85.840774
+            ],
+            [
+              20.2701,
+              85.84145
+            ],
+            [
+              20.269981,
+              85.842007
+            ],
+            [
+              20.269631,
+              85.842449
+            ],
+            [
+              20.269075,
+              85.842787
+            ],
+            [
+              20.26835,
+              85.843042
+            ],
+            [
+              20.267506,
+              85.843236
+            ],
+            [
+              20.2666,
+              85.8434
+            ]
+          ],
+          "score": 80,
+          "band": "green",
+          "cells": [
+            "tgt531r",
+            "tgt5338",
+            "tgt5339",
+            "tgt533f",
+            "tgt5365",
+            "tgt536h",
+            "tgt533u",
+            "tgt533s",
+            "tgt533t",
+            "tgt533m"
+          ],
+          "cellScores": [
+            {
+              "cell": "tgt531r",
+              "score": 82
+            },
+            {
+              "cell": "tgt5338",
+              "score": 77
+            },
+            {
+              "cell": "tgt5339",
+              "score": 88
+            },
+            {
+              "cell": "tgt533f",
+              "score": 80
+            },
+            {
+              "cell": "tgt5365",
+              "score": 75
+            },
+            {
+              "cell": "tgt536h",
+              "score": 69
+            },
+            {
+              "cell": "tgt533u",
+              "score": 84
+            },
+            {
+              "cell": "tgt533s",
+              "score": 87
+            },
+            {
+              "cell": "tgt533t",
+              "score": 83
+            },
+            {
+              "cell": "tgt533m",
+              "score": 88
+            }
+          ],
+          "explanationInput": {
+            "unlitCells": 0,
+            "totalCells": 10,
+            "reportsLast30d": 0,
+            "worstCellScore": 69,
+            "timeBucket": "morning"
+          }
+        },
+        {
+          "index": 2,
+          "summary": {
+            "distanceM": 1610,
+            "durationS": 1200
+          },
+          "geometry": [
+            [
+              20.2666,
+              85.836
+            ],
+            [
+              20.265824,
+              85.836228
+            ],
+            [
+              20.2651,
+              85.836483
+            ],
+            [
+              20.264479,
+              85.836789
+            ],
+            [
+              20.264002,
+              85.837168
+            ],
+            [
+              20.263702,
+              85.837634
+            ],
+            [
+              20.2636,
+              85.8382
+            ],
+            [
+              20.263702,
+              85.838868
+            ],
+            [
+              20.264002,
+              85.839634
+            ],
+            [
+              20.264479,
+              85.840489
+            ],
+            [
+              20.2651,
+              85.841417
+            ],
+            [
+              20.265824,
+              85.842395
+            ],
+            [
+              20.2666,
+              85.8434
+            ]
+          ],
+          "score": 66,
+          "band": "yellow",
+          "cells": [
+            "tgt531r",
+            "tgt5332",
+            "tgt5330",
+            "tgt532b",
+            "tgt532c",
+            "tgt532f",
+            "tgt5335",
+            "tgt533k",
+            "tgt533m"
+          ],
+          "cellScores": [
+            {
+              "cell": "tgt531r",
+              "score": 68
+            },
+            {
+              "cell": "tgt5332",
+              "score": 63
+            },
+            {
+              "cell": "tgt5330",
+              "score": 74
+            },
+            {
+              "cell": "tgt532b",
+              "score": 59
+            },
+            {
+              "cell": "tgt532c",
+              "score": 52
+            },
+            {
+              "cell": "tgt532f",
+              "score": 58
+            },
+            {
+              "cell": "tgt5335",
+              "score": 72
+            },
+            {
+              "cell": "tgt533k",
+              "score": 59
+            },
+            {
+              "cell": "tgt533m",
+              "score": 74
+            }
+          ],
+          "explanationInput": {
+            "unlitCells": 2,
+            "totalCells": 9,
+            "reportsLast30d": 2,
+            "worstCellScore": 52,
+            "timeBucket": "morning"
+          }
+        }
+      ]
+    }
+  ],
+  "evening": [
+    {
+      "originLat": 12.9716,
+      "originLng": 77.5946,
+      "label": "evening",
+      "routes": [
+        {
+          "index": 0,
+          "summary": {
+            "distanceM": 1450,
+            "durationS": 1080
+          },
+          "geometry": [
+            [
+              12.9716,
+              77.5946
+            ],
+            [
+              12.9723,
+              77.59505
+            ],
+            [
+              12.973,
+              77.5955
+            ],
+            [
+              12.9737,
+              77.59595
+            ],
+            [
+              12.9744,
+              77.5964
+            ],
+            [
+              12.9751,
+              77.59685
+            ],
+            [
+              12.9758,
+              77.5973
+            ],
+            [
+              12.9765,
+              77.59775
+            ],
+            [
+              12.9772,
+              77.5982
+            ],
+            [
+              12.9779,
+              77.59865
+            ],
+            [
+              12.9786,
+              77.5991
+            ],
+            [
+              12.9793,
+              77.59955
+            ],
+            [
+              12.98,
+              77.6
+            ]
+          ],
+          "score": 58,
+          "band": "yellow",
+          "cells": [
+            "tdr1v9q",
+            "tdr1v9w",
+            "tdr1v9x",
+            "tdr1v9z",
+            "tdr1vf0",
+            "tdr1vf2",
+            "tdr1vf3",
+            "tdr1vf9",
+            "tdr1vff"
+          ],
+          "cellScores": [
+            {
+              "cell": "tdr1v9q",
+              "score": 65
+            },
+            {
+              "cell": "tdr1v9w",
+              "score": 56
+            },
+            {
+              "cell": "tdr1v9x",
+              "score": 55
+            },
+            {
+              "cell": "tdr1v9z",
+              "score": 56
+            },
+            {
+              "cell": "tdr1vf0",
+              "score": 41
+            },
+            {
+              "cell": "tdr1vf2",
+              "score": 53
+            },
+            {
+              "cell": "tdr1vf3",
+              "score": 53
+            },
+            {
+              "cell": "tdr1vf9",
+              "score": 53
+            },
+            {
+              "cell": "tdr1vff",
+              "score": 55
+            }
+          ],
+          "explanationInput": {
+            "unlitCells": 2,
+            "totalCells": 9,
+            "reportsLast30d": 3,
+            "worstCellScore": 41,
+            "timeBucket": "evening"
+          }
+        },
+        {
+          "index": 1,
+          "summary": {
+            "distanceM": 1720,
+            "durationS": 1290
+          },
+          "geometry": [
+            [
+              12.9716,
+              77.5946
+            ],
+            [
+              12.973206,
+              77.595503
+            ],
+            [
+              12.97475,
+              77.596375
+            ],
+            [
+              12.976175,
+              77.597187
+            ],
+            [
+              12.977431,
+              77.597916
+            ],
+            [
+              12.978481,
+              77.59854
+            ],
+            [
+              12.9793,
+              77.59905
+            ],
+            [
+              12.979881,
+              77.59944
+            ],
+            [
+              12.980231,
+              77.599716
+            ],
+            [
+              12.980375,
+              77.599887
+            ],
+            [
+              12.98035,
+              77.599975
+            ],
+            [
+              12.980206,
+              77.600003
+            ],
+            [
+              12.98,
+              77.6
+            ]
+          ],
+          "score": 66,
+          "band": "yellow",
+          "cells": [
+            "tdr1v9q",
+            "tdr1v9x",
+            "tdr1v9z",
+            "tdr1vf0",
+            "tdr1vf3",
+            "tdr1vf9",
+            "tdr1vfc",
+            "tdr1vff",
+            "tdr1vg4"
+          ],
+          "cellScores": [
+            {
+              "cell": "tdr1v9q",
+              "score": 73
+            },
+            {
+              "cell": "tdr1v9x",
+              "score": 63
+            },
+            {
+              "cell": "tdr1v9z",
+              "score": 64
+            },
+            {
+              "cell": "tdr1vf0",
+              "score": 72
+            },
+            {
+              "cell": "tdr1vf3",
+              "score": 49
+            },
+            {
+              "cell": "tdr1vf9",
+              "score": 61
+            },
+            {
+              "cell": "tdr1vfc",
+              "score": 69
+            },
+            {
+              "cell": "tdr1vff",
+              "score": 63
+            },
+            {
+              "cell": "tdr1vg4",
+              "score": 68
+            }
+          ],
+          "explanationInput": {
+            "unlitCells": 1,
+            "totalCells": 9,
+            "reportsLast30d": 2,
+            "worstCellScore": 49,
+            "timeBucket": "evening"
+          }
+        },
+        {
+          "index": 2,
+          "summary": {
+            "distanceM": 1610,
+            "durationS": 1200
+          },
+          "geometry": [
+            [
+              12.9716,
+              77.5946
+            ],
+            [
+              12.971524,
+              77.594662
+            ],
+            [
+              12.9715,
+              77.59475
+            ],
+            [
+              12.971579,
+              77.594889
+            ],
+            [
+              12.971802,
+              77.595101
+            ],
+            [
+              12.972202,
+              77.595401
+            ],
+            [
+              12.9728,
+              77.5958
+            ],
+            [
+              12.973602,
+              77.596301
+            ],
+            [
+              12.974602,
+              77.596901
+            ],
+            [
+              12.975779,
+              77.597589
+            ],
+            [
+              12.9771,
+              77.59835
+            ],
+            [
+              12.978524,
+              77.599162
+            ],
+            [
+              12.98,
+              77.6
+            ]
+          ],
+          "score": 52,
+          "band": "yellow",
+          "cells": [
+            "tdr1v9q",
+            "tdr1v9r",
+            "tdr1v9x",
+            "tdr1v9z",
+            "tdr1vcb",
+            "tdr1vf0",
+            "tdr1vf3",
+            "tdr1vf9",
+            "tdr1vff"
+          ],
+          "cellScores": [
+            {
+              "cell": "tdr1v9q",
+              "score": 59
+            },
+            {
+              "cell": "tdr1v9r",
+              "score": 49
+            },
+            {
+              "cell": "tdr1v9x",
+              "score": 49
+            },
+            {
+              "cell": "tdr1v9z",
+              "score": 50
+            },
+            {
+              "cell": "tdr1vcb",
+              "score": 35
+            },
+            {
+              "cell": "tdr1vf0",
+              "score": 58
+            },
+            {
+              "cell": "tdr1vf3",
+              "score": 47
+            },
+            {
+              "cell": "tdr1vf9",
+              "score": 47
+            },
+            {
+              "cell": "tdr1vff",
+              "score": 49
+            }
+          ],
+          "explanationInput": {
+            "unlitCells": 3,
+            "totalCells": 9,
+            "reportsLast30d": 4,
+            "worstCellScore": 35,
+            "timeBucket": "evening"
+          }
+        }
+      ]
+    },
+    {
+      "originLat": 20.2666,
+      "originLng": 85.836,
+      "label": "evening",
+      "routes": [
+        {
+          "index": 0,
+          "summary": {
+            "distanceM": 1450,
+            "durationS": 1080
+          },
+          "geometry": [
+            [
+              20.2666,
+              85.836
+            ],
+            [
+              20.2666,
+              85.836617
+            ],
+            [
+              20.2666,
+              85.837233
+            ],
+            [
+              20.2666,
+              85.83785
+            ],
+            [
+              20.2666,
+              85.838467
+            ],
+            [
+              20.2666,
+              85.839083
+            ],
+            [
+              20.2666,
+              85.8397
+            ],
+            [
+              20.2666,
+              85.840317
+            ],
+            [
+              20.2666,
+              85.840933
+            ],
+            [
+              20.2666,
+              85.84155
+            ],
+            [
+              20.2666,
+              85.842167
+            ],
+            [
+              20.2666,
+              85.842783
+            ],
+            [
+              20.2666,
+              85.8434
+            ]
+          ],
+          "score": 58,
+          "band": "yellow",
+          "cells": [
+            "tgt531r",
+            "tgt5332",
+            "tgt5333",
+            "tgt5336",
+            "tgt5337",
+            "tgt533k",
+            "tgt533m"
+          ],
+          "cellScores": [
+            {
+              "cell": "tgt531r",
+              "score": 60
+            },
+            {
+              "cell": "tgt5332",
+              "score": 55
+            },
+            {
+              "cell": "tgt5333",
+              "score": 50
+            },
+            {
+              "cell": "tgt5336",
+              "score": 41
+            },
+            {
+              "cell": "tgt5337",
+              "score": 56
+            },
+            {
+              "cell": "tgt533k",
+              "score": 51
+            },
+            {
+              "cell": "tgt533m",
+              "score": 66
+            }
+          ],
+          "explanationInput": {
+            "unlitCells": 2,
+            "totalCells": 7,
+            "reportsLast30d": 3,
+            "worstCellScore": 41,
+            "timeBucket": "evening"
+          }
+        },
+        {
+          "index": 1,
+          "summary": {
+            "distanceM": 1720,
+            "durationS": 1290
+          },
+          "geometry": [
+            [
+              20.2666,
+              85.836
+            ],
+            [
+              20.267506,
+              85.83707
+            ],
+            [
+              20.26835,
+              85.838108
+            ],
+            [
+              20.269075,
+              85.839087
+            ],
+            [
+              20.269631,
+              85.839982
+            ],
+            [
+              20.269981,
+              85.840774
+            ],
+            [
+              20.2701,
+              85.84145
+            ],
+            [
+              20.269981,
+              85.842007
+            ],
+            [
+              20.269631,
+              85.842449
+            ],
+            [
+              20.269075,
+              85.842787
+            ],
+            [
+              20.26835,
+              85.843042
+            ],
+            [
+              20.267506,
+              85.843236
+            ],
+            [
+              20.2666,
+              85.8434
+            ]
+          ],
+          "score": 66,
+          "band": "yellow",
+          "cells": [
+            "tgt531r",
+            "tgt5338",
+            "tgt5339",
+            "tgt533f",
+            "tgt5365",
+            "tgt536h",
+            "tgt533u",
+            "tgt533s",
+            "tgt533t",
+            "tgt533m"
+          ],
+          "cellScores": [
+            {
+              "cell": "tgt531r",
+              "score": 68
+            },
+            {
+              "cell": "tgt5338",
+              "score": 63
+            },
+            {
+              "cell": "tgt5339",
+              "score": 74
+            },
+            {
+              "cell": "tgt533f",
+              "score": 66
+            },
+            {
+              "cell": "tgt5365",
+              "score": 61
+            },
+            {
+              "cell": "tgt536h",
+              "score": 49
+            },
+            {
+              "cell": "tgt533u",
+              "score": 70
+            },
+            {
+              "cell": "tgt533s",
+              "score": 73
+            },
+            {
+              "cell": "tgt533t",
+              "score": 69
+            },
+            {
+              "cell": "tgt533m",
+              "score": 74
+            }
+          ],
+          "explanationInput": {
+            "unlitCells": 1,
+            "totalCells": 10,
+            "reportsLast30d": 2,
+            "worstCellScore": 49,
+            "timeBucket": "evening"
+          }
+        },
+        {
+          "index": 2,
+          "summary": {
+            "distanceM": 1610,
+            "durationS": 1200
+          },
+          "geometry": [
+            [
+              20.2666,
+              85.836
+            ],
+            [
+              20.265824,
+              85.836228
+            ],
+            [
+              20.2651,
+              85.836483
+            ],
+            [
+              20.264479,
+              85.836789
+            ],
+            [
+              20.264002,
+              85.837168
+            ],
+            [
+              20.263702,
+              85.837634
+            ],
+            [
+              20.2636,
+              85.8382
+            ],
+            [
+              20.263702,
+              85.838868
+            ],
+            [
+              20.264002,
+              85.839634
+            ],
+            [
+              20.264479,
+              85.840489
+            ],
+            [
+              20.2651,
+              85.841417
+            ],
+            [
+              20.265824,
+              85.842395
+            ],
+            [
+              20.2666,
+              85.8434
+            ]
+          ],
+          "score": 52,
+          "band": "yellow",
+          "cells": [
+            "tgt531r",
+            "tgt5332",
+            "tgt5330",
+            "tgt532b",
+            "tgt532c",
+            "tgt532f",
+            "tgt5335",
+            "tgt533k",
+            "tgt533m"
+          ],
+          "cellScores": [
+            {
+              "cell": "tgt531r",
+              "score": 54
+            },
+            {
+              "cell": "tgt5332",
+              "score": 49
+            },
+            {
+              "cell": "tgt5330",
+              "score": 60
+            },
+            {
+              "cell": "tgt532b",
+              "score": 45
+            },
+            {
+              "cell": "tgt532c",
+              "score": 35
+            },
+            {
+              "cell": "tgt532f",
+              "score": 44
+            },
+            {
+              "cell": "tgt5335",
+              "score": 58
+            },
+            {
+              "cell": "tgt533k",
+              "score": 45
+            },
+            {
+              "cell": "tgt533m",
+              "score": 60
+            }
+          ],
+          "explanationInput": {
+            "unlitCells": 3,
+            "totalCells": 9,
+            "reportsLast30d": 4,
+            "worstCellScore": 35,
+            "timeBucket": "evening"
+          }
+        }
+      ]
+    }
+  ],
+  "night": [
+    {
+      "originLat": 12.9716,
+      "originLng": 77.5946,
+      "label": "night",
+      "routes": [
+        {
+          "index": 0,
+          "summary": {
+            "distanceM": 1450,
+            "durationS": 1080
+          },
+          "geometry": [
+            [
+              12.9716,
+              77.5946
+            ],
+            [
+              12.9723,
+              77.59505
+            ],
+            [
+              12.973,
+              77.5955
+            ],
+            [
+              12.9737,
+              77.59595
+            ],
+            [
+              12.9744,
+              77.5964
+            ],
+            [
+              12.9751,
+              77.59685
+            ],
+            [
+              12.9758,
+              77.5973
+            ],
+            [
+              12.9765,
+              77.59775
+            ],
+            [
+              12.9772,
+              77.5982
+            ],
+            [
+              12.9779,
+              77.59865
+            ],
+            [
+              12.9786,
+              77.5991
+            ],
+            [
+              12.9793,
+              77.59955
+            ],
+            [
+              12.98,
+              77.6
+            ]
+          ],
+          "score": 44,
+          "band": "yellow",
+          "cells": [
+            "tdr1v9q",
+            "tdr1v9w",
+            "tdr1v9x",
+            "tdr1v9z",
+            "tdr1vf0",
+            "tdr1vf2",
+            "tdr1vf3",
+            "tdr1vf9",
+            "tdr1vff"
+          ],
+          "cellScores": [
+            {
+              "cell": "tdr1v9q",
+              "score": 51
+            },
+            {
+              "cell": "tdr1v9w",
+              "score": 42
+            },
+            {
+              "cell": "tdr1v9x",
+              "score": 41
+            },
+            {
+              "cell": "tdr1v9z",
+              "score": 42
+            },
+            {
+              "cell": "tdr1vf0",
+              "score": 28
+            },
+            {
+              "cell": "tdr1vf2",
+              "score": 39
+            },
+            {
+              "cell": "tdr1vf3",
+              "score": 39
+            },
+            {
+              "cell": "tdr1vf9",
+              "score": 39
+            },
+            {
+              "cell": "tdr1vff",
+              "score": 41
+            }
+          ],
+          "explanationInput": {
+            "unlitCells": 4,
+            "totalCells": 9,
+            "reportsLast30d": 5,
+            "worstCellScore": 28,
+            "timeBucket": "night"
+          }
+        },
+        {
+          "index": 1,
+          "summary": {
+            "distanceM": 1720,
+            "durationS": 1290
+          },
+          "geometry": [
+            [
+              12.9716,
+              77.5946
+            ],
+            [
+              12.973206,
+              77.595503
+            ],
+            [
+              12.97475,
+              77.596375
+            ],
+            [
+              12.976175,
+              77.597187
+            ],
+            [
+              12.977431,
+              77.597916
+            ],
+            [
+              12.978481,
+              77.59854
+            ],
+            [
+              12.9793,
+              77.59905
+            ],
+            [
+              12.979881,
+              77.59944
+            ],
+            [
+              12.980231,
+              77.599716
+            ],
+            [
+              12.980375,
+              77.599887
+            ],
+            [
+              12.98035,
+              77.599975
+            ],
+            [
+              12.980206,
+              77.600003
+            ],
+            [
+              12.98,
+              77.6
+            ]
+          ],
+          "score": 55,
+          "band": "yellow",
+          "cells": [
+            "tdr1v9q",
+            "tdr1v9x",
+            "tdr1v9z",
+            "tdr1vf0",
+            "tdr1vf3",
+            "tdr1vf9",
+            "tdr1vfc",
+            "tdr1vff",
+            "tdr1vg4"
+          ],
+          "cellScores": [
+            {
+              "cell": "tdr1v9q",
+              "score": 62
+            },
+            {
+              "cell": "tdr1v9x",
+              "score": 52
+            },
+            {
+              "cell": "tdr1v9z",
+              "score": 53
+            },
+            {
+              "cell": "tdr1vf0",
+              "score": 61
+            },
+            {
+              "cell": "tdr1vf3",
+              "score": 34
+            },
+            {
+              "cell": "tdr1vf9",
+              "score": 50
+            },
+            {
+              "cell": "tdr1vfc",
+              "score": 58
+            },
+            {
+              "cell": "tdr1vff",
+              "score": 52
+            },
+            {
+              "cell": "tdr1vg4",
+              "score": 57
+            }
+          ],
+          "explanationInput": {
+            "unlitCells": 3,
+            "totalCells": 9,
+            "reportsLast30d": 3,
+            "worstCellScore": 34,
+            "timeBucket": "night"
+          }
+        },
+        {
+          "index": 2,
+          "summary": {
+            "distanceM": 1610,
+            "durationS": 1200
+          },
+          "geometry": [
+            [
+              12.9716,
+              77.5946
+            ],
+            [
+              12.971524,
+              77.594662
+            ],
+            [
+              12.9715,
+              77.59475
+            ],
+            [
+              12.971579,
+              77.594889
+            ],
+            [
+              12.971802,
+              77.595101
+            ],
+            [
+              12.972202,
+              77.595401
+            ],
+            [
+              12.9728,
+              77.5958
+            ],
+            [
+              12.973602,
+              77.596301
+            ],
+            [
+              12.974602,
+              77.596901
+            ],
+            [
+              12.975779,
+              77.597589
+            ],
+            [
+              12.9771,
+              77.59835
+            ],
+            [
+              12.978524,
+              77.599162
+            ],
+            [
+              12.98,
+              77.6
+            ]
+          ],
+          "score": 38,
+          "band": "red",
+          "cells": [
+            "tdr1v9q",
+            "tdr1v9r",
+            "tdr1v9x",
+            "tdr1v9z",
+            "tdr1vcb",
+            "tdr1vf0",
+            "tdr1vf3",
+            "tdr1vf9",
+            "tdr1vff"
+          ],
+          "cellScores": [
+            {
+              "cell": "tdr1v9q",
+              "score": 45
+            },
+            {
+              "cell": "tdr1v9r",
+              "score": 35
+            },
+            {
+              "cell": "tdr1v9x",
+              "score": 35
+            },
+            {
+              "cell": "tdr1v9z",
+              "score": 36
+            },
+            {
+              "cell": "tdr1vcb",
+              "score": 21
+            },
+            {
+              "cell": "tdr1vf0",
+              "score": 44
+            },
+            {
+              "cell": "tdr1vf3",
+              "score": 33
+            },
+            {
+              "cell": "tdr1vf9",
+              "score": 33
+            },
+            {
+              "cell": "tdr1vff",
+              "score": 35
+            }
+          ],
+          "explanationInput": {
+            "unlitCells": 6,
+            "totalCells": 9,
+            "reportsLast30d": 7,
+            "worstCellScore": 21,
+            "timeBucket": "night"
+          }
+        }
+      ]
+    },
+    {
+      "originLat": 20.2666,
+      "originLng": 85.836,
+      "label": "night",
+      "routes": [
+        {
+          "index": 0,
+          "summary": {
+            "distanceM": 1450,
+            "durationS": 1080
+          },
+          "geometry": [
+            [
+              20.2666,
+              85.836
+            ],
+            [
+              20.2666,
+              85.836617
+            ],
+            [
+              20.2666,
+              85.837233
+            ],
+            [
+              20.2666,
+              85.83785
+            ],
+            [
+              20.2666,
+              85.838467
+            ],
+            [
+              20.2666,
+              85.839083
+            ],
+            [
+              20.2666,
+              85.8397
+            ],
+            [
+              20.2666,
+              85.840317
+            ],
+            [
+              20.2666,
+              85.840933
+            ],
+            [
+              20.2666,
+              85.84155
+            ],
+            [
+              20.2666,
+              85.842167
+            ],
+            [
+              20.2666,
+              85.842783
+            ],
+            [
+              20.2666,
+              85.8434
+            ]
+          ],
+          "score": 44,
+          "band": "yellow",
+          "cells": [
+            "tgt531r",
+            "tgt5332",
+            "tgt5333",
+            "tgt5336",
+            "tgt5337",
+            "tgt533k",
+            "tgt533m"
+          ],
+          "cellScores": [
+            {
+              "cell": "tgt531r",
+              "score": 46
+            },
+            {
+              "cell": "tgt5332",
+              "score": 41
+            },
+            {
+              "cell": "tgt5333",
+              "score": 36
+            },
+            {
+              "cell": "tgt5336",
+              "score": 28
+            },
+            {
+              "cell": "tgt5337",
+              "score": 42
+            },
+            {
+              "cell": "tgt533k",
+              "score": 37
+            },
+            {
+              "cell": "tgt533m",
+              "score": 52
+            }
+          ],
+          "explanationInput": {
+            "unlitCells": 4,
+            "totalCells": 7,
+            "reportsLast30d": 5,
+            "worstCellScore": 28,
+            "timeBucket": "night"
+          }
+        },
+        {
+          "index": 1,
+          "summary": {
+            "distanceM": 1720,
+            "durationS": 1290
+          },
+          "geometry": [
+            [
+              20.2666,
+              85.836
+            ],
+            [
+              20.267506,
+              85.83707
+            ],
+            [
+              20.26835,
+              85.838108
+            ],
+            [
+              20.269075,
+              85.839087
+            ],
+            [
+              20.269631,
+              85.839982
+            ],
+            [
+              20.269981,
+              85.840774
+            ],
+            [
+              20.2701,
+              85.84145
+            ],
+            [
+              20.269981,
+              85.842007
+            ],
+            [
+              20.269631,
+              85.842449
+            ],
+            [
+              20.269075,
+              85.842787
+            ],
+            [
+              20.26835,
+              85.843042
+            ],
+            [
+              20.267506,
+              85.843236
+            ],
+            [
+              20.2666,
+              85.8434
+            ]
+          ],
+          "score": 55,
+          "band": "yellow",
+          "cells": [
+            "tgt531r",
+            "tgt5338",
+            "tgt5339",
+            "tgt533f",
+            "tgt5365",
+            "tgt536h",
+            "tgt533u",
+            "tgt533s",
+            "tgt533t",
+            "tgt533m"
+          ],
+          "cellScores": [
+            {
+              "cell": "tgt531r",
+              "score": 57
+            },
+            {
+              "cell": "tgt5338",
+              "score": 52
+            },
+            {
+              "cell": "tgt5339",
+              "score": 63
+            },
+            {
+              "cell": "tgt533f",
+              "score": 55
+            },
+            {
+              "cell": "tgt5365",
+              "score": 50
+            },
+            {
+              "cell": "tgt536h",
+              "score": 34
+            },
+            {
+              "cell": "tgt533u",
+              "score": 59
+            },
+            {
+              "cell": "tgt533s",
+              "score": 62
+            },
+            {
+              "cell": "tgt533t",
+              "score": 58
+            },
+            {
+              "cell": "tgt533m",
+              "score": 63
+            }
+          ],
+          "explanationInput": {
+            "unlitCells": 3,
+            "totalCells": 10,
+            "reportsLast30d": 3,
+            "worstCellScore": 34,
+            "timeBucket": "night"
+          }
+        },
+        {
+          "index": 2,
+          "summary": {
+            "distanceM": 1610,
+            "durationS": 1200
+          },
+          "geometry": [
+            [
+              20.2666,
+              85.836
+            ],
+            [
+              20.265824,
+              85.836228
+            ],
+            [
+              20.2651,
+              85.836483
+            ],
+            [
+              20.264479,
+              85.836789
+            ],
+            [
+              20.264002,
+              85.837168
+            ],
+            [
+              20.263702,
+              85.837634
+            ],
+            [
+              20.2636,
+              85.8382
+            ],
+            [
+              20.263702,
+              85.838868
+            ],
+            [
+              20.264002,
+              85.839634
+            ],
+            [
+              20.264479,
+              85.840489
+            ],
+            [
+              20.2651,
+              85.841417
+            ],
+            [
+              20.265824,
+              85.842395
+            ],
+            [
+              20.2666,
+              85.8434
+            ]
+          ],
+          "score": 38,
+          "band": "red",
+          "cells": [
+            "tgt531r",
+            "tgt5332",
+            "tgt5330",
+            "tgt532b",
+            "tgt532c",
+            "tgt532f",
+            "tgt5335",
+            "tgt533k",
+            "tgt533m"
+          ],
+          "cellScores": [
+            {
+              "cell": "tgt531r",
+              "score": 40
+            },
+            {
+              "cell": "tgt5332",
+              "score": 35
+            },
+            {
+              "cell": "tgt5330",
+              "score": 46
+            },
+            {
+              "cell": "tgt532b",
+              "score": 31
+            },
+            {
+              "cell": "tgt532c",
+              "score": 21
+            },
+            {
+              "cell": "tgt532f",
+              "score": 30
+            },
+            {
+              "cell": "tgt5335",
+              "score": 44
+            },
+            {
+              "cell": "tgt533k",
+              "score": 31
+            },
+            {
+              "cell": "tgt533m",
+              "score": 46
+            }
+          ],
+          "explanationInput": {
+            "unlitCells": 6,
+            "totalCells": 9,
+            "reportsLast30d": 7,
+            "worstCellScore": 21,
+            "timeBucket": "night"
+          }
+        }
+      ]
+    }
+  ]
+}

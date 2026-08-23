@@ -1,0 +1,86 @@
+diff a/frontend/src/App.tsx b/frontend/src/App.tsx	(rejected hunks)
+@@ -1,7 +1,7 @@
+ import { useCallback, useEffect, useMemo, useState } from 'react'
+ import { MapContainer, TileLayer, Polyline, CircleMarker, Tooltip, Circle } from 'react-leaflet'
+ import { AnimatePresence, motion } from 'framer-motion'
+-import { Eye, EyeOff, Flag, Loader2, Share2, Shield } from 'lucide-react'
++import { Eye, EyeOff, Flag, HelpCircle, Loader2, Share2, Shield } from 'lucide-react'
+ 
+ import Topbar from './components/Topbar'
+ import SearchCard, { DESTINATIONS } from './components/SearchCard'
+@@ -14,12 +14,17 @@ import TimeCard from './components/TimeCard'
+ import ReportModal from './components/ReportModal'
+ import ShareModal from './components/ShareModal'
+ import MapClickHandler from './components/MapClickHandler'
++import WhyModal, { type ExplainContext } from './components/WhyModal'
+ 
+ import { routes as fallbackRoutes, seedReports, hours, heatmapPoints } from './data'
+ import type { Report, SafetyLevel } from './types'
+ import { ROUTE_COLORS } from './types'
+ import { score } from './utils'
+-import { fetchRoutes as apiFetchRoutes, submitReport as apiSubmitReport } from './api'
++import {
++  fetchRoutes as apiFetchRoutes,
++  submitReport as apiSubmitReport,
++  fetchExplainContext as apiFetchExplain,
++} from './api'
+ import type { ApiRoute } from './api'
+ 
+ const ORIGIN = { lat: 20.2666, lng: 85.8360 }
+@@ -56,6 +61,12 @@ function App() {
+   const [reportCoords, setReportCoords] = useState<[number, number] | null>(null)
+   const [dest, setDest] = useState<Destination>(DESTINATIONS[0])
+ 
++  // "Why?" panel — reads GET /api/explain-context
++  const [whyOpen, setWhyOpen] = useState(false)
++  const [whyData, setWhyData] = useState<ExplainContext | null>(null)
++  const [whyLoading, setWhyLoading] = useState(false)
++  const [whyError, setWhyError] = useState<string | null>(null)
++
+   const loadRoutes = useCallback(async (hourIdx: number, destination: Destination) => {
+     setLoading(true)
+     try {
+@@ -74,6 +85,21 @@ function App() {
+ 
+   useEffect(() => { loadRoutes(hour, dest) }, [hour, dest, loadRoutes])
+ 
++  const openWhy = useCallback(async () => {
++    setWhyOpen(true); setWhyLoading(true); setWhyError(null); setWhyData(null)
++    try {
++      setWhyData(await apiFetchExplain({
++        originLat: ORIGIN.lat, originLng: ORIGIN.lng,
++        destLat: dest.lat, destLng: dest.lng,
++        time: sliderToIso(hour), routeIndex: selectedIdx,
++      }))
++    } catch (e) {
++      setWhyError(e instanceof Error ? e.message : String(e))
++    } finally {
++      setWhyLoading(false)
++    }
++  }, [dest, hour, selectedIdx])
++
+   const usingApi = apiRoutes !== null && apiRoutes.length > 0
+   const activeApiRoute = usingApi ? apiRoutes[selectedIdx] || apiRoutes[0] : null
+ 
+@@ -173,6 +199,7 @@ function App() {
+         <button className={`heatmap-toggle ${heatmapOn ? 'heatmap-on' : ''}`} onClick={() => setHeatmapOn((v) => !v)} aria-pressed={heatmapOn} title={heatmapOn ? 'Hide safety heatmap' : 'Show safety heatmap'}>
+           {heatmapOn ? <EyeOff size={15} /> : <Eye size={15} />} Heatmap
+         </button>
++        <button className="why-button" onClick={openWhy}><HelpCircle size={15} /> Why?</button>
+         <button className="share-button" onClick={() => setShareOpen(true)}><Share2 size={15} /> Share route</button>
+       </div>
+ 
+@@ -183,6 +210,13 @@ function App() {
+       <AnimatePresence>
+         {reportOpen && <ReportModal onClose={() => { setReportOpen(false); setReportCoords(null) }} onSubmit={handleReport} coords={reportCoords} />}
+       </AnimatePresence>
++      <AnimatePresence>
++        {whyOpen && (
++          <WhyModal data={whyData} loading={whyLoading} error={whyError}
++            routeLabel={routeLabels[selectedIdx] || 'Selected'}
++            onClose={() => setWhyOpen(false)} />
++        )}
++      </AnimatePresence>
+       <AnimatePresence>
+         {shareOpen && <ShareModal onClose={() => setShareOpen(false)} />}
+       </AnimatePresence>
