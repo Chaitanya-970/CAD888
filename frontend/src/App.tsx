@@ -114,9 +114,10 @@ function App() {
   }
 
   const heatColor = (intensity: number) => {
-    if (intensity >= 0.7) return { color: '#d9483d', fillColor: '#d9483d', fillOpacity: 0.25 + intensity * 0.15 }
-    if (intensity >= 0.4) return { color: '#e0791a', fillColor: '#e0791a', fillOpacity: 0.18 + intensity * 0.12 }
-    return { color: '#0f8a72', fillColor: '#0f8a72', fillOpacity: 0.12 + intensity * 0.08 }
+    // Flashy, high-opacity colors for the demo
+    if (intensity >= 0.7) return { color: '#d9483d', stroke: false, fillColor: '#d9483d', fillOpacity: 0.4 + intensity * 0.3 }
+    if (intensity >= 0.4) return { color: '#e0791a', stroke: false, fillColor: '#e0791a', fillOpacity: 0.3 + intensity * 0.2 }
+    return { color: '#0f8a72', stroke: false, fillColor: '#0f8a72', fillOpacity: 0.2 + intensity * 0.15 }
   }
 
   return (
@@ -126,7 +127,7 @@ function App() {
         <MapClickHandler onMapClick={handleMapClick} />
 
         {heatmapOn && heatmapPoints.map(([lat, lng, intensity], i) => (
-          <Circle key={`heat-${i}`} center={[lat, lng]} radius={180 + intensity * 120} pathOptions={{ ...heatColor(intensity), weight: 0 }} />
+          <Circle key={`heat-${i}`} center={[lat, lng]} radius={280 + intensity * 250} pathOptions={{ ...heatColor(intensity) }} />
         ))}
 
         {usingApi && apiRoutes
