@@ -52,7 +52,7 @@ export default function RouteDock({
     // Fallback to static text if AI fails
     const fallbackText = buildExplanation(activeExpl)
 
-    fetch('https://cad-888-z5dl.vercel.app/api/index.py', {
+    fetch('https://cad-888-yvy1.vercel.app/api/index.py', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ signals: activeExpl, provider: 'gemini' })

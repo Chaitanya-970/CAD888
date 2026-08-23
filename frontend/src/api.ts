@@ -5,7 +5,9 @@
  * Every function returns the parsed JSON or throws on network/HTTP errors.
  */
 
-const BASE = import.meta.env.VITE_API_URL || 'https://cad-888.vercel.app'
+export const BACKEND_URL = 'https://cad888.vercel.app'
+
+const BASE = import.meta.env.VITE_API_URL || BACKEND_URL
 
 // ── Types matching backend response shapes ──────────────────────────
 
